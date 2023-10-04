@@ -1,11 +1,15 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
 import AuthHandler from "../utils/AuthHandler";
+import { Redirect } from "react-router-dom";
 
 class LogoutComponent extends React.Component {
     render() {
-        AuthHandler.logoutUser();
-        return <Redirect to="/" />;
+        if (window.confirm('Are you sure want to log out?')) {
+            AuthHandler.logoutUser();
+            return <Redirect to="/login" />;
+        };
+        
+        return <Redirect to="#" />;
     }
 }
 

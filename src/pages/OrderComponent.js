@@ -1,214 +1,338 @@
 import React from "react";
 import APIHandler from "../utils/APIHandler";
-
+import AuthHandler from "../utils/AuthHandler";
+import swal from 'sweetalert2';
+import ReactHTMLTableToExcel from 'react-html-table-to-excel';
+    
 class OrderComponent extends React.Component {
+
     constructor(props) {
         super(props);
-        this.formSubmit = this.formSubmit.bind(this);
-        this.completeOrdersDetails = this.completeOrdersDetails.bind(this);
-        this.formRef = React.createRef();
-      }
-      state = {
+        this.node = React.createRef(); 
+    }
+
+    state = {
         errorRes: false,
         errorMessage: "",
         btnMessage: 0,
         sendData: false,
         OrdersDataList: [],
+        filteredData: [],
+        searchTerm: "",
+        daily_kgs: 0,
         dataLoaded: false,
-      };
-    
-      async formSubmit(event) {
-        event.preventDefault();
-        this.setState({ btnMessage: 1 });
-        var apiHandler = new APIHandler();
-        var response = await apiHandler.saveOrdersData(
-          event.target.phone.value,
-          event.target.name.value,
-          event.target.town.value,
-          event.target.region.value,
-          event.target.kgs.value,
-          event.target.packaging.value,
-          event.target.discount.value,
-          event.target.transport.value,
-          event.target.farmer_id.value,
-          event.target.amount.value,
-          event.target.comment.value,
-        );
-        console.log(response);
-        this.setState({ btnMessage: 0 });
-        this.setState({ errorRes: response.data.error });
-        this.setState({ errorMessage: response.data.message });
-        this.setState({ sendData: true });
-      }
-    
-      //This Method Work When Our Page is Ready
+        ordersPerPage: 100,
+        currentPage: 1,
+    };
+
+    //This Method Work When Our Page is Ready
     componentDidMount() {
-      this.fetchOrdersData();
+        this.fetchOrdersData();
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.OrdersDataList !== this.state.OrdersDataList) {
+            this.searchData();
+        }
+        
+        if (prevState.searchTerm !== this.state.searchTerm) {
+            this.searchData();
+        }
+    }
+
+    handleChange = (event) => {
+        this.setState({
+            searchTerm: event.target.value
+        });
+    }
+
+    searchData = () => {
+        const { OrdersDataList, searchTerm } = this.state;
+        const filteredData = OrdersDataList.filter(orders => {
+            return orders.town.toLowerCase().includes(searchTerm.toLocaleLowerCase());
+        });
+        this.setState({ filteredData });
+    }  
 
     async fetchOrdersData() {
         var apihandler = new APIHandler();
         var ordersdata = await apihandler.fetchAllOrders();
         console.log(ordersdata);
         this.setState({ OrdersDataList: ordersdata.data.data });
+        this.setState({ daily_kgs: ordersdata.data.daily_kgs });
         this.setState({ dataLoaded: true });
-    }
-    
-    async completeOrdersDetails(
-      customer_id,
-      name,
-      town,
-      kgs,
-      packaging,
-      discount,
-      transport,
-      farmer_id,
-      amount,
-    ) {
-      console.log(customer_id);
-      var apihandler = new APIHandler();
-      var ordersdata = await apihandler.updateOrdersRequest(
-        customer_id,
-        name,
-        town,
-        kgs,
-        packaging,
-        discount,
-        transport,
-        farmer_id,
-        amount,
-      );
-      console.log(ordersdata);
-      this.fetchOrdersData();
     }
 
     viewOrdersDetails = (orders_id) => {
-      console.log(orders_id);
-      console.log(this.props);
-      this.props.history.push("/ordersdetails/" + orders_id);
+        console.log(orders_id);
+        console.log(this.props);
+        this.props.history.push("/ordersdetails/" + orders_id);
     }; 
 
-    render() {
-        return (
-            <section className="content">
-                <div className="container-fluid">
+    deleteOrders = async (orders_id) => {
+        if (window.confirm("Are you sure you want to delete this payment?")) {
+            try {
+                var apihandler = new APIHandler();
+                const response = await apihandler.deleteOrdersData(orders_id);
 
-                    <div className="block-header">
-                        <h2>ALL ORDERS</h2>
+                // If the delete was successful, update the state to remove the deleted payment
+                if (response && response.data && response.data.error === false) {
+                    this.setState((prevState) => ({
+                        OrdersDataList: prevState.OrdersDataList.filter((orders) => orders.id !== orders_id),
+                    }));
+
+                    // Show success notification using swal
+                    swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: "Order deleted successfully!",
+                    });
+                } else {
+                    // Show error notification using swal
+                    swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Failed to delete the Order. Please try again.",
+                    });
+                }
+            } catch (error) {
+                // Show error notification using swal
+                swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "An error occurred while deleting the payment. Please try again.",
+                });
+            }
+        }
+    };
+
+    createTicket = async () => {
+        const swal = require('sweetalert2');
+        const { value: comment } = await swal.fire({
+          title: 'Add Comment',
+          input: 'text',
+          inputPlaceholder: 'Enter comment here...',
+          showCancelButton: true,
+          cancelButtonText: 'Cancel',
+          confirmButtonText: 'Save'
+        });
+      
+        if (comment) {
+          try {
+            const ordersId = this.state.OrdersDataList[0].id;
+            const customerName = this.state.OrdersDataList[0].name;
+            const phone = this.state.OrdersDataList[0].phone;
+            const farmerId = this.state.OrdersDataList[0].farmer_id;
+            const kgs = this.state.OrdersDataList[0].kgs;
+            const riceType = this.state.OrdersDataList[0].rice_type;
+      
+            const response = await fetch("https://test.tarase.com/api/tickets/", {
+            // const response = await fetch("http://127.0.0.1:8000/api/tickets/", {
+              method: "POST",
+              headers: {
+                Authorization: "Bearer " + AuthHandler.getLoginToken(),
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                orders_id: ordersId,
+                comment: comment,
+                phone: phone,
+                customer_name: customerName,
+                farmer_id: farmerId,
+                kgs: kgs,
+                rice_type: riceType,
+              })
+            });
+      
+            const data = await response.json();
+            console.log(data);
+            swal.fire('Success', 'Comment added to ticket', 'success');
+          } catch (error) {
+            console.log(error);
+            swal.fire('Error', 'Failed to add comment to ticket', 'error');
+          }
+        }
+      };
+
+    render() {
+        // Get current Orders
+        const { filteredData } = this.state;
+
+        return(
+            <div className="main-panel">
+                <div className="content-wrapper">
+                    <div className="row">
+                            <div className="col-xl-3 col-lg-6 stretch-card grid-margin">
+                                
+                            </div>
+                            <div className="col-xl-3 col-lg-6 stretch-card grid-margin">
+                                
+                            </div>
+                            <div className="col-xl-3 col-lg-6 stretch-card grid-margin">
+                                
+                            </div>
+                            <div className="col-xl-3 col-lg-6 stretch-card grid-margin">
+                                
+                            </div>
                     </div>
 
-                    <div className="row clearfix">
-                      <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div className="card">
-                          <div className="header">
-                            
-                            <h2>
-                              All Orders
-                            </h2>
-
-                          </div>
-                          {this.state.dataLoaded === false ? (
-                                        <div className="text-center">
-                                            <div className="preloader pl-size-xl">
-                                                <div className="spinner-layer">
-                                                    <div className="circle-clipper left">
-                                                        <div className="circle"></div>
+                    <div className="page-header">
+                        <h3 className="page-title">ALL ORDERS </h3>
+                    </div>
+                    <div className="row">
+                        <div className="col-12">
+                            <div className="card">
+                                <div className="card-body">
+                                    <h4 className="card-title">Manage Orders</h4>
+                                    <div className="row grid-margin">
+                                        <div className="col-12">
+                                            <div className="alert alert-warning" role="alert">
+                                                <strong>Heads up! </strong> Today serviced kilos<strong> {this.state.daily_kgs.toLocaleString(navigator.language, { minimumFractionDigits: 2 })} kgs.</strong> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-12">
+                                        {this.state.dataLoaded === false ? (
+                                            <div className="dot-opacity-loader">
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                            </div>
+                                        ) : ""}
+                                            <div className="table-responsive">
+                                                <div id="order-listing_wrapper" className="dataTables_wrapper dt-bootstrap4 no-footer">
+                                                    <div className="row">
+                                                        <div className="col-sm-12 col-md-6">
+                                                            <div className="dataTables_length" id="order-listing_length">
+                                                                <label>
+                                                                    <input
+                                                                        type="text"
+                                                                        className="form-control"
+                                                                        onChange={this.handleChange}
+                                                                        placeholder="Search Orders.."
+                                                                        aria-controls="order-listing"
+                                                                    />
+                                                                    <ReactHTMLTableToExcel
+                                                                        table="order-listing"
+                                                                        filename="general_report"
+                                                                        sheet="Sheet"
+                                                                        buttonText="excel file"
+                                                                        filetype="xls"
+                                                                        className="btn btn-info btn-rounded btn-fw"
+                                                                    />
+                                                                </label>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div className="circle-clipper right">
-                                                        <div className="circle"></div>
+                                                    <div className="row">
+                                                        <div className="col-sm-12">
+                                                            <table id="order-listing" className="table dataTable no-footer" cellSpacing="0" width="100%" role="grid" aria-describedby="order-listing_info" style={{width: "120%"}}>
+                                                                <thead>
+                                                                    <tr className="bg-primary text-white" role="row">
+                                                                        <th className="sorting_asc" tabIndex="0" aria-controls="order-listing" rowSpan="1" colSpan="1" aria-sort="ascending" aria-label="Order #: activate to sort column descending" style={{width: "31px"}}>
+                                                                            ORDER #
+                                                                        </th>
+                                                                        <th className="sorting" tabIndex="0" aria-controls="order-listing" rowSpan="1" colSpan="1" aria-label="Customer: activate to sort column ascending" style={{width: "100px"}}>
+                                                                            CUSTOMER
+                                                                        </th>
+                                                                        <th className="sorting" tabIndex="0" aria-controls="order-listing" rowSpan="1" colSpan="1" aria-label="Ship to: activate to sort column ascending" style={{width: "47px"}}>
+                                                                            TOWN
+                                                                        </th>
+                                                                        <th className="sorting" tabIndex="0" aria-controls="order-listing" rowSpan="1" colSpan="1" aria-label="Base Price: activate to sort column ascending" style={{width: "57px"}}>
+                                                                            KGS
+                                                                        </th>
+                                                                        <th className="sorting" tabIndex="0" aria-controls="order-listing" rowSpan="1" colSpan="1" aria-label="Purchased Price: activate to sort column ascending" style={{width: "47px"}}>
+                                                                            PACKAGING
+                                                                        </th>
+                                                                        <th className="sorting" tabIndex="0" aria-controls="order-listing" rowSpan="1" colSpan="1" aria-label="Status: activate to sort column ascending" style={{width: "30px"}}>
+                                                                            DISCOUNT
+                                                                        </th>
+                                                                        <th className="sorting" tabIndex="0" aria-controls="order-listing" rowSpan="1" colSpan="1" aria-label="Purchased Price: activate to sort column ascending" style={{width: "47px"}}>
+                                                                            TRANSPORT
+                                                                        </th>
+                                                                        <th className="sorting" tabIndex="0" aria-controls="order-listing" rowSpan="1" colSpan="1" aria-label="Purchased Price: activate to sort column ascending" style={{width: "47px"}}>
+                                                                            FARMER
+                                                                        </th>
+                                                                        <th className="sorting" tabIndex="0" aria-controls="order-listing" rowSpan="1" colSpan="1" aria-label="Purchased Price: activate to sort column ascending" style={{width: "47px"}}>
+                                                                            AMOUNT
+                                                                        </th>
+                                                                        <th className="sorting" tabIndex="0" aria-controls="order-listing" rowSpan="1" colSpan="1" aria-label="Purchased Price: activate to sort column ascending" style={{width: "47px"}}>
+                                                                            ADDED
+                                                                        </th>
+                                                                        <th className="sorting" tabIndex="0" aria-controls="order-listing" rowSpan="1" colSpan="1" aria-label="Actions: activate to sort column ascending" style={{width: "173px"}}>
+                                                                            ACTION
+                                                                        </th>
+                                                                        <th className="sorting" tabIndex="0" aria-controls="order-listing" rowSpan="1" colSpan="1" aria-label="Actions: activate to sort column ascending" style={{width: "173px"}}>
+                                                                            
+                                                                        </th>
+                                                                        <th className="sorting" tabIndex="0" aria-controls="order-listing" rowSpan="1" colSpan="1" aria-label="Actions: activate to sort column ascending" style={{width: "173px"}}>
+                                                                            
+                                                                        </th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                {filteredData.map((orders) => (
+                                                                    <tr role="row" key={orders.id} className="odd">
+                                                                        <td>{orders.id}</td>
+                                                                        <td>{orders.customer.name}</td>
+                                                                        <td>{orders.town}</td>
+                                                                        <td>{orders.kgs}</td>
+                                                                        <td>{orders.packaging}</td>
+                                                                        <td>{orders.discount}</td>
+                                                                        <td>{orders.transport}</td>
+                                                                        <td>{orders.farmer.name}</td>
+                                                                        <td>{orders.amount}</td>
+                                                                        
+                                                                        <td>{new Date(orders.added_on).toLocaleString()}</td>
+                                                                        <td className="text-right">
+                                                                        <button className="btn btn-light" 
+                                                                            onClick={() =>
+                                                                                this.viewOrdersDetails(orders.id)
+                                                                            }
+                                                                        >
+                                                                            <i className="mdi mdi-eye text-primary"></i>View 
+                                                                        </button>
+                                                                        </td>
+                                                                        <td className="text-right">
+                                                                        <button className="btn btn-light" 
+                                                                            onClick={() =>
+                                                                                this.createTicket()
+                                                                            }
+                                                                        >
+                                                                            <i className="mdi mdi-ticket text-primary"></i>BOOK 
+                                                                        </button>
+                                                                        </td>
+                                                                        <td className="text-right">
+                                                                        <button className="btn btn-light"
+                                                                            onClick={() =>
+                                                                                this.deleteOrders(orders.id)
+                                                                            }
+                                                                        >
+                                                                            <i className="mdi mdi-close text-danger"></i>Remove
+                                                                        </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                ))}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
                                                     </div>
+                                                    
                                                 </div>
                                             </div>
                                         </div>
-                                    ) : ""}
-                                    
-                          <div className="body table-responsive">
-                            <table className="table table-hover">
-                              <thead>
-                                <tr>
-                                  <th>#</th>
-                                  <th>CUSTOMER</th>
-                                  <th>TOWN</th>
-                                  <th>KGS</th>
-                                  <th>PACKAGING</th>
-                                  <th>DISCOUNT</th>
-                                  <th>TRANSPORT</th>
-                                  <th>FARMER</th>
-                                  <th>AMOUNT</th>
-                                  <th>ADDED</th>
-                                  <th>DESPATCH</th>
-                                  <th>ACTION</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {this.state.OrdersDataList.map((orders) => (
-                                  <tr key={orders.id}>
-                                    <td>{orders.id}</td>
-                                    <td>{orders.name}</td>
-                                    <td>{orders.town}</td>
-                                    <td>{orders.kgs}</td>
-                                    <td>{orders.packaging}</td>
-                                    <td>{orders.discount}</td>
-                                    <td>{orders.transport}</td>
-                                    <td>{orders.farmer.name}</td>
-                                    <td>{orders.amount}</td>
-                                    
-                                    <td>{new Date(orders.added_on).toLocaleString()}</td>
-                                    <td>
-                                      {orders.status === 0 ? (
-                                        <button
-                                          className="btn btn-block btn-warning"
-                                          onClick={() =>
-                                            this.completeOrdersDetails(
-                                              orders.id,
-                                            //  orders.phone,
-                                              orders.name,
-                                             // orders.customer_id,
-                                            //  orders.region,
-                                              orders.town,
-                                              orders.kgs,
-                                              orders.packaging,
-                                              orders.discount,
-                                              orders.transport,
-                                            //  orders.comment,
-                                              orders.farmer_id,
-                                          //    orders.price,
-                                              orders.amount,
-                                            )
-                                          }
-                                        >
-                                          PENDING?
-                                        </button>
-                                      ) : (
-                                        <button className="btn btn-block btn-success">
-                                          DONE
-                                        </button>
-                                      )}
-                                    </td>
-                                    <td>
-                                      <button
-                                        className="btn btn-block btn-warning"
-                                        onClick={() =>
-                                          this.viewOrdersDetails(orders.id)
-                                        }
-                                      >
-                                        View
-                                      </button>
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                      </div>
                     </div>
-
                 </div>
-            </section>  
-        );
-    }
-
+            </div>
+        )
+    }    
+    
 }
 
 export default OrderComponent;

@@ -1,7 +1,8 @@
 import { reactLocalStorage } from "reactjs-localstorage";
+import Axios from "axios";
 
 const { default: AuthHandler } = require("./AuthHandler");
-const { default: Axios } = require("axios");
+//const { default: Axios } = require("axios");
 const { default: Config } = require("./Config");
 
 class APIHandler {
@@ -23,7 +24,46 @@ class APIHandler {
       }
     }
 
-    // homepage api
+    // Register user
+    async saveUserData(
+        name, 
+        phone,
+        email,
+        password
+        ) {
+
+        var response = await Axios.post(Config.RegisterApiUrl, {
+            name: name, 
+            phone: phone,
+            email: email,
+            password: password
+        });
+
+        return response;
+    } 
+
+    async resetUserData(
+        email
+        ) {
+
+        var response = await Axios.post(Config.ResetUserApiUrl, {
+            email: email
+        });
+
+        return response;
+    } 
+
+    async fetchUserData() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.userApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+ 
+    // Dashboard api 
     
     async fetchHomePage() {
         await this.checkLogin();
@@ -35,6 +75,100 @@ class APIHandler {
         return response;
     }
 
+    // Customer Location api
+
+    async fetchCustomerLocation() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.customerLocationUrl, {
+            headers: { Authorization: "Bearer " + AuthHandler.getLoginToken() }
+        });
+
+        return response;
+    }
+
+    // Rice Price api
+    
+    async saveRicePrice(
+        paddy_rice,
+        paddy_date,
+        paddy_komboka,
+        komboka_date,
+        pishori,
+        pishori_date,
+        komboka,
+        rice_date,
+    ) {
+        // wait for token to be updated
+        await this.checkLogin();
+
+        var response = await Axios.post(Config.RicePriceApiUrl, {
+            paddy_rice: paddy_rice,
+            paddy_date: paddy_date,
+            paddy_komboka: paddy_komboka,
+            komboka_date: komboka_date,
+            pishori: pishori,
+            pishori_date: pishori_date,
+            komboka: komboka,
+            rice_date: rice_date,
+        },
+        {
+            headers: { Authorization: "Bearer " + AuthHandler.getLoginToken() }
+        });
+
+        return response;
+    }
+
+    async fetchRicePrice() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.RicePriceApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async fetchRicePriceDetails(id) {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.RicePriceApiUrl + "" + id + "/", {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async editRicePrice(
+        paddy_rice,
+        paddy_date,
+        paddy_komboka,
+        komboka_date,
+        pishori,
+        pishori_date,
+        komboka,
+        rice_date,
+        id,
+    ) {
+        // wait for token to be updated
+        await this.checkLogin();
+
+        var response = await Axios.put(Config.RicePriceApiUrl + "" + id + "/", {
+            paddy_rice: paddy_rice,
+            paddy_date: paddy_date,
+            paddy_komboka: paddy_komboka,
+            komboka_date: komboka_date,
+            pishori: pishori,
+            pishori_date: pishori_date,
+            komboka: komboka,
+            rice_date: rice_date,
+        },
+        {
+            headers: { Authorization: "Bearer " + AuthHandler.getLoginToken() }
+        });
+
+        return response;
+    }
 
     // farmer api
 
@@ -50,8 +184,7 @@ class APIHandler {
             phone: phone,
         },
         {
-            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()
-        }
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()}
         });
 
         return response;
@@ -103,6 +236,8 @@ class APIHandler {
     async saveCustomerData(
         name, 
         phone,
+        secondary_phone,
+        alternative_phone,
         town, 
         region,
         ) {
@@ -111,7 +246,9 @@ class APIHandler {
 
         var response = await Axios.post(Config.customerApiUrl, {
             name: name,
-            phone: phone, 
+            phone: phone,
+            secondary_phone: secondary_phone, 
+            alternative_phone: alternative_phone,
             town: town, 
             region: region,
         },
@@ -146,6 +283,8 @@ class APIHandler {
     async editCustomerData(
         name, 
         phone,
+        secondary_phone,
+        alternative_phone,
         town, 
         region, 
         id
@@ -157,6 +296,8 @@ class APIHandler {
             Config.customerApiUrl + "" + id + "/", {
                 name: name,
                 phone: phone, 
+                secondary_phone: secondary_phone, 
+                alternative_phone: alternative_phone,
                 town: town, 
                 region: region,
             
@@ -198,7 +339,7 @@ class APIHandler {
             return { data: [] };
           }
     }
-
+ 
     //payments api
 
     async savePaymentsData(
@@ -206,8 +347,7 @@ class APIHandler {
         paying_number,
         amount,
         payment_mode,
-        payment,
-        balance, 
+        payment, 
         customer_id, 
         ) {
         // wait for token to be updated    
@@ -219,7 +359,6 @@ class APIHandler {
             amount: amount,
             payment_mode: payment_mode,
             payment: payment,
-            balance: balance,
             customer_id: customer_id,
         },
         {
@@ -240,20 +379,201 @@ class APIHandler {
         return response;
     }
 
+    async fetchPaymentDetails(id) {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.paymentsApiUrl + "" + id + "/", {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async editPaymentData(
+        orders_id,
+        paying_number,
+        amount,
+        payment_mode,
+        payment,
+        customer_id,  
+        id
+        ) {
+        // wait for token to be updated    
+        await this.checkLogin();
+
+        var response = await Axios.put(
+            Config.paymentsApiUrl + "" + id + "/", {
+                orders_id: orders_id,  
+                paying_number: paying_number,
+                amount: amount,
+                payment_mode: payment_mode,
+                payment: payment,
+                customer_id: customer_id,
+        },
+        {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()
+        }
+        });
+
+        return response;
+    } 
+
+    async deletePayment(id) {
+        // wait for token to be updated    
+        await this.checkLogin();
+
+        try {
+            var response = await Axios.delete(Config.paymentsApiUrl + id + "/", {
+                headers: { Authorization: "Bearer " + AuthHandler.getLoginToken() },
+            });
+            return response;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
+    async fetchUnderPayment() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.debtorsApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async fetchOverPayment() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.overdueApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async fetchOverPaid() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.totalOverdueApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async fetchUnderPaid() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.totalUnderdueApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    // tickets api
+
+    async fetchAllTickets() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.ticketApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async fetchTicketDetails(id) {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.ticketApiUrl + "" + id + "/", {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    // invoice api
+
+    async saveInvoiceData(
+        name,
+        phone,
+        town,
+        total,
+        invoice_details
+    ) {
+        // wait for token to be updated    
+        await this.checkLogin();
+
+        var response = await Axios.post(Config.invoiceApiUrl, {
+            name: name,
+            phone: phone,
+            town: town,
+            total: total,
+            invoice_details: invoice_details
+        },
+        {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()}
+        });
+
+        return response;
+    }
+
+    async fetchAllInvoice() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.invoiceApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async fetchInvoiceDetails(id) {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.invoiceApiUrl + "" + id + "/", {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async deleteInvoiceData(id){
+        // wait for token to be updated    
+        await this.checkLogin();
+
+        try {
+            var response = await Axios.delete(Config.invoiceApiUrl + id + "/", {
+                headers: { Authorization: "Bearer " + AuthHandler.getLoginToken() },
+            });
+            return response;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+    
+
     // orders api
 
     async saveOrdersData(
         phone, 
         name,
         customer_id,
-        town,
-        region, 
+        town, 
         kgs,
         packaging,
         discount,
         transport,
+        rider,
         comment,
         farmer_id,
+        rice_type,
+        vat,
+        farmer_price,
         price,
         amount,
         ) {
@@ -265,13 +585,16 @@ class APIHandler {
             name: name,
             customer_id: customer_id,
             town: town,
-            region: region,
             kgs: kgs, 
             packaging: packaging,
             discount: discount,
             transport: transport,
+            rider: rider,
             comment: comment,
             farmer_id: farmer_id,
+            rice_type: rice_type,
+            vat: vat,
+            farmer_price: farmer_price,
             price: price,
             amount: amount,
         },
@@ -305,14 +628,21 @@ class APIHandler {
 
     async updateOrdersRequest(
         //id,
-        customer_id,
+        phone,
         name,
+        customer_id,
         town,
         kgs,
         packaging,
         discount,
         transport,
+        rider,
+        comment,
         farmer_id,
+        rice_type,
+        vat,
+        farmer_price,
+        price,
         amount,
         ) {
         await this.checkLogin();
@@ -321,18 +651,21 @@ class APIHandler {
         var response = await Axios.put(
           Config.ordersApiUrl + "" + customer_id + "/",
           { 
-           // phone: phone, 
-           name: name,
-           // customer_id: customer_id, 
+            phone: phone, 
+            name: name,
+            customer_id: customer_id, 
             town: town,
-          //  region: region,
             kgs: kgs, 
             packaging: packaging,
             discount: discount,
             transport: transport,
-           // comment: comment,
+            rider: rider,
+            comment: comment,
             farmer_id: farmer_id,
-          //  price: price,
+            rice_type: rice_type,
+            vat: vat,
+            farmer_price: farmer_price,
+            price: price,
             amount: amount,
             status: 1,
           },
@@ -346,13 +679,16 @@ class APIHandler {
         name,
         customer_id,
         town,
-        region, 
         kgs,
         packaging,
         discount,
         transport,
+        rider,
         comment,
         farmer_id,
+        rice_type,
+        vat,
+        farmer_price,
         price,
         amount, 
         id
@@ -366,13 +702,16 @@ class APIHandler {
             name: name,
             customer_id: customer_id,
             town: town,
-            region: region,
             kgs: kgs, 
             packaging: packaging,
             discount: discount,
             transport: transport,
+            rider: rider,
             comment: comment,
             farmer_id: farmer_id,
+            rice_type: rice_type,
+            vat: vat,
+            farmer_price: farmer_price,
             price: price,
             amount: amount,
         },
@@ -383,6 +722,21 @@ class APIHandler {
 
         return response;
     } 
+
+    async deleteOrdersData(id){
+        // wait for token to be updated    
+        await this.checkLogin();
+
+        try {
+            var response = await Axios.delete(Config.ordersApiUrl + id + "/", {
+                headers: { Authorization: "Bearer " + AuthHandler.getLoginToken() },
+            });
+            return response;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
 
     // farmeronly api
 
@@ -396,6 +750,84 @@ class APIHandler {
         return response;
     }
 
+    // Stock Only Api
+
+    async fetchStockOnly() {
+        await this.checkLogin();
+    
+        var response = await Axios.get(Config.FarmerStockName, {
+          headers: { Authorization: "Bearer " + AuthHandler.getLoginToken() },
+        });
+    
+        return response;
+    }
+
+    // stock api
+
+    async saveStockData( 
+        farmer_id,
+        rice_type,
+        in_stock
+        ) {
+        // wait for token to be updated    
+        await this.checkLogin();
+
+        var response = await Axios.post(Config.stockApiUrl, { 
+            farmer_id: farmer_id,
+            rice_type: rice_type,
+            in_stock: in_stock,
+        },
+        {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()}
+        });
+
+        return response;
+    } 
+
+    async fetchAllStock() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.stockApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async fetchStockDetails(id) {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.stockApiUrl + "" + id + "/", {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async editStockData( 
+        farmer_id, 
+        rice_type,
+        in_stock,
+        id
+        ) {
+        // wait for token to be updated    
+        await this.checkLogin();
+
+        var response = await Axios.put(
+            Config.stockApiUrl + "" + id + "/", {
+            farmer_id: farmer_id,
+            rice_type: rice_type,
+            in_stock: in_stock,
+        },
+        {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()
+        }
+        });
+
+        return response;
+    } 
+
+
     // customeronly api
 
     async fetchCustomerOnly() {
@@ -406,7 +838,7 @@ class APIHandler {
         });
     
         return response;
-    }  
+    }
 
     // orderbyname
     

@@ -1,19 +1,21 @@
 import React from "react";
 import APIHandler from "../utils/APIHandler";
+import swal from 'sweetalert2';
 
 class AddCustomerComponent extends React.Component {
 
     constructor(props) {
         super(props);
         this.formSubmit = this.formSubmit.bind(this);
+        this.formRef = React.createRef();
     }
 
     state = {
-        errorRes: false,
+        errorRes: false, 
         errorMessage: "",
         btnMessage: 0,
         sendData: false,
-        CustomerDataList: [],
+        regionlist: [],
         dataLoaded: false,
     };    
 
@@ -24,6 +26,8 @@ class AddCustomerComponent extends React.Component {
         var response = await apiHandler.saveCustomerData(
             event.target.name.value,
             event.target.phone.value,
+            event.target.secondary_phone.value,
+            event.target.alternative_phone.value,
             event.target.town.value,
             event.target.region.value,
         );
@@ -32,113 +36,163 @@ class AddCustomerComponent extends React.Component {
         this.setState({ errorRes: response.data.error });
         this.setState({ errorMessage: response.data.message });
         this.setState({ sendData: true });
+
+        if (this.state.errorRes === false &&
+            this.state.sendData === true) {
+                swal.fire('Customer Created Successfuly!', '', 'success');
+          }
+
+        if (this.state.errorRes === true &&
+            this.state.sendData === true) {
+                swal.fire('Customer Already Exist!', '', 'error');
+        }
+        this.formRef.current.reset();
     }
     
     // works when our page is ready
     componentDidMount() {
-        this.fetchCustomerData();
+        this.LoadRegion();
     }
 
-    async fetchCustomerData() {
-        var apihanler = new APIHandler();
-        var customerdata = await apihanler.fetchAllCustomer();
-        console.log(customerdata);
-        this.setState({ CustomerDataList: customerdata.data.data });
-        this.setState({ dataLoaded: true });
+    async LoadRegion() {
+        var apihandler = new APIHandler();
+        var regiondata = await apihandler.fetchRegionOnly();
+        this.setState({ regionlist: regiondata.data });
     }
-
-    viewCustomerDetails = (customer_id) => {
-        console.log(customer_id);
-        console.log(this.props);
-        this.props.history.push("/customerdetails/" + customer_id);
-    }
-
+    
     render() {
         return(
-            <section className="content">
-                <div className="container-fluid">
+            <div className="main-panel">
+                <div className="content-wrapper">
+                    <div className="container-fluid">
+                        <div className="row">
 
-                    <div className="block-header">
-                        <h2>MANAGE CUSTOMER</h2>
-                    </div>
+                            <div className="col-xl-3 col-lg-6 stretch-card grid-margin">
+                                
+                            </div>
+                            <div className="col-xl-3 col-lg-6 stretch-card grid-margin">
+                                
+                            </div>
+                            <div className="col-xl-3 col-lg-6 stretch-card grid-margin">
+                                
+                            </div>
+                            <div className="col-xl-3 col-lg-6 stretch-card grid-margin">
+                                
+                            </div>
+                        </div>
+                        <div className="page-header">
+                            <h3 className="page-title"> ADD CUSTOMER</h3>
+                        </div>
+                        <div className="row">
+                            <div className="col-12 grid-margin">
+                                <div className="card">
+                                <div className="card-body">
+                                        <h4 className="card-title">Add Customer</h4>
+                                        <form className="form-sample" onSubmit={this.formSubmit} ref={this.formRef}>
+                                            <p className="card-description">  </p>
+                                            
+                                            <div className="row">
+                                                <div className="col-md-6"> 
+                                                    <div className="form-group bmd-form-group">
+                                                    <label >Name</label>
+                                                        <input
+                                                        type="text"
+                                                        id="name"
+                                                        name="name"
+                                                        className="form-control"
+                                                        placeholder=""
+                                                        required
+                                                        />
+                                                    </div>
+                                                </div> 
+                                                
+                                                <div className="col-md-6"> 
+                                                    <div className="form-group bmd-form-group">
+                                                    <label >Primary No: </label>
+                                                        <input
+                                                        type="text"
+                                                        id="phone"
+                                                        name="phone"
+                                                        className="form-control"
+                                                        placeholder=""
+                                                        required
+                                                        />
+                                                    </div>
+                                                </div>
 
-                    <div className="row clearfix">
-                        <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <div className="card">
-                                <div className="header">
-                                    
-                                    <h2>
-                                        ADD CUSTOMER
-                                    </h2>
-                                    
-                                </div>
-                                <div className="body">
-                                    <form onSubmit={this.formSubmit}>
+                                                <div className="col-md-6"> 
+                                                    <div className="form-group bmd-form-group">
+                                                    <label >Secondary No:</label>
+                                                        <input
+                                                        type="text"
+                                                        id="secondary_phone"
+                                                        name="secondary_phone"
+                                                        className="form-control"
+                                                        placeholder=""
+                                                        required
+                                                        />
+                                                    </div>
+                                                </div>
 
-                                        <label htmlFor="email_address">Name</label>
-                                        <div className="form-group">
-                                            <div className="form-line">
-                                                <input type="text" id="name" name="name" className="form-control" placeholder="Enter Customer Name" />
-                                            </div>
-                                        </div>
+                                                <div className="col-md-6"> 
+                                                    <div className="form-group bmd-form-group">
+                                                    <label >Alternative No:</label>
+                                                        <input
+                                                        type="text"
+                                                        id="alternative_phone"
+                                                        name="alternative_phone"
+                                                        className="form-control"
+                                                        placeholder=""
+                                                        required
+                                                        />
+                                                    </div>
+                                                </div> 
 
-                                            <label htmlFor="email_address">Phone</label>
-                                        <div className="form-group">
-                                            <div className="form-line">
-                                                <input type="text" id="phone" name="phone" className="form-control" placeholder="Enter Customer phone" />
-                                            </div>
-                                        </div>
+                                                <div className="col-md-6"> 
+                                                    <div className="form-group bmd-form-group">
+                                                    <label >Town</label>
+                                                        <input
+                                                        type="text"
+                                                        id="town"
+                                                        name="town"
+                                                        className="form-control"
+                                                        placeholder=""
+                                                        required
+                                                        />
+                                                    </div>
+                                                </div>
 
-                                        <label htmlFor="email_address">Town</label>
-                                        <div className="form-group">
-                                            <div className="form-line">
-                                                <input type="text" id="town" name="town" className="form-control" placeholder="Enter Customer Town" />
-                                            </div>
-                                        </div>
+                                                <div className="col-md-6"> 
+                                                    <div className="form-group bmd-form-group">
+                                                    <label >Region</label>
+                                                    <select id="region" name="region" className="form-control show-tick" required>
+                                                        <option value="">--- Please Select Region ---</option>
+                                                        <option value="1">NAIROBI</option>
+                                                        <option value="2">NYANZA</option>
+                                                        <option value="3">CENTRAL</option>
+                                                        <option value="4">COAST</option>
+                                                        <option value="5">EASTERN</option>
+                                                        <option value="6">NORTH EASTERN</option>
+                                                        <option value="7">WESTERN</option>
+                                                        <option value="8">RIFT VALLEY</option>
+                                                    </select>
+                                                    </div>
+                                                </div>
 
-                                        <label htmlFor="email_address">Region</label>
-                                        <div className="form-group">
-                                            <div className="form-line">
-                                                <input type="text" id="region" name="region" className="form-control" placeholder="Enter Customer Region" />
-                                            </div>
-                                        </div>
-
-                                        <br/>
-                                        <button
-                                            type="submit"
-                                            className="btn btn-primary m-t-15 waves-effect"
-                                            disabled={this.state.btnMessage === 0 ? false : true}
-                                            >
-                                            {this.state.btnMessage === 0
-                                                ? "Add Customer"
-                                                : "Adding Customer Please Wait.."}
-                                        </button>
-                                            <br />
-                                            {this.state.errorRes === false &&
-                                            this.state.sendData === true ? (
-                                            <div className="alert alert-success">
-                                                <strong>Success!</strong> {this.state.errorMessage}.
-                                            </div>
-                                            ) : (
-                                            ""
-                                            )}
-                                            {this.state.errorRes === true &&
-                                            this.state.sendData === true ? (
-                                            <div className="alert alert-danger">
-                                                <strong>Failed!</strong>
-                                                {this.state.errorMessage}.
-                                            </div>
-                                            ) : (
-                                            ""
-                                            )}
-                                    </form>
+                                            </div>  
+                                            
+                                            <br/>
+                                            <button type="submit" className="btn btn-success btn-block btn-rounded btn-fw" disabled={this.state.btnMessage === 0 ? false : true}>
+                                                {this.state.btnMessage === 0 ? "Add Customer" : "Adding Customer Please Wait.."}<div className="ripple-container"></div>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-            </section>        
+            </div>
         )
     }
 }

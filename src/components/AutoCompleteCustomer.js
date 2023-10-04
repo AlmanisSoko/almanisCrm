@@ -42,7 +42,7 @@ class AutoCompleteCustomer extends React.Component {
           id="phone"
           name="phone"
           className="form-control"
-          placeholder="Enter Phone"
+          placeholder=""
           onFocus={this.onFocusChange}
           autoComplete="off"
           onChange={this.loadDataCustomer}

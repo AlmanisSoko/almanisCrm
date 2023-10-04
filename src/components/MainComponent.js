@@ -1,27 +1,13 @@
 import React from "react";
-import GoogleFontLoader from "react-google-font-loader";
-import Overlay from "./Overlay";
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
-import "adminbsb-materialdesign/css/themes/all-themes.css";
+import Header from "./Header";
+import SideBar from "./SideBar";
+//import Footer from "./Footer";
 
 class MainComponent extends React.Component {
 
     state = {
-        bodyClass: "theme-red ls-closed",
-        displayOverlay: "none",
+        bodyClass: "container-scroller",
         width: window.screen.width
-    }
-
-    onBarClick = () => {
-        if (this.state.bodyClass == "theme-red ls-closed overlay-open") {
-           this.setState({ bodyClass: "theme-red ls-closed" });
-           this.setState({ displayOverlay: "none" });
-        } 
-        else if (this.state.bodyClass == "theme-red ls-closed") {
-            this.setState({ bodyClass: "theme-red ls-closed overlay-open" });
-            this.setState({ displayOverlay: "block" });
-        }
     }
 
     onscreenresize = () => {
@@ -29,7 +15,7 @@ class MainComponent extends React.Component {
         this.setState({ width: window.screen.width });
     }
 
-    UNSAFE_componentWillMount() {
+    componentWillMount() {
         window.addEventListener("resize", this.onscreenresize);
     }
 
@@ -41,52 +27,30 @@ class MainComponent extends React.Component {
         var inputall = document.querySelectorAll("input");
         inputall.forEach((input) => {
             input.addEventListener("focus", function () {
-                this.parentNode.className="form-line focused";
+                this.parentNode.className="form-group bmd-form-group is-focused";
             });
         });
-
+        
         inputall.forEach((input) => {
             input.addEventListener("blur", function () {
-                this.parentNode.className="form-line";
+                this.parentNode.className="form-group bmd-form-group";
             });
         });
     }
 
     render() {
         console.log(this.props);
-        
-        if (this.state.width > 1150) {
-           document.getElementById("root").className = "theme-red";
-        } else {
-            document.getElementById("root").className = this.state.bodyClass;
-        }
-
+         
         var Page = this.props.page;
 
         return (
-        <React.Fragment>
-            <GoogleFontLoader
-                        fonts={[
-                            {
-                            font: 'Roboto',
-                            weights: [400, 700],
-                            },
-                            
-                        ]}
-                        subsets={['cyrillic-ext', 'latin']}
-            />
-            <GoogleFontLoader
-                    fonts={[
-                        {
-                        font: 'Material+Icons'
-                        }
-                    ]}
-            />
-            <Overlay display={this.state.displayOverlay} />
-            <Navbar onBarClick={this.onBarClick} /> 
-            <Page {...this.props} />
-            <Sidebar activepage={this.props.activepage} />
-        </React.Fragment>);
+            <React.Fragment>
+                <Header/> 
+                <SideBar activepage={this.props.activepage}/>
+                <Page {...this.props} />
+                {/* <Footer/> */}
+            </React.Fragment>
+        );
     }
 
 }
