@@ -74,6 +74,66 @@ class APIHandler {
 
         return response;
     }
+ 
+    async fetchDashboard() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.dashboardApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async monthlyData() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.monthlyDataApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async yearlyData() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.yearlyDataApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async customersRegion() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.customersRegionApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async fetchTotalDiscount() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.totalDiscountApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async fetchTotalKilos() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.totalKilosApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
 
     // Customer Location api
 
@@ -398,7 +458,17 @@ class APIHandler {
     async fetchUnderPaid() {
         await this.checkLogin();
 
-        var response = await Axios.get(Config.totalUnderdueApiUrl, {
+        var response = await Axios.get(Config.totalBalanceApiUrl, {
+            headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
+        });
+
+        return response;
+    }
+
+    async fetchTotalPaid() {
+        await this.checkLogin();
+
+        var response = await Axios.get(Config.totalPaymentApiUrl, {
             headers: {Authorization: "Bearer " + AuthHandler.getLoginToken()} 
         });
 
@@ -684,7 +754,7 @@ class APIHandler {
         var response = await Axios.get(Config.FarmerOnly, {
           headers: { Authorization: "Bearer " + AuthHandler.getLoginToken() },
         });
-    
+     
         return response;
     }
 

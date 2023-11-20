@@ -387,7 +387,7 @@ class HomeComponent extends React.Component {
                                                     />
                                                     </div>
                                                 </div>
-
+ 
                                                 <div className="col-md-6"> 
                                                     <div className="form-group bmd-form-group">
                                                         <label >Rice Type</label>
