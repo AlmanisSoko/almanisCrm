@@ -16,58 +16,73 @@ import {
 
 // Application authentication and authorization 
 
-export const load_user = () => async dispatch => {
+export const load_user = () => async (dispatch) => {
     if (localStorage.getItem('access')) {
         const config = {
             headers: {
                 'Content-type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('access')}`,
-                'ACCEPT': 'application/json'
-            }
+                'ACCEPT': 'application/json',
+            },
         };
 
         try {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/users/me/`, config);
-            if (!res.ok) {
-                throw Error(res.statusText);
-            }
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/users/me/`, config);
             const data = await res.json();
 
-            dispatch({
-                type: LOADED_USER_SUCCESS,
-                payload: data
-            });
+            if (!res.ok) {
+                if (data.code === 'user_not_found') {
+                    // Handle the case when the user is not found (redirect to login)
+                    dispatch({
+                        type: LOADED_USER_FAIL,
+                        payload: 'User not found',
+                    });
+                } else {
+                    // Handle other errors
+                    throw Error(res.statusText);
+                }
+            } else {
+                // User loaded successfully
+                dispatch({
+                    type: LOADED_USER_SUCCESS,
+                    payload: data,
+                });
+            }
         } catch (error) {
+            // Handle other errors
             dispatch({
-                type: LOADED_USER_FAIL
+                type: LOADED_USER_FAIL,
+                payload: error.message,
             });
         }
     } else {
+        // Handle the case when access token is not available
         dispatch({
-            type: LOADED_USER_FAIL
+            type: LOADED_USER_FAIL,
+            payload: 'Access token not available',
         });
     }
-}
+};
 
-export const googleAuthenticate = (code, state) => async dispatch => {
+export const googleAuthenticate = (code, state) => async (dispatch) => {
     if (code && state && !localStorage.getItem('access')) {
         const details = {
-            'code': code,
-            'state': state,
+            code: code,
+            state: state,
         };
 
         const formBody = Object.keys(details)
-            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key]))
+            .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(details[key]))
             .join('&');
 
-        const url = `${process.env.REACT_APP_API_URL}/auth/o/google-oauth2/?${formBody}`;
+        const url = `${import.meta.env.VITE_REACT_APP_API_URL}/auth/o/google-oauth2/?${formBody}`;
 
         const config = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'ACCEPT': 'application/x-www-form-urlencoded'
-            }
+                ACCEPT: 'application/x-www-form-urlencoded',
+            },
         };
 
         try {
@@ -76,17 +91,17 @@ export const googleAuthenticate = (code, state) => async dispatch => {
 
             dispatch({
                 type: GOOGLE_AUTH_SUCCESS,
-                payload: data
+                payload: data,
             });
 
-            dispatch(load_user());
+            dispatch(load_user()); // Make sure to load user information after successful Google authentication.
         } catch (error) {
             dispatch({
-                type: GOOGLE_AUTH_FAIL
+                type: GOOGLE_AUTH_FAIL,
             });
         }
     }
-}
+};
 
 export const checkAuthenticated = () => async dispatch => {
     if (localStorage.getItem('access')) {
@@ -101,7 +116,7 @@ export const checkAuthenticated = () => async dispatch => {
         console.log(body)
 
         try {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/jwt/verify/`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/jwt/verify/`, {
                 method: 'POST',
                 headers: config.headers,
                 body: body
@@ -142,7 +157,8 @@ export const login = (email, password) => async dispatch => {
     };
 
     try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/jwt/create/`, config);
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/jwt/create/`, config);
+        console.log()
 
         if (res.ok) {
             const data = await res.json();
@@ -185,7 +201,7 @@ export const signup = (first_name, last_name, phone, email, user_type, password,
     };
 
     try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/users/`, config);
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/users/`, config);
 
         if (res.ok) {
             const data = await res.json();
@@ -261,7 +277,7 @@ export const verify = (uid, token) => async dispatch => {
     };
 
     try {
-        await fetch(`${process.env.REACT_APP_API_URL}/auth/users/activation/`, config);
+        await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/users/activation/`, config);
 
         dispatch({
             type: ACTIVATION_SUCCESS,
@@ -283,7 +299,7 @@ export const reset_password = (email) => async dispatch => {
     };
 
     try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/users/reset_password/`, config);
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/users/reset_password/`, config);
 
         if (res.ok) {
             const data = await res.json();
@@ -316,7 +332,7 @@ export const reset_password_confirm = (uid, token, new_password, re_new_password
     };
 
     try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/users/reset_password_confirm/`, config);
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/users/reset_password_confirm/`, config);
 
         if (res.ok) {
             const data = await res.json();

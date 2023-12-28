@@ -82,7 +82,7 @@ const Login = ({ login, isAuthenticated, user }) => {
                                 <div className="card-header bg-transparent">
                                     <h5 className="text-dark text-center mt-2 mb-3">Sign in</h5>
                                     <div className="btn-wrapper text-center">
-                                        <a href="javascript:;" className="btn btn-neutral btn-icon btn-sm mb-0">
+                                        <a onClick={continueWithGoogle} className="btn btn-neutral btn-icon btn-sm mb-0">
                                             <img className="w-30" src="https://demos.creative-tim.com/argon-dashboard-pro/assets/img/logos/google.svg"/>
                                             Google
                                         </a>
@@ -91,12 +91,13 @@ const Login = ({ login, isAuthenticated, user }) => {
 
                                 <div className="card-body px-lg-5 pt-0">
                                     
-                                    <form role="form" className="text-start">
+                                    <form className="text-start" method="POST" onSubmit={onSubmit}>
                                         <div className="mb-3">
                                             <input 
                                                 type="email" 
                                                 className="form-control" 
                                                 placeholder="Email" 
+                                                name="email"
                                                 aria-label="Email"
                                                 value={email}
                                                 onChange={(e) => onChange(e)}
@@ -109,6 +110,7 @@ const Login = ({ login, isAuthenticated, user }) => {
                                                 className="form-control" 
                                                 placeholder="Password" 
                                                 aria-label="Password"
+                                                name="password"
                                                 value={password}
                                                 onChange={(e) => onChange(e)}
                                             />
@@ -119,7 +121,7 @@ const Login = ({ login, isAuthenticated, user }) => {
                                                 type="checkbox" 
                                                 id="rememberMe"
                                             />
-                                        <label className="form-check-label" for="rememberMe">Remember me</label>
+                                        <label className="form-check-label" htmlFor="rememberMe">Remember me</label>
                                         </div>
                                         <div className="form-check-label mt-2">
                                             Forgot password? 
