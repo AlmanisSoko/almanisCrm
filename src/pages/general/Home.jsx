@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react'
 import HeaderNav from '../../components/HeaderNav';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-const Home = ({ }) => {
+const Home = ({ isAuthenticated, user }) => {
+    const navigate = useNavigate();
 
     const desktopStyle = {
         width: 'calc(100% - 265px)',
@@ -12,6 +15,19 @@ const Home = ({ }) => {
         width: '100%',
         marginLeft: '0',
     };
+
+    useEffect(() => {
+
+        if (!isAuthenticated) {
+            navigate('/')
+        }
+    
+        if (isAuthenticated && user && user.user_type === 'normal') {
+          navigate('/neworders');
+        }
+
+        // Use the loading state to determine when to display the data
+    }, [isAuthenticated, user, Navigate]);
 
     // Apply media queries
     const mediaQuery = window.matchMedia('(min-width: 768px)');
@@ -29,6 +45,10 @@ const Home = ({ }) => {
         </div>
     )
 };
+
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated,
+    user: state.auth.user,
+});
   
-export default Home;
-  
+export default connect(mapStateToProps)(Home)  

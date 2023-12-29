@@ -10,6 +10,24 @@ import {
     ACTIVATION_SUCCESS, ACTIVATION_FAIL,
     GOOGLE_AUTH_SUCCESS, GOOGLE_AUTH_FAIL,
     LOGOUT,
+
+    // customers
+    CUSTOMER_SEARCH_SUCCESS, CUSTOMER_SEARCH_FAIL,
+    EDIT_CUSTOMER_SUCCESS, EDIT_CUSTOMER_FAIL,
+    CUSTOMER_ONLY_FETCH_SUCCESS, CUSTOMER_ONLY_FETCH_FAIL,
+    CUSTOMER_FETCH_ALL_SUCCESS, CUSTOMER_FETCH_ALL_FAIL,
+    CUSTOMER_DELETE_SUCCESS, CUSTOMER_DELETE_FAIL, CUSTOMER_UPDATE_LIST,
+    CUSTOMER_FETCH_DETAILS_SUCCESS, CUSTOMER_FETCH_DETAILS_FAIL, 
+    SAVE_CUSTOMER_SUCCESS, SAVE_CUSTOMER_FAIL,
+
+     // orders
+     ORDERS_FETCH_ALL_SUCCESS, ORDERS_FETCH_ALL_FAIL,
+     ORDERS_FETCH_DETAILS_SUCCESS, ORDERS_FETCH_DETAILS_FAIL,
+     ORDER_DELETE_SUCCESS, ORDER_DELETE_FAIL, ORDER_UPDATE_LIST,
+     SAVE_ORDERS_SUCCESS, SAVE_ORDERS_FAIL,
+     ORDER_SEARCH_SUCCESS, ORDER_SEARCH_FAIL,
+     EDIT_ORDERS_SUCCESS, EDIT_ORDERS_FAIL,
+
 } from '../actions/types'
 
 const initialState = {
@@ -110,6 +128,163 @@ export default function (state = initialState, action) {
                 ...state,
                 isAuthenticated: true,
             } 
+
+            
+        // CUSTOMER MODULE REDUCERS
+
+        case SAVE_CUSTOMER_SUCCESS:
+            return {
+                ...state,
+                customers: payload.data,
+            }
+
+        case SAVE_CUSTOMER_FAIL:
+            return{
+                ...state,
+            }
+
+        case EDIT_CUSTOMER_SUCCESS:
+            return {
+                ...state,
+                customers: payload.data,
+            }
+
+        case EDIT_CUSTOMER_FAIL:
+            return{
+                ...state,
+                }
+            
+        case CUSTOMER_ONLY_FETCH_SUCCESS:
+            return {
+                ...state,
+                customer: payload.data, // Store the fetched customer data
+            };
+
+        case CUSTOMER_ONLY_FETCH_FAIL:
+            return {
+                ...state,
+                customer: [], // Handle the failure case
+            }; 
+                
+        case CUSTOMER_FETCH_ALL_SUCCESS:
+            return {
+                ...state,
+                customers: payload.data, // Store the fetched customer data
+            };
+
+        case CUSTOMER_FETCH_ALL_FAIL:
+            return {
+                ...state,
+                customers: [], // Handle the failure case
+            }; 
+
+        case CUSTOMER_FETCH_DETAILS_SUCCESS:
+            return {
+                ...state,
+                customerDetails: payload.data, // Store the fetched customer data
+            };
+
+        case CUSTOMER_FETCH_DETAILS_FAIL:
+            return {
+                ...state,
+                customerDetails: [], // Store the fetched customer data
+            };   
+
+        case CUSTOMER_UPDATE_LIST:
+            // Update the customer list by removing the deleted customer
+            const updatedCustomer = state.customer.filter((customer) => customer.id !== payload);
+            return {
+                ...state,
+                customer: updatedCustomer,
+            };
+
+        case CUSTOMER_DELETE_SUCCESS: 
+            const updatedCustomers = state.customer.filter(customer => customer.id !== payload.data);
+
+            return {
+                ...state,
+                customer: updatedCustomers,
+            };
+
+        case CUSTOMER_DELETE_FAIL:
+            return {
+                ...state,
+            };       
+        
+            // ORDERS MODULE REDUCERS
+
+        case SAVE_ORDERS_SUCCESS:
+            return {
+                ...state,
+                orders: payload.data,
+            }
+
+        case SAVE_ORDERS_FAIL:
+            return{
+                ...state,
+            } 
+
+        case EDIT_ORDERS_SUCCESS:
+            return {
+                ...state,
+                orders: payload.data,
+            }
+
+        case EDIT_ORDERS_FAIL:
+            return {
+                ...state,
+            }
+
+        case SAVE_ORDERS_FAIL:
+            return{
+                ...state,
+            }    
+
+        case ORDERS_FETCH_ALL_SUCCESS:
+            return {
+                ...state,
+                orders: payload.data, // Store the fetched customer data
+            };
+
+        case ORDERS_FETCH_ALL_FAIL:
+            return {
+                ...state,
+                orders: [], // Handle the failure case
+            };
+
+        case ORDERS_FETCH_DETAILS_SUCCESS:
+            return {
+                ...state,
+                orders: payload.data, // Store the fetched orders data
+            };
+
+        case ORDERS_FETCH_DETAILS_FAIL:
+            return {
+                ...state,
+                orders: [], // Store the fetched orders data
+            };   
+        
+        case ORDER_UPDATE_LIST:
+            // Update the customer list by removing the deleted customer
+            const updatedOrder = state.orders.filter((orders) => orders.id !== payload);
+            return {
+                ...state,
+                orders: updatedOrder,
+            };
+
+        case ORDER_DELETE_SUCCESS: 
+            const updatedOrders = state.orders.filter(orders => orders.id !== payload.data);
+
+            return {
+                ...state,
+                orders: updatedOrders,
+            };
+
+        case ORDER_DELETE_FAIL:
+            return {
+                ...state,
+            };    
+          
 
         default:
             return state;
