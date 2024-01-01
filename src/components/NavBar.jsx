@@ -64,8 +64,8 @@ const NavBar = ({ logout, user, isSidebarOpen, isAuthenticated }) => {
                         <h6 className="ps-4  ms-2 text-uppercase text-xs font-weight-bolder opacity-6">MODULES</h6>
                     </li>
                     {isAdmin 
-                        ? Config.adminSideBar.map((item) => (
-                            <li className="nav-item">
+                        ? Config.adminSideBar.map((item, index) => (
+                            <li className="nav-item" key={index}>
                                 <Link to={item.url} data-bs-toggle="collapse" className="nav-link" role="button" aria-expanded="false">
                                     <div className="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
                                         <i className={item.icons}></i>
@@ -74,8 +74,8 @@ const NavBar = ({ logout, user, isSidebarOpen, isAuthenticated }) => {
                                 </Link>
                             </li>
                         ))
-                        : Config.userSideBar.map((item) => (
-                            <li className="nav-item">
+                        : Config.userSideBar.map((item, index) => (
+                            <li className="nav-item" key={index}>
                                 <Link to={item.url} data-bs-toggle="collapse" className="nav-link" role="button" aria-expanded="false">
                                     <div className="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
                                         <i className={item.icons}></i>

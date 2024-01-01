@@ -15,25 +15,11 @@ function HeaderNav({ user }) {
       '/neworders': 'New Orders',
       '/payments': 'Payments List',
       '/addpayments': 'Add Payment',
-      '/customers': 'Customers List',
+      '/customer': 'Customers List',
       '/addcustomer': 'Add Customer',
       '/addpayment': 'Add Payment',
       '/invoice': 'Invoice',
-      '/sales': 'Sales Dashboard',
-      '/batch': 'Chicken Batch',
-      '/eggs': 'Egg Production',
-      '/chicken-feed': 'Food Intake Management',
-      '/birds': 'Birds Dashboard',
-      '/employees': 'Employees Dashboard',
-      '/meat': 'Meat Processing',
-      '/meds': 'Medicine & Vaccination',
-      '/employee': 'Employees & Casuals',
-      '/employee-payment': 'Employee Payments',
-      '/food-bill': 'Chicken Food Cost',
-      '/med-bill': 'Medicine & Vaccination Cost',
-      '/meds': 'Medicine & Vaccination',
-      '/fuel': 'Fuel Cost',
-      '/chicks': 'Chick Procurement'
+      '/farmer': 'Farmers List',
     };
 
     if (id) {

@@ -36,21 +36,21 @@ class Config{
         },
 
         {
-            index: "7",
+            index: "19",
             title: "Customer Invoice",
-            url: "/customerbillgenerate",
+            url: "/invoice",
             icons: "fi fi-tr-file-invoice text-lg text-dark"
         },
 
         {
-            index: "13",
+            index: "18",
             title: "Deliver Note",
             url: "/delivery",
             icons: "fi fi-sr-truck-couch text-lg text-dark"
         },
 
         {
-            index: "15",
+            index: "17",
             title: "Tickets",
             url: "/tickets",
             icons: "fa-solid fa-ticket text-lg text-dark"
@@ -66,42 +66,42 @@ class Config{
 
     static userSideBar= [
         {
-            index: "1",
+            index: "9",
             title: " New Orders",
             url: "/neworders",
             icons: "ni ni-cart text-lg text-dark"
         },
 
         {
-            index: "4",
+            index: "10",
             title: "Orders",
             url: "/orders",
             icons: "fi fi-sr-bags-shopping text-lg text-dark"
         },
        
         {
-            index: "5",
+            index: "11",
             title: "Customer",
             url: "/customer",
             icons: "fa-solid fa-users text-lg text-dark"
         },
 
         {
-            index: "6",
+            index: "12",
             title: "Farmer",
             url: "/farmer",
             icons: "fi fi-sr-apple-crate text-lg text-dark"
         },
 
         {
-            index: "7",
+            index: "13",
             title: "Customer Invoice",
-            url: "/customerbillgenerate",
+            url: "/invoice",
             icons: "fi fi-tr-file-invoice text-lg text-dark"
         },
 
         {
-            index: "13",
+            index: "14",
             title: "Deliver Note",
             url: "/delivery",
             icons: "fi fi-sr-truck-couch text-lg text-dark"
@@ -115,7 +115,7 @@ class Config{
         },
 
         {
-            index: "8",
+            index: "16",
             title: "PKT",
             url: "/analytics",
             icons: "fa-solid fa-chart-simple text-lg text-dark"

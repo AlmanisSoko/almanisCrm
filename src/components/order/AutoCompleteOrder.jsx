@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { searchOrder } from '../actions/auth';
+import { searchOrder } from '../../actions/auth';
 
 const AutoCompleteOrder = (props) => {
     const [onFocus, setOnFocus] = useState(false);

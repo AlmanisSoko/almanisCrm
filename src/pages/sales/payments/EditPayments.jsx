@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef  } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom'; // Import useNavigate
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
-import AutoCompleteOrder from '../../../components/AutoCompleteOrder';
+import AutoCompleteOrder from '../../../components/order/AutoCompleteOrder';
 import { editPayment, fetchPaymentDetails } from '../../../actions/auth';
 import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer
 

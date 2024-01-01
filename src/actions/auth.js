@@ -39,6 +39,19 @@ import {
     FARMER_FETCH_DETAILS_SUCCESS, FARMER_FETCH_DETAILS_FAIL, 
     SAVE_FARMER_SUCCESS, SAVE_FARMER_FAIL,
 
+    // payments
+    PAYMENTS_FETCH_ALL_SUCCESS, PAYMENTS_FETCH_ALL_FAIL,
+    PAYMENTS_FETCH_DETAILS_SUCCESS, PAYMENTS_FETCH_DETAILS_FAIL,
+    EDIT_PAYMENTS_SUCCESS, EDIT_PAYMENTS_FAIL,
+    SAVE_PAYMENTS_SUCCESS, SAVE_PAYMENTS_FAIL,
+    PAYMENT_DELETE_SUCCESS, PAYMENT_DELETE_FAIL, PAYMENT_UPDATE_LIST,
+
+    // invoice
+    INVOICE_FETCH_ALL_SUCCESS, INVOICE_FETCH_ALL_FAIL,
+    INVOICE_FETCH_DETAILS_SUCCESS, INVOICE_FETCH_DETAILS_FAIL,
+    INVOICE_DELETE_SUCCESS, INVOICE_DELETE_FAIL, INVOICE_UPDATE_LIST,
+    SAVE_INVOICE_SUCCESS, SAVE_INVOICE_FAIL,
+
 } from './types';
 
 // Application authentication and authorization 
@@ -449,7 +462,7 @@ export const fetchCustomerOnly = () => async (dispatch, getState) => {
   
     try {
       // Make an HTTP GET request to fetch batch data using the environment variable
-      const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/customer-only/`, {
+      const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/customeronly/`, {
         headers: {
           Authorization: `Bearer ${access}`,
         },
@@ -1044,3 +1057,287 @@ export const editOrder = (name, phone, customer_id, town, kgs, packaging, discou
     return { success: false, error: 'Network error' };
   }
 };
+
+// Api Handler for Payments
+
+export const fetchAllPayments = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    // Make an HTTP GET request to fetch orders data using the environment variable
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/payments/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const paymentsData = response.data;
+      dispatch({
+        type: PAYMENTS_FETCH_ALL_SUCCESS,
+        payload: paymentsData,
+      });
+    } else {
+      dispatch({
+        type: PAYMENTS_FETCH_ALL_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching payment data:", error);
+    dispatch({
+      type: PAYMENTS_FETCH_ALL_FAIL,
+    });
+  }
+};
+
+export const deletePayment = (id) => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+      const response = await Axios.delete(`${import.meta.env.VITE_REACT_APP_API_URL}/api/payments/${id}/`, {
+          headers: {
+              Authorization: `Bearer ${access}`,
+          },
+      });
+
+      if (response.status === 200) {
+          // Dispatch a success action if the delete was successful
+          dispatch({ type: PAYMENT_DELETE_SUCCESS });
+
+          // Dispatch an action to update the customer list
+          dispatch({ type: PAYMENT_UPDATE_LIST, payload: id }); // Send the deleted PAYMENT ID
+      } else {
+          // Dispatch a failure action if the delete failed
+          dispatch({ type: PAYMENT_DELETE_FAIL });
+      }
+  } catch (error) {
+      console.log(error);
+      dispatch({ type: PAYMENT_DELETE_FAIL });
+  }
+};
+
+export const fetchPaymentDetails = (id) => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/payments/${id}/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const paymentsData = response.data.data; // Access data from the "data" key
+      dispatch({
+        type: PAYMENTS_FETCH_DETAILS_SUCCESS,
+        payload: paymentsData,
+      });
+      return paymentsData
+    } else {
+      dispatch({
+        type: PAYMENTS_FETCH_DETAILS_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching orders data:", error);
+    dispatch({
+      type: PAYMENTS_FETCH_DETAILS_FAIL,
+    });
+  }
+};  
+
+export const savePayment = (orders_id, paying_number, amount, payment_mode, payment, customer_id) => async (dispatch, getState) => {
+const { access } = getState().auth;
+
+const config = {
+    headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${access}`,
+    },
+    method: 'POST',
+    body: JSON.stringify({ orders_id, paying_number, amount, payment_mode, payment, customer_id })
+};
+
+try {
+    const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/payments/`, config);
+
+    if (res.ok) {
+        const data = await res.json();
+        dispatch({
+          type: SAVE_PAYMENTS_SUCCESS,
+          payload: data
+        });
+        return { success: true, data };
+    } else {
+        const error = await res.json();
+        dispatch({
+          type: SAVE_PAYMENTS_FAIL,
+          payload: error
+        });
+        return { success: false, error };
+    }
+} catch (error) {
+    return { success: false, error: 'Network error' };
+}
+}   
+
+export const editPayment = (orders_id, paying_number, amount, payment_mode, payment, customer_id, id) => async (dispatch, getState) => {
+const { access } = getState().auth;
+
+const config = {
+  headers: {
+    'Content-type': 'application/json',
+    Authorization: `Bearer ${access}`,
+  },
+  method: 'PUT',
+  body: JSON.stringify({ orders_id, paying_number, amount, payment_mode, payment, customer_id }),
+};
+
+try {
+  const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/payments/${id}/`, config);
+
+  if (res.ok) {
+    const data = await res.json();
+    dispatch({
+      type: EDIT_PAYMENTS_SUCCESS,
+      payload: data,
+    });
+    return data;
+  } else {
+    const error = await res.json();
+    dispatch({
+      type: EDIT_PAYMENTS_FAIL,
+      payload: error,
+    });
+    return { success: false, error };
+  }
+} catch (error) {
+  dispatch({
+    type: EDIT_PAYMENTS_FAIL, // Change this to the correct action type
+  });
+  return { success: false, error: 'Network error' };
+}
+};
+
+// Api Handler for Invoice
+
+export const fetchAllInvoice = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    // Make an HTTP GET request to fetch orders data using the environment variable
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/invoice/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const invoiceData = response.data;
+      dispatch({
+        type: INVOICE_FETCH_ALL_SUCCESS,
+        payload: invoiceData,
+      });
+    } else {
+      dispatch({
+        type: INVOICE_FETCH_ALL_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching INVOICE data:", error);
+    dispatch({
+      type: INVOICE_FETCH_ALL_FAIL,
+    });
+  }
+};
+
+export const deleteInvoice = (id) => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+      const response = await Axios.delete(`${import.meta.env.VITE_REACT_APP_API_URL}/api/invoice/${id}/`, {
+          headers: {
+              Authorization: `Bearer ${access}`,
+          },
+      });
+
+      if (response.status === 200) {
+          // Dispatch a success action if the delete was successful
+          dispatch({ type: INVOICE_DELETE_SUCCESS });
+
+          // Dispatch an action to update the customer list
+          dispatch({ type: INVOICE_UPDATE_LIST, payload: id }); // Send the deleted INVOICE ID
+      } else {
+          // Dispatch a failure action if the delete failed
+          dispatch({ type: INVOICE_DELETE_FAIL });
+      }
+  } catch (error) {
+      console.log(error);
+      dispatch({ type: INVOICE_DELETE_FAIL });
+  }
+};
+
+export const fetchInvoiceDetails = (id) => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/invoice/${id}/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const invoiceData = response.data.data; // Access data from the "data" key
+      dispatch({
+        type: INVOICE_FETCH_DETAILS_SUCCESS,
+        payload: invoiceData,
+      });
+      return invoiceData
+    } else {
+      dispatch({
+        type: INVOICE_FETCH_DETAILS_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching INVOICE data:", error);
+    dispatch({
+      type: INVOICE_FETCH_DETAILS_FAIL,
+    });
+  }
+};
+
+export const saveInvoice = (customer_id, invoice_details) => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  const config = {
+      headers: {
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${access}`,
+      },
+      method: 'POST',
+      body: JSON.stringify({ customer_id, invoice_details })
+  };
+
+  try {
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/invoice/`, config);
+
+      if (res.ok) {
+          const data = await res.json();
+          dispatch({
+            type: SAVE_INVOICE_SUCCESS,
+            payload: data
+          });
+          return { success: true, data };
+      } else {
+          const error = await res.json();
+          dispatch({
+            type: SAVE_INVOICE_FAIL,
+            payload: error
+          });
+          return { success: false, error };
+      }
+  } catch (error) {
+      return { success: false, error: 'Network error' };
+  }
+}  

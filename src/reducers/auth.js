@@ -37,6 +37,19 @@ import {
      ORDER_SEARCH_SUCCESS, ORDER_SEARCH_FAIL,
      EDIT_ORDERS_SUCCESS, EDIT_ORDERS_FAIL,
 
+     // payments
+     PAYMENTS_FETCH_ALL_SUCCESS, PAYMENTS_FETCH_ALL_FAIL,
+     PAYMENTS_FETCH_DETAILS_SUCCESS, PAYMENTS_FETCH_DETAILS_FAIL,
+     EDIT_PAYMENTS_SUCCESS, EDIT_PAYMENTS_FAIL,
+     SAVE_PAYMENTS_SUCCESS, SAVE_PAYMENTS_FAIL,
+     PAYMENT_DELETE_SUCCESS, PAYMENT_DELETE_FAIL, PAYMENT_UPDATE_LIST,
+
+     // invoice
+     INVOICE_FETCH_ALL_SUCCESS, INVOICE_FETCH_ALL_FAIL,
+     INVOICE_FETCH_DETAILS_SUCCESS, INVOICE_FETCH_DETAILS_FAIL,
+     INVOICE_DELETE_SUCCESS, INVOICE_DELETE_FAIL, INVOICE_UPDATE_LIST,
+     SAVE_INVOICE_SUCCESS, SAVE_INVOICE_FAIL,
+
 } from '../actions/types'
 
 const initialState = {
@@ -226,23 +239,23 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 farmer: payload.data,
-            }
+            };
 
         case SAVE_FARMER_FAIL:
             return{
                 ...state,
-            }
+            };
 
         case EDIT_FARMER_SUCCESS:
             return {
                 ...state,
                 farmer: payload.data,
-            }
+            };
 
         case EDIT_FARMER_FAIL:
             return{
                 ...state,
-                }
+                };
             
         case FARMER_ONLY_FETCH_SUCCESS:
             return {
@@ -375,7 +388,138 @@ export default function (state = initialState, action) {
                 ...state,
             };    
           
+            // PAYMENTS MODULE REDUCERS
+        
+        case PAYMENTS_FETCH_ALL_SUCCESS:
+            return {
+                ...state,
+                payments: payload.data, // Store the fetched customer data
+            };
 
+        case PAYMENTS_FETCH_ALL_FAIL:
+            return {
+                ...state,
+                payments: [], // Handle the failure case
+            };
+
+        case PAYMENTS_FETCH_DETAILS_SUCCESS:
+            return {
+                ...state,
+                payments: payload.data, // Store the fetched payments data
+            };
+
+        case PAYMENTS_FETCH_DETAILS_FAIL:
+            return {
+                ...state,
+                payments: [], // Store the fetched payments data
+            };   
+        
+        case PAYMENT_UPDATE_LIST:
+            // Update the customer list by removing the deleted customer
+            const updatedPayment = state.payments.filter((payments) => payments.id !== payload);
+            return {
+                ...state,
+                payments: updatedPayment,
+            };
+
+        case PAYMENT_DELETE_SUCCESS: 
+            const updatedPayments = state.payments.filter(payments => payments.id !== payload.data);
+
+            return {
+                ...state,
+                payments: updatedPayments,
+            };
+
+        case PAYMENT_DELETE_FAIL:
+            return {
+                ...state,
+            };    
+         
+        case SAVE_PAYMENTS_SUCCESS:
+            return {
+                ...state,
+                payments: payload.data,
+            };
+
+        case SAVE_PAYMENTS_FAIL:
+            return{
+                ...state,
+            };   
+            
+        case EDIT_PAYMENTS_SUCCESS:
+            return {
+                ...state,
+                payments: payload.data,
+            };
+
+        case EDIT_PAYMENTS_FAIL:
+            return{
+                ...state,
+            };  
+           
+        // INOICE MODULE REDUCERS
+        
+        case SAVE_INVOICE_SUCCESS:
+            return {
+                ...state,
+                invoice: payload.data,
+            };
+
+        case SAVE_INVOICE_FAIL:
+            return{
+                ...state,
+            } ;
+
+        case SAVE_INVOICE_FAIL:
+            return{
+                ...state,
+            };    
+
+        case INVOICE_FETCH_ALL_SUCCESS:
+            return {
+                ...state,
+                invoice: payload.data, // Store the fetched customer data
+            };
+
+        case INVOICE_FETCH_ALL_FAIL:
+            return {
+                ...state,
+                invoice: [], // Handle the failure case
+            };
+
+        case INVOICE_FETCH_DETAILS_SUCCESS:
+            return {
+                ...state,
+                invoice: payload.data, // Store the fetched invoice data
+            };
+
+        case INVOICE_FETCH_DETAILS_FAIL:
+            return {
+                ...state,
+                invoice: [], // Store the fetched invoice data
+            };   
+        
+        case INVOICE_UPDATE_LIST:
+            // Update the customer list by removing the deleted customer
+            const updatedInvoice = state.invoice.filter((invoice) => invoice.id !== payload);
+            return {
+                ...state,
+                invoice: updatedInvoice,
+            };
+
+        case INVOICE_DELETE_SUCCESS: 
+            const updatedInvoices = state.invoice.filter(invoice => invoice.id !== payload.data);
+
+            return {
+                ...state,
+                invoice: updatedInvoices,
+            };
+
+        case INVOICE_DELETE_FAIL:
+                return {
+                    ...state,
+                };    
+    
         default:
             return state;
     }

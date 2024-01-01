@@ -25,6 +25,12 @@ const EditCustomer = lazy(() => import('./pages/sales/customer/EditCustomer'))
 const Farmer = lazy(() => import('./pages/sales/farmer/Farmer'))
 const AddFarmer = lazy(() => import('./pages/sales/farmer/AddFarmer'))
 const EditFarmer = lazy(() => import('./pages/sales/farmer/EditFarmer'))
+const Payments = lazy(() => import('./pages/sales/payments/Payments'))
+const AddPayments = lazy(() => import('./pages/sales/payments/AddPayments'))
+const EditPayments = lazy(() => import('./pages/sales/payments/EditPayments'))
+const Invoice = lazy(() => import('./pages/sales/invoice/Invoice'))
+const DownloadInvoice = lazy(() => import('./pages/sales/invoice/DownloadInvoice'))
+
 
 function App() {
   useEffect(() => {
@@ -69,6 +75,15 @@ function App() {
                 <Route exact path="/farmer" element={<Farmer />}/>
                 <Route exact path="/addfarmer" element={<AddFarmer />}/>
                 <Route exact path="/farmerdetails/:id" element={<EditFarmer />}/>
+
+                {/* Payments */}
+                <Route exact path="/payments" element={<Payments />}/>
+                <Route exact path="/addpayment" element={<AddPayments />}/>
+                <Route exact path="/paymentsdetails/:id" element={<EditPayments />}/>
+
+                {/* Invoice */}         
+                <Route exact path="/invoice" element={<Invoice />} />
+                <Route exact path="/download-invoice/:id" element={<DownloadInvoice />} />
 
               </Routes>
             </Layout>

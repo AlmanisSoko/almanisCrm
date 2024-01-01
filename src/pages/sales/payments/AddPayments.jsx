@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef  } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
-import AutoCompleteOrder from '../../../components/AutoCompleteOrder';
+import AutoCompleteOrder from '../../../components/order/AutoCompleteOrder';
 import { savePayment } from '../../../actions/auth';
 import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer
 
@@ -51,9 +51,9 @@ const AddPayments = ({ isAuthenticated, savePayment }) => {
             setButtonDisabled(true);
             console.log("form data" ,formData);
             const response = await savePayment(
-                formData.orders_id, // Assuming orders_id is of numeric type
+                formData.orders_id, 
                 formData.paying_number,
-                formData.amount, // Correcting the order, assuming amount is a numeric field
+                formData.amount, 
                 formData.payment_mode,
                 formData.payment,
                 formData.customer_id,
@@ -62,7 +62,7 @@ const AddPayments = ({ isAuthenticated, savePayment }) => {
             console.log(response);
 
             if (response.data.error) {
-                toast.error(response.data.message, { toastId: 'error' });
+                toast.error(response.data.error, { toastId: 'error' });
                 setButtonDisabled(false);
             } else {
                 toast.success('Payment Added Successfully', { toastId: 'success' });
