@@ -754,7 +754,7 @@ try {
 }
 };
   
-export const saveFarmer = (name, phone, secondary_phone, town) => async (dispatch, getState) => {
+export const saveFarmer = (name, phone) => async (dispatch, getState) => {
 const { access } = getState().auth;
 
 const config = {
@@ -763,7 +763,7 @@ const config = {
       Authorization: `Bearer ${access}`,
   },
   method: 'POST',
-  body: JSON.stringify({ name, phone, secondary_phone, town })
+  body: JSON.stringify({ name, phone })
 };
 
 try {
@@ -792,7 +792,7 @@ try {
 }
 }
 
-export const editFarmer = (name, phone, secondary_phone, town, id) => async (dispatch, getState) => {
+export const editFarmer = (name, phone, id) => async (dispatch, getState) => {
 const { access } = getState().auth;
 
 const config = {
@@ -801,7 +801,7 @@ const config = {
   Authorization: `Bearer ${access}`,
   },
   method: 'PUT',
-  body: JSON.stringify({ name, phone, secondary_phone, town}),
+  body: JSON.stringify({ name, phone}),
 };
 
 try {

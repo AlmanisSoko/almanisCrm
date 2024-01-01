@@ -1,41 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
-import { fetchAllCustomer, deleteCustomer } from '../../../actions/auth';
+import { fetchAllFarmer, deleteFarmer, saveFarmer } from '../../../actions/auth';
 import swal from 'sweetalert2';
 import { ExportCSV } from '../../../components/csv/ExportCSV';
+import { toast } from 'react-toastify'; // Import ToastContainer
 
-const Farmer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer, isSidebarOpen, user }) => {
+const Farmer = ({ isAuthenticated, fetchAllFarmer, farmer, deleteFarmer, saveFarmer, isSidebarOpen, user }) => {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
-    const customersPerPage = 9;
+    const farmersPerPage = 9;
     const maxPagesDisplayed = 5;
 
     const desktopStyle = isSidebarOpen
-        ? {
-            width: 'calc(100% - 110px)',
-            marginLeft: '110px',
-        }
-        : {
-            width: 'calc(100% - 265px)',
-            marginLeft: '265px',
-        }; 
+    ? {
+        width: 'calc(100% - 110px)',
+        marginLeft: '110px',
+    }
+    : {
+        width: 'calc(100% - 265px)',
+        marginLeft: '265px',
+    }; 
 
-        useEffect(() => {
-                if (isAuthenticated) {
-                    // Fetch customer data only if authenticated
-                     fetchAllCustomer();
-                } else {
-                    // navigate('/');
-                }
-        }, [isAuthenticated, navigate, fetchAllCustomer]);
+    useEffect(() => {
+            if (isAuthenticated) {
+                // Fetch customer data only if authenticated
+                    fetchAllFarmer();
+            } else {
+                // navigate('/');
+            }
+    }, [isAuthenticated, navigate, fetchAllFarmer]);
 
-        if (!isAuthenticated) {
-            navigate('/');
-        } 
+    if (!isAuthenticated) {
+        navigate('/');
+    } 
         
-
     const responsiveStyle = {
         width: '100%',
         marginLeft: '0',
@@ -48,12 +48,12 @@ const Farmer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer, 
 
     const mediaQuery = window.matchMedia('(min-width: 768px)');
 
-    const viewCustomer = (customer_id) => {
-        navigate('/customerdetails/' + customer_id);
+    const viewCustomer = (farmer_id) => {
+        navigate('/farmerdetails/' + farmer_id);
     };
 
-    const handleDelete = async (customer_id) => {
-        const confirmed = window.confirm('Are you sure you want to delete this customer?');
+    const handleDelete = async (farmer_id) => {
+        const confirmed = window.confirm('Are you sure you want to delete this farmer?');
 
         if (!confirmed) {
             swal.fire({
@@ -65,35 +65,35 @@ const Farmer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer, 
         }
 
         try {
-            await deleteCustomer(customer_id);
-            await fetchAllCustomer();
+            await deleteFarmer(farmer_id);
+            await fetchAllFarmer();
             swal.fire({
                 icon: 'success',
                 title: 'Success',
-                text: 'Customer deleted successfully!',
+                text: 'farmer deleted successfully!',
             });
         } catch (error) {
             swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Failed to delete the customer. Please try again.',
+                text: 'Failed to delete the farmer. Please try again.',
             });
         }
     };
 
     const [searchQuery, setSearchQuery] = useState('');
 
-    const filteredCustomers = customers
-        ? customers.filter((customer) =>
-              customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              customer.phone.toLowerCase().includes(searchQuery.toLowerCase()) 
+    const filteredFarmers = farmer
+        ? farmer.filter((farmer) =>
+              farmer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              farmer.phone.toLowerCase().includes(searchQuery.toLowerCase()) 
 
           )
         : [];
 
-    const indexOfLastCustomer = currentPage * customersPerPage;
-    const indexOfFirstCustomer = indexOfLastCustomer - customersPerPage;
-    const currentCustomers = filteredCustomers.slice(indexOfFirstCustomer, indexOfLastCustomer);
+    const indexOfLastFarmer = currentPage * farmersPerPage;
+    const indexOfFirstFarmer = indexOfLastFarmer - farmersPerPage;
+    const currentFarmers = filteredFarmers.slice(indexOfFirstFarmer, indexOfLastFarmer);
 
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -101,11 +101,92 @@ const Farmer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer, 
 
     const startPage = Math.max(1, currentPage - Math.floor(maxPagesDisplayed / 2));
     const endPage = Math.min(
-        Math.ceil(filteredCustomers.length / customersPerPage),
+        Math.ceil(filteredFarmers.length / farmersPerPage),
         startPage + maxPagesDisplayed - 1
     );
 
-    const fileName = 'customer_data';
+    const fileName = 'farmer_data';
+
+    const [isModalOpen, setModalOpen] = useState(false);
+
+    const [formData, setFormData] = useState({
+        name: '',
+        phone: '',
+    })
+
+    const openModal = () => {
+        setModalOpen(true);
+    };
+    
+    const closeModal = () => {
+        setModalOpen(false);
+        setFormData({
+            name: '',
+            Phone: '',
+        });
+    };
+
+    const [submitSuccess, setSubmitSuccess] = useState(false);
+    const formRef = useRef(null); // Create a ref for the form
+    const [buttonText, setButtonText] = useState('Add Farmer'); // Initial button text
+    const [isButtonDisabled, setButtonDisabled] = useState(false);
+
+    const onChange = (e) => {
+        const { name, value } = e.target;
+        console.log(`Updating ${name} to ${value}`);
+        setFormData({
+          ...formData,
+          [name]: value,
+        });
+    };
+
+    const { name, phone } = formData;
+
+    const onSubmit = async (e) => {
+        e.preventDefault();
+    
+        try {
+            setButtonDisabled(true); // Disable the button during submission
+    
+            // Call your API function to save the batch
+            const response = await saveFarmer(name, phone);
+    
+            console.log('API Response:', response);
+            if (response && response.error !== undefined) {
+                if (response.error === false) {
+                    toast.success('Farmer Added Successfully', { toastId: 'success' });
+                    setButtonText('Farmer Added Successfully'); // Change button text
+                    setSubmitSuccess(true);
+    
+                    // Fetch the updated batch list after successful addition
+                    await fetchAllFarmer();
+    
+                    setTimeout(() => {
+                    // Reset form fields
+                    setFormData({
+                        name: '',
+                        Phone: '',
+                    });
+    
+                    // Reset the form using the ref
+                    formRef.current.reset();
+                    setButtonText('Add Farmer');
+                    setButtonDisabled(false);
+                    setButtonDisabled(false);
+                    }, 200);
+                } else {
+                    toast.error('Something went wrong. Check Your Network', { toastId: 'error' });
+                }
+            } else {
+                toast.error('Something went wrong. Check Your Network', { toastId: 'error' });
+            }
+        } catch (error) {
+            console.log('Error during form submission:', error);
+            toast.error('Something went wrong. Check Your Network', { toastId: 'error' });
+        } finally {
+            setButtonDisabled(false); // Re-enable the button
+        }
+    };
 
     return (
         <div>
@@ -115,12 +196,93 @@ const Farmer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer, 
                 <div className="container-fluid py-5">
                     <div className="d-sm-flex justify-content-between">
                         <div className="dropdown d-inline">
-                            <Link to="/addcustomer" className="btn btn-outline-white">
-                                <i className="fa-solid fa-user"></i> New Customer
-                            </Link>
+                            <button
+                                type="button"
+                                className="btn btn-outline-white"
+                                onClick={openModal}
+                            >
+                                <i className="fa-solid fa-tractor"></i> New Farmer
+                            </button>
+                            {isModalOpen && (
+                                <div
+                                    className="modal fade show"
+                                    id="modal-form"
+                                    tabIndex="-1"
+                                    role="dialog"
+                                    aria-modal="true"
+                                    style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+                                    onClick={closeModal}
+                                >
+                                    <div
+                                        className="modal-dialog modal-dialog-centered modal-md"
+                                        role="document"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <div className="modal-content">
+                                            <div className="modal-body p-0">
+                                                <div className="card card-plain">
+                                                    <div className="card-header pb-0 text-left">
+                                                        <span className="close" onClick={closeModal}>
+                                                        &times;
+                                                        </span>
+                                                        <h3 className="font-weight-bolder text-dark text-gradient">
+                                                         Add Farmer
+                                                        </h3>
+                                                    </div>
+                                                    <div className="card-body">
+                                                        <form role="form text-left" ref={formRef} method="POST" onSubmit={onSubmit}>
+                                                            <label>Farmer Name</label>
+                                                            <div className="input-group mb-3">
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control"
+                                                                    name="name"
+                                                                    placeholder="name"
+                                                                    aria-label="name"
+                                                                    aria-describedby="password-addon"
+                                                                    value={name}
+                                                                    onChange={(e) => onChange(e)}
+                                                                    required
+                                                                />
+                                                            </div>
+                                                            <label>Phone Number</label>
+                                                            <div className="input-group mb-3">
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control"
+                                                                    name="phone"
+                                                                    placeholder="0700...."
+                                                                    aria-label="phone"
+                                                                    aria-describedby="password-addon"
+                                                                    value={phone}
+                                                                    onChange={(e) => onChange(e)}
+                                                                    required
+                                                                />
+                                                            </div>
+                                                            
+                                                            <div className="text-center">
+                                                                <button
+                                                                    type="submit"
+                                                                    className="btn btn-round bg-gradient-dark btn-lg w-100 mt-4 mb-0"
+                                                                    disabled={isButtonDisabled}
+                                                                >
+                                                                    {buttonText}
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div className="card-footer text-center pt-0 px-lg-2 px-1">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
+
                         <div className="d-flex">
-                            <ExportCSV csvData={customers} fileName={fileName} />
+                            <ExportCSV csvData={farmer} fileName={fileName} />
                         </div>
                     </div>
 
@@ -142,7 +304,7 @@ const Farmer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer, 
                                         </div>
 
                                         <div className="dataTable-container">
-                                            {filteredCustomers.length > 0 ? (
+                                            {filteredFarmers.length > 0 ? (
                                                 <table className="table table-flush dataTable-table" id="datatable-search">
                                                     <thead className="thead-light">
                                                         <tr>
@@ -151,19 +313,14 @@ const Farmer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer, 
                                                                     Id
                                                                 </a>
                                                             </th>
-                                                            <th data-sortable="" style={{ width: '23.3657%' }}>
+                                                            <th data-sortable="" style={{ width: '26.3657%' }}>
                                                                 <a href="#" className="dataTable-sorter">
                                                                     Name
                                                                 </a>
                                                             </th>
-                                                            <th data-sortable="" style={{ width: '16.2286%' }}>
+                                                            <th data-sortable="" style={{ width: '26.2286%' }}>
                                                                 <a href="#" className="dataTable-sorter">
                                                                     Phone
-                                                                </a>
-                                                            </th>
-                                                            <th data-sortable="" style={{ width: '10.6114%' }}>
-                                                                <a href="#" className="dataTable-sorter">
-                                                                    Town
                                                                 </a>
                                                             </th>
                                                             <th data-sortable="" style={{ width: '24%' }}>
@@ -183,33 +340,30 @@ const Farmer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer, 
                                                     </thead>
 
                                                     <tbody>
-                                                        {currentCustomers.length > 0 ? (
-                                                            currentCustomers.map((customer) => (
-                                                                <tr key={customer.id}>
+                                                        {currentFarmers.length > 0 ? (
+                                                            currentFarmers.map((farmer) => (
+                                                                <tr key={farmer.id}>
                                                                     <td>
                                                                         <div className="d-flex align-items-center">
-                                                                            <p className="text-xs font-weight-bold ms-2 mb-0">#{customer.id}</p>
+                                                                            <p className="text-xs font-weight-bold ms-2 mb-0">#{farmer.id}</p>
                                                                         </div>
                                                                     </td>
                                                                     <td className="font-weight-bold">
-                                                                        <span className="my-2 text-xs">{customer.name}</span>
+                                                                        <span className="my-2 text-xs">{farmer.name}</span>
                                                                     </td>
                                                                     <td className="text-xs font-weight-bold">
-                                                                        <span className="my-2 text-xs">{customer.phone}</span>
-                                                                    </td>
-                                                                    <td className="text-xs font-weight-bold">
-                                                                        <span className="my-2 text-xs">{customer.town}</span>
+                                                                        <span className="my-2 text-xs">{farmer.phone}</span>
                                                                     </td>
                                                                     <td className="text-xs font-weight-bold">
                                                                         <span className="my-2 text-xs">
-                                                                            {new Date(customer.added_on).toLocaleString()}
+                                                                            {new Date(farmer.added_on).toLocaleString()}
                                                                         </span>
                                                                     </td>
                                                                     <td className="text-xs font-weight-bold">
                                                                         <div className="d-flex align-items-center">
                                                                             <button
                                                                                 className="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-2 btn-sm d-flex align-items-center justify-content-center"
-                                                                                onClick={() => viewCustomer(customer.id)}
+                                                                                onClick={() => viewCustomer(farmer.id)}
                                                                             >
                                                                                 <i className="fas fa-eye" aria-hidden="true"></i>
                                                                             </button>
@@ -221,7 +375,7 @@ const Farmer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer, 
                                                                         <div className="d-flex align-items-center">
                                                                             <button
                                                                                 className="btn btn-icon-only btn-rounded btn-outline-danger mb-0 me-2 btn-sm d-flex align-items-center justify-content-center"
-                                                                                onClick={() => handleDelete(customer.id)}
+                                                                                onClick={() => handleDelete(farmer.id)}
                                                                             >
                                                                               <i className="fas fa-times" aria-hidden="true"></i>
                                                                             </button>
@@ -246,7 +400,7 @@ const Farmer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer, 
                                         </div>
 
                                         <div className="dataTable-bottom">
-                                            <div className="dataTable-info">Showing {filteredCustomers.length} entries</div>
+                                            <div className="dataTable-info">Showing {filteredFarmers.length} entries</div>
                                             <nav className="dataTable-pagination">
                                                 <ul className="dataTable-pagination-list">
                                                     <li className="pager">
@@ -268,7 +422,7 @@ const Farmer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer, 
                                                             </a>
                                                         </li>
                                                     ))}
-                                                    {currentPage + maxPagesDisplayed < Math.ceil(filteredCustomers.length / customersPerPage) && (
+                                                    {currentPage + maxPagesDisplayed < Math.ceil(filteredFarmers.length / farmersPerPage) && (
                                                         <li className="pager">
                                                             <a
                                                                 href="#"
@@ -295,14 +449,16 @@ const Farmer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer, 
 
 const mapStateToProps = (state) => ({
     isAuthenticated: state.auth.isAuthenticated,
-    customers: state.auth.customers,
+    farmer: state.auth.farmer,
     user: state.auth.user
 });
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchAllCustomer: () => dispatch(fetchAllCustomer()),
-        deleteCustomer: (customer_id) => dispatch(deleteCustomer(customer_id)),
+        fetchAllFarmer: () => dispatch(fetchAllFarmer()),
+        deleteFarmer: (farmer_id) => dispatch(deleteFarmer(farmer_id)),
+        saveFarmer: (name, phone) =>
+            dispatch(saveFarmer(name, phone))
     };
 };
 

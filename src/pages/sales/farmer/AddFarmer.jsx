@@ -11,10 +11,6 @@ const AddFarmer = ({ isAuthenticated, saveCustomer }) => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    secondary_phone: '',
-    alternative_phone: '',
-    region: '',
-    town: '',
   });
 
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -22,7 +18,7 @@ const AddFarmer = ({ isAuthenticated, saveCustomer }) => {
   const [buttonText, setButtonText] = useState('Add Customer'); // Initial button text
   const [isButtonDisabled, setButtonDisabled] = useState(false); // Button state
 
-  const { name, phone, secondary_phone, alternative_phone, region, town } = formData;
+  const { name, phone} = formData;
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -38,7 +34,7 @@ const AddFarmer = ({ isAuthenticated, saveCustomer }) => {
   
     try {
       setButtonDisabled(true); // Disable the button during submission
-      const response = await saveCustomer(name, phone, secondary_phone, alternative_phone, town, region);
+      const response = await saveCustomer(name, phone);
       console.log(response);
   
       if (response.data) {
@@ -53,11 +49,7 @@ const AddFarmer = ({ isAuthenticated, saveCustomer }) => {
           // Reset the form fields and button text after 2 seconds
           setFormData({
             name: '',
-            phone: '',
-            secondary_phone: '',
-            alternative_phone: '',
-            region: '',
-            town: '',
+            phone: ''
           });
           formRef.current.reset();
           setButtonText('Add Customer');
@@ -145,76 +137,6 @@ const AddFarmer = ({ isAuthenticated, saveCustomer }) => {
                             onChange={(e) => onChange(e)}
                           />
                         </div>
-                      </div>
-                    </div>
-
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="form-group">
-                          <input
-                            required
-                            type="text"
-                            name="secondary_phone"
-                            placeholder="Secondary Phone"
-                            className="form-control"
-                            value={secondary_phone}
-                            onChange={(e) => onChange(e)}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="form-group">
-                          <input
-                            required
-                            type="text"
-                            name="alternative_phone"
-                            placeholder="Alternative Phone"
-                            className="form-control"
-                            value={alternative_phone}
-                            onChange={(e) => onChange(e)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="row">
-                      
-                      <div className="col-md-6">
-                        <div className="form-group">
-                          <input
-                            required
-                            name="town"
-                            type="text"
-                            className="form-control"
-                            id="town"
-                            placeholder="Town"
-                            value={town}
-                            onChange={(e) => onChange(e)}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                          <div className="form-group">
-                              <div className="input-group">
-                                  <select
-                                      className="form-control"
-                                      name="region"
-                                      value={region}
-                                      onChange={(e) => onChange(e)}
-                                      required
-                                  >
-                                      <option value="">--- Please Select Region ---</option>
-                                      <option value="1">NAIROBI</option>
-                                      <option value="2">NYANZA</option>
-                                      <option value="3">CENTRAL</option>
-                                      <option value="4">COAST</option>
-                                      <option value="5">EASTERN</option>
-                                      <option value="6">NORTH EASTERN</option>
-                                      <option value="7">WESTERN</option>
-                                      <option value="8">RIFT VALLEY</option>
-                                  </select>
-                              </div>
-                          </div>
                       </div>
                     </div>
 

@@ -22,6 +22,9 @@ const Orders = lazy(() => import('./pages/sales/orders/Orders'));
 const Customer = lazy(() => import('./pages/sales/customer/Customer'))
 const AddCustomer = lazy(() => import('./pages/sales/customer/AddCustomer'))
 const EditCustomer = lazy(() => import('./pages/sales/customer/EditCustomer'))
+const Farmer = lazy(() => import('./pages/sales/farmer/Farmer'))
+const AddFarmer = lazy(() => import('./pages/sales/farmer/AddFarmer'))
+const EditFarmer = lazy(() => import('./pages/sales/farmer/EditFarmer'))
 
 function App() {
   useEffect(() => {
@@ -62,6 +65,10 @@ function App() {
                 <Route exact path="/addcustomer" element={<AddCustomer />}/>
                 <Route exact path="/customerdetails/:id" element={<EditCustomer />}/>
 
+                {/* farmers */}
+                <Route exact path="/farmer" element={<Farmer />}/>
+                <Route exact path="/addfarmer" element={<AddFarmer />}/>
+                <Route exact path="/farmerdetails/:id" element={<EditFarmer />}/>
 
               </Routes>
             </Layout>
