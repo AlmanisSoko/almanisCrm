@@ -86,8 +86,8 @@ const Customer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer
     const filteredCustomers = customers
         ? customers.filter((customer) =>
               customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              customer.phone.toLowerCase().includes(searchQuery.toLowerCase()) 
-
+              customer.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              customer.town.toLowerCase().includes(searchQuery.toLowerCase()) 
           )
         : [];
 
@@ -166,6 +166,11 @@ const Customer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer
                                                                     Town
                                                                 </a>
                                                             </th>
+                                                            <th data-sortable="" style={{ width: '10.6114%' }}>
+                                                                <a href="#" className="dataTable-sorter">
+                                                                    Region
+                                                                </a>
+                                                            </th>
                                                             <th data-sortable="" style={{ width: '24%' }}>
                                                                 <a href="#" className="dataTable-sorter">
                                                                     Added on
@@ -199,6 +204,29 @@ const Customer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer
                                                                     </td>
                                                                     <td className="text-xs font-weight-bold">
                                                                         <span className="my-2 text-xs">{customer.town}</span>
+                                                                    </td>
+                                                                    <td className="text-xs font-weight-bold">
+                                                                        <span className="my-2 text-xs">
+                                                                          {
+                                                                            customer.region === 1
+                                                                            ? "NAIROBI" 
+                                                                            : customer.region === 2
+                                                                            ? "NYANZA"
+                                                                            : customer.region === 3
+                                                                            ? "CENTRAL"
+                                                                            : customer.region === 4
+                                                                            ? "COAST"
+                                                                            : customer.region === 5
+                                                                            ? "EASTERN"
+                                                                            : customer.region === 6
+                                                                            ? "NORTH EASTERN"
+                                                                            : customer.region === 7
+                                                                            ? "WESTERN"
+                                                                            : customer.region === 8
+                                                                            ? "RIFT VALLEY"
+                                                                            : customer.region
+                                                                        }
+                                                                        </span>
                                                                     </td>
                                                                     <td className="text-xs font-weight-bold">
                                                                         <span className="my-2 text-xs">

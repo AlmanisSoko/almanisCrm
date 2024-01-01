@@ -972,7 +972,7 @@ export const searchOrder = (id) => async (dispatch) => {
     }
 };
 
-export const saveOrder = (customer_name, phone, customer_id, town, trays, discount, vat, price, amount) => async (dispatch, getState) => {
+export const saveOrder = (name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount) => async (dispatch, getState) => {
   const { access } = getState().auth;
 
   const config = {
@@ -981,7 +981,7 @@ export const saveOrder = (customer_name, phone, customer_id, town, trays, discou
           Authorization: `Bearer ${access}`,
       },
       method: 'POST',
-      body: JSON.stringify({ customer_name, phone, customer_id, town, trays, discount, vat, price, amount })
+      body: JSON.stringify({ name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount })
   };
 
   try {
@@ -1007,7 +1007,7 @@ export const saveOrder = (customer_name, phone, customer_id, town, trays, discou
   }
 }  
 
-export const editOrder = (customer_name, phone, customer_id, town, trays, discount, vat, price, amount, id) => async (dispatch, getState) => {
+export const editOrder = (name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount, id) => async (dispatch, getState) => {
   const { access } = getState().auth;
 
   const config = {
@@ -1016,7 +1016,7 @@ export const editOrder = (customer_name, phone, customer_id, town, trays, discou
       Authorization: `Bearer ${access}`,
     },
     method: 'PUT',
-    body: JSON.stringify({ customer_name, phone, customer_id, town, trays, discount, vat, price, amount}),
+    body: JSON.stringify({ name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount}),
   };
 
   try {

@@ -53,7 +53,9 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
     name: '',
     phone: '',
     secondary_phone: '',
+    alternative_phone: '',
     town: '',
+    region: '',
   });
   
   useEffect(() => { 
@@ -79,7 +81,9 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
               name: customer?.name || '',
               phone: customer?.phone || '',
               secondary_phone: customer?.secondary_phone || '',
+              alternative_phone: customer?.alternative_phone || '',
               town: customer?.town || '',
+              region: customer?.region || '',
             });
 
             setOrders(
@@ -114,7 +118,9 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
         formData.name,
         formData.phone,
         formData.secondary_phone,
+        formData.alternative_phone,
         formData.town,
+        formData.region,
         id
       );
   
@@ -188,7 +194,7 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
         <div className="container-fluid mt-6">
           <div className="d-sm-flex justify-content-between">
               <div className="dropdown d-inline">
-                <Link to={'/customers'} className="btn btn-outline-white">
+                <Link to={'/customer'} className="btn btn-outline-white">
                   <i className="ni ni-curved-next"></i> Back to Customers
                 </Link>
               </div>
@@ -269,7 +275,7 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                     <li className="nav-item pt-2">
                       <a className="nav-link text-body d-flex align-items-center" data-scroll="" href="#basic-info">
                         <i className="ni ni-books me-2 text-dark opacity-6"></i>
-                        Trays <span className="text-sm font-weight-bolder"> : {customers? customers.egg_trays: 0}</span>
+                        Kilos <span className="text-sm font-weight-bolder"> : {customers? customers.kgs: 0}</span>
                       </a>
                     </li>
                     <li className="nav-item pt-2">
@@ -347,6 +353,21 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                         <div className="form-group">
                           <input
                             type="text"
+                            name="alternative_phone"
+                            value={formData.alternative_phone}
+                            onChange={handleInputChange}
+                            placeholder="Alternative Phone"
+                            className="form-control"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="row">
+                    <div className="col-md-6">
+                        <div className="form-group">
+                          <input
+                            type="text"
                             name="town"
                             value={formData.town}
                             onChange={handleInputChange}
@@ -354,6 +375,27 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                             id="town"
                             placeholder="Town"
                           />
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="form-group">
+                          <select
+                              className="form-control"
+                              name="region"
+                              value={formData.region}
+                              onChange={handleInputChange}
+                              required
+                          >
+                              <option value="">--- Please Select Region ---</option>
+                              <option value="1">NAIROBI</option>
+                              <option value="2">NYANZA</option>
+                              <option value="3">CENTRAL</option>
+                              <option value="4">COAST</option>
+                              <option value="5">EASTERN</option>
+                              <option value="6">NORTH EASTERN</option>
+                              <option value="7">WESTERN</option>
+                              <option value="8">RIFT VALLEY</option>
+                          </select>
                         </div>
                       </div>
                     </div>
@@ -677,8 +719,8 @@ const mapStateToProps = (state) => ({
   
   const mapDispatchToProps = (dispatch) => ({
     fetchCustomerDetails: (customer_id) => dispatch(fetchCustomerDetails(customer_id)),
-    editCustomer: (customer_id, name, phone, secondary_phone, town) =>
-      dispatch(editCustomer(customer_id, name, phone, secondary_phone, town)),
+    editCustomer: (customer_id, name, phone, secondary_phone, alternative_phone, town, region) =>
+      dispatch(editCustomer(customer_id, name, phone, secondary_phone, alternative_phone, town, region)),
   });
   
   export default connect(mapStateToProps, mapDispatchToProps)(EditCustomer);

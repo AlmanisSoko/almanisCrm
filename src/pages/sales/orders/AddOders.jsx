@@ -10,7 +10,7 @@ import Select from 'react-select';
 const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        customer_name: '',
+        name: '',
         phone: '',
         customer_id: '',
         town: '',
@@ -21,7 +21,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
         transporters: '',
         rider: '',
         comment: '',
-        farmer: '',
+        farmer_id: '',
         rice_type: '',
         vat: 0, // Initialize with 0% VAT
         farmer_price: '',
@@ -59,7 +59,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
             setButtonDisabled(true);
             console.log("form data" ,formData);
             const response = await saveOrder(
-                formData.customer_name,
+                formData.name,
                 formData.phone,
                 formData.customer_id,
                 formData.town,
@@ -70,7 +70,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                 formData.transporters,
                 formData.rider,
                 formData.comment,
-                formData.farmer,
+                formData.farmer_id,
                 formData.rice_type,
                 formData.vat,
                 formData.farmer_price,
@@ -89,7 +89,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
     
                 setTimeout(() => {
                     setFormData({
-                        customer_name: '',
+                        name: '',
                         phone: '',
                         customer_id: '',
                         town: '',
@@ -100,7 +100,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                         transporters: '',
                         rider: '',
                         comment: '',
-                        farmer: '',
+                        farmer_id: '',
                         rice_type: '',
                         vat: 0, // Initialize with 0% VAT
                         farmer_price: '',
@@ -196,13 +196,13 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
             const updatedDetails = [...customersDetails];
             if (updatedDetails[index]) {
                 updatedDetails[index].phone = item.phone;
-                updatedDetails[index].customer_name = item.name;
+                updatedDetails[index].name = item.name;
                 updatedDetails[index].customer_id = item.id;
                 setCustomersDetails(updatedDetails);
     
                 // Update the formData state with the received data
                 const newFormData = { ...formData };
-                newFormData.customer_name = item.name;
+                newFormData.name = item.name;
                 newFormData.customer_id = item.id;
                 newFormData.phone = item.phone;
                 setFormData(newFormData);
@@ -234,7 +234,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
 
     // Update useEffect for fetching custome data
     useEffect(() => {
-        const fetchInvoiceData = async () => {
+        const fetchFamerData = async () => {
             try {
                 const farmer = await fetchFarmerOnly();
                 console.log(farmer)
@@ -244,7 +244,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
             }
         };
 
-        fetchInvoiceData();
+        fetchFamerData();
     }, [fetchFarmerOnly]);
 
     const handleFarmerSelect = (selectedOption) => {
@@ -252,7 +252,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
         if (selectedOption) {
             setFormData({
                 ...formData,
-                customer_id: selectedOption.value, // Assign the selected batch's id to customer_id
+                farmer_id: selectedOption.value, // Assign the selected farmer's id to customer_id
             });
             setSelectedFarmerOption(selectedOption);
         }
@@ -267,7 +267,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                     <div className="d-sm-flex justify-content-between">
                         <div className="dropdown d-inline">
                             <Link to="/addcustomer" className="btn btn-outline-white">
-                                <i className="fa-solid fa-arrow-right"></i> New Customer
+                                <i className="fa-solid fa-user"></i> New Customer
                             </Link>
                         </div>
                     </div>
@@ -292,10 +292,10 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                     <div className="form-group">
                                                         <input
                                                             type="text"
-                                                            name='customer_name'
+                                                            name='name'
                                                             placeholder="Customer Name"
                                                             className="form-control"
-                                                            value={item.customer_name}
+                                                            value={item.name}
                                                         />
                                                     </div>
                                                 </div>
@@ -439,9 +439,9 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                             className="form-control"
                                                             value={selectedFarmerOptions}
                                                             onChange={handleFarmerSelect}
-                                                            options={farmerOptions && farmerOptions.map((batch) => ({
-                                                                value: batch.id,
-                                                                label: batch.name,
+                                                            options={farmerOptions && farmerOptions.map((farmer) => ({
+                                                                value: farmer.id,
+                                                                label: farmer.name,
                                                             }))}
                                                             placeholder="--- Search Farmer ---"
                                                             isClearable
@@ -550,8 +550,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchFarmerOnly: () => dispatch(fetchFarmerOnly()),
-        saveOrder: (customer_id, product, invoice_details) =>
-            dispatch(saveOrder(customer_id,  product, invoice_details))
+        saveOrder: (name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount) =>
+            dispatch(saveOrder(name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount))
     };
 };
 

@@ -320,7 +320,7 @@ const Farmer = ({ isAuthenticated, fetchAllFarmer, farmer, deleteFarmer, saveFar
                                                             </th>
                                                             <th data-sortable="" style={{ width: '26.2286%' }}>
                                                                 <a href="#" className="dataTable-sorter">
-                                                                    Phone
+                                                                    contact
                                                                 </a>
                                                             </th>
                                                             <th data-sortable="" style={{ width: '24%' }}>

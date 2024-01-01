@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
-import { fetchCustomerDetails, editFarmer } from '../../../actions/auth';
+import { fetchFarmerDetails, editFarmer } from '../../../actions/auth';
 import { ToastContainer, toast } from 'react-toastify'; 
 import avatar from '../../../assets/svgs/undraw_male_avatar_g98d.svg'
 
-const EditFarmer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, editFarmer }) => {
+const EditFarmer = ({ isAuthenticated, fetchFarmerDetails, farmerDetails, editFarmer }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [orders, setOrders] = useState([]); // Initialize orders as an empty array
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 5;
   const maxPagesDisplayed = 5;
-  const [customers, setCustomers] = useState({});
+  const [farmers, setFarmers] = useState({});
 
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
@@ -52,8 +52,6 @@ const EditFarmer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, ed
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    secondary_phone: '',
-    town: '',
   });
   
   useEffect(() => { 
@@ -61,33 +59,31 @@ const EditFarmer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, ed
     if (!isAuthenticated && !id) {
       navigate('/');
     } else {
-      // Fetch customer details here using the 'fetchCustomerDetails' function
+      // Fetch customer details here using the 'fetchFarmerDetails' function
       async function fetchData() {
         try {
-          const customerData = await fetchCustomerDetails(id);
-          console.log('Customer Data:', customerData); // Debugging statement
+          const farmerData = await fetchFarmerDetails(id);
+          console.log('Customer Data:', farmerData); // Debugging statement
   
-          if (customerData && customerData) {
-            const customer = customerData.data; // Access the correct structure
-            console.log('Fetched Data:', customer); // Debugging statement
+          if (farmerData && farmerData) {
+            const farmer = farmerData.data; // Access the correct structure
+            console.log('Fetched Data:', farmer); // Debugging statement
             
-            const customers = customerData; 
-            console.log('All data: ', customers)
-            setCustomers(customers)
+            const farmers = farmerData; 
+            console.log('All data: ', farmers)
+            setFarmers(farmers)
   
             setFormData({
-              name: customer?.name || '',
-              phone: customer?.phone || '',
-              secondary_phone: customer?.secondary_phone || '',
-              town: customer?.town || '',
+              name: farmer?.name || '',
+              phone: farmer?.phone || '',
             });
 
             setOrders(
-              customer.orders
+              farmer.orders
             )
 
             setPayments(
-              customer.payments
+              farmer.payments
             )
           }
           // Additional logic to set other state variables if needed
@@ -110,11 +106,9 @@ const EditFarmer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, ed
   
     try {
       setButtonDisabled(true); // Disable the button during submission
-      const response = await editCustomer(
+      const response = await editFarmer(
         formData.name,
         formData.phone,
-        formData.secondary_phone,
-        formData.town,
         id
       );
   
@@ -188,8 +182,8 @@ const EditFarmer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, ed
         <div className="container-fluid mt-6">
           <div className="d-sm-flex justify-content-between">
               <div className="dropdown d-inline">
-                <Link to={'/customers'} className="btn btn-outline-white">
-                  <i className="ni ni-curved-next"></i> Back to Customers
+                <Link to={'/farmer'} className="btn btn-outline-white">
+                  <i className="ni ni-curved-next"></i> Back to Farmers
                 </Link>
               </div>
             </div>
@@ -206,11 +200,11 @@ const EditFarmer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, ed
               <div className="col-auto my-auto">
                 <div className="h-100">
                   <h5 className="mb-1">
-                              {customerDetails ? customerDetails.name: ''}
+                              {farmerDetails ? farmerDetails.name: ''}
                   </h5>
-                  <p className="mb-0 font-weight-bold text-sm">
-                              {customerDetails ? customerDetails.town: ''}
-                  </p>
+                  {/* <p className="mb-0 font-weight-bold text-sm">
+                              {farmerDetails ? farmerDetails.town: ''}
+                  </p> */}
                 </div>
               </div>
               <div className="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
@@ -233,17 +227,6 @@ const EditFarmer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, ed
                         <span className="ms-2">Orders</span>
                       </a>
                     </li>
-                    <li className="nav-item" role="presentation">
-                      <a
-                        className={`nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center`}
-                        style={{ background: activeTab === 'payments' ? 'white' : 'none' }}
-                        onClick={() => handleTabClick('payments')} href='#tab3'
-                      >
-                        <i className="ni ni-money-coins"></i>
-                        <span className="ms-2">Payments</span>
-                      </a>
-                    </li>
-                    
                   </ul>
 
                 </div>
@@ -263,33 +246,15 @@ const EditFarmer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, ed
                     <li className="nav-item">
                       <a className="nav-link text-body d-flex align-items-center" data-scroll="" href="#profile">
                         <i className="ni ni-spaceship me-2 text-dark opacity-6"></i>
-                        Orders <span className="text-sm font-weight-bolder">: {customers? customers.orders_count: 0}</span>
+                        Orders <span className="text-sm font-weight-bolder">: {farmers? farmers.orders_count: 0}</span>
+                      </a>
+                    </li><li className="nav-item">
+                      <a className="nav-link text-body d-flex align-items-center" data-scroll="" href="#profile">
+                        <i className="ni ni-spaceship me-2 text-dark opacity-6"></i>
+                        Processed Kilos <span className="text-sm font-weight-bolder">: {farmers? farmers.kgs: 0}</span>
                       </a>
                     </li>
-                    <li className="nav-item pt-2">
-                      <a className="nav-link text-body d-flex align-items-center" data-scroll="" href="#basic-info">
-                        <i className="ni ni-books me-2 text-dark opacity-6"></i>
-                        Trays <span className="text-sm font-weight-bolder"> : {customers? customers.egg_trays: 0}</span>
-                      </a>
-                    </li>
-                    <li className="nav-item pt-2">
-                      <a className="nav-link text-body d-flex align-items-center" data-scroll="" href="#password">
-                        <i className="ni ni-atom me-2 text-dark opacity-6"></i>
-                        Discount <span className="text-sm font-weight-bolder">: {Number(customers? customers.discount: 0).toLocaleString('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                      </a>
-                    </li>
-                    <li className="nav-item pt-2">
-                      <a className="nav-link text-body d-flex align-items-center" data-scroll="" href="#2fa">
-                        <i className="ni ni-ui-04 me-2 text-dark opacity-6"></i>
-                        Payments <span className="text-sm font-weight-bolder">: {Number(customers? customers.payed_total: 0).toLocaleString('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                      </a>
-                    </li>
-                    <li className="nav-item pt-2">
-                      <a className="nav-link text-body d-flex align-items-center" data-scroll="" href="#2fa">
-                        <i className="ni ni-ui-04 me-2 text-dark opacity-6"></i>
-                        Balance <span className="text-sm font-weight-bolder">: {Number(customers? customers.balance: 0).toLocaleString('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                      </a>
-                    </li>
+                    
                   </ul>
                 </div>
               </div>
@@ -325,34 +290,6 @@ const EditFarmer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, ed
                             className="form-control"
                             id="phone"
                             placeholder="Phone Number"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="form-group">
-                          <input
-                            type="text"
-                            name="secondary_phone"
-                            value={formData.secondary_phone}
-                            onChange={handleInputChange}
-                            placeholder="Alternative Phone"
-                            className="form-control"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="form-group">
-                          <input
-                            type="text"
-                            name="town"
-                            value={formData.town}
-                            onChange={handleInputChange}
-                            className="form-control"
-                            id="town"
-                            placeholder="Town"
                           />
                         </div>
                       </div>
@@ -398,17 +335,22 @@ const EditFarmer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, ed
                               </th>
                               <th data-sortable="" style={{ width: '19%' }}>
                                 <a href="#" className="dataTable-sorter">
-                                  trays
+                                  rice type
                                 </a>
                               </th>
                               <th data-sortable="" style={{ width: '19%' }}>
                                 <a href="#" className="dataTable-sorter">
-                                  Price Per tray
+                                  kgs
                                 </a>
                               </th>
                               <th data-sortable="" style={{ width: '19%' }}>
                                 <a href="#" className="dataTable-sorter">
-                                  Amount
+                                  Customer
+                                </a>
+                              </th>
+                              <th data-sortable="" style={{ width: '19%' }}>
+                                <a href="#" className="dataTable-sorter">
+                                  Farmer Price
                                 </a>
                               </th>
                               <th data-sortable="" style={{ width: '24%' }}>
@@ -428,14 +370,21 @@ const EditFarmer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, ed
                                       <p className="text-xs font-weight-bold ms-2 mb-0">#{order.id}</p>
                                     </div>
                                   </td>
+                                  <td className="text-xs font-weight-bold">
+                                    <span className="my-2 text-xs">
+                                      {order.rice_type === 1
+                                        ? "Pishori" : "Kwamboka"
+                                      }
+                                    </span>
+                                  </td>
                                   <td className="font-weight-bold">
-                                    <span className="my-2 text-xs">{order.trays}</span>
+                                    <span className="my-2 text-xs">{order.kgs}</span>
                                   </td>
                                   <td className="text-xs font-weight-bold">
-                                    <span className="my-2 text-xs">{order.price}</span>
+                                    <span className="my-2 text-xs">{order.customer.name}</span>
                                   </td>
                                   <td className="text-xs font-weight-bold">
-                                    <span className="my-2 text-xs">{order.amount}</span>
+                                    <span className="my-2 text-xs">{order.farmer_price}</span>
                                   </td>
                                   <td className="text-xs font-weight-bold">
                                     <span className="my-2 text-xs">{new Date(order.added_on).toLocaleString()}</span>
@@ -671,14 +620,14 @@ const EditFarmer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, ed
 
 const mapStateToProps = (state) => ({
     isAuthenticated: state.auth.isAuthenticated,
-    customerDetails: state.auth.customerDetails,
-    customers: state.auth.customers
+    farmerDetails: state.auth.farmerDetails,
+    farmers: state.auth.farmers
   });
   
   const mapDispatchToProps = (dispatch) => ({
-    fetchCustomerDetails: (customer_id) => dispatch(fetchCustomerDetails(customer_id)),
-    editCustomer: (customer_id, name, phone, secondary_phone, town) =>
-      dispatch(editCustomer(customer_id, name, phone, secondary_phone, town)),
+    fetchFarmerDetails: (farmer_id) => dispatch(fetchFarmerDetails(farmer_id)),
+    editFarmer: (farmer_id, name, phone, secondary_phone, town) =>
+      dispatch(editFarmer(farmer_id, name, phone, secondary_phone, town)),
   });
   
   export default connect(mapStateToProps, mapDispatchToProps)(EditFarmer);
