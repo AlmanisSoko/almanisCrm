@@ -20,6 +20,15 @@ import {
     CUSTOMER_FETCH_DETAILS_SUCCESS, CUSTOMER_FETCH_DETAILS_FAIL, 
     SAVE_CUSTOMER_SUCCESS, SAVE_CUSTOMER_FAIL,
 
+    // farmer
+    FARMER_SEARCH_SUCCESS, FARMER_SEARCH_FAIL,
+    EDIT_FARMER_SUCCESS, EDIT_FARMER_FAIL,
+    FARMER_ONLY_FETCH_SUCCESS, FARMER_ONLY_FETCH_FAIL,
+    FARMER_FETCH_ALL_SUCCESS, FARMER_FETCH_ALL_FAIL,
+    FARMER_DELETE_SUCCESS, FARMER_DELETE_FAIL, FARMER_UPDATE_LIST,
+    FARMER_FETCH_DETAILS_SUCCESS, FARMER_FETCH_DETAILS_FAIL, 
+    SAVE_FARMER_SUCCESS, SAVE_FARMER_FAIL,
+
      // orders
      ORDERS_FETCH_ALL_SUCCESS, ORDERS_FETCH_ALL_FAIL,
      ORDERS_FETCH_DETAILS_SUCCESS, ORDERS_FETCH_DETAILS_FAIL,
@@ -38,6 +47,7 @@ const initialState = {
     customer: [],
     customerDetails: null, 
     paymentsDetails: null,
+    farmer: [],
     orders: [],
     payments: [],
     invoice: [], 
@@ -54,13 +64,13 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 isAuthenticated: false,
-            }
+            };
 
         case SIGNUP_SUCCESS:
             return {
                 ...state,
                 isAuthenticated: false,
-            }    
+            }  ;  
 
         case LOGIN_SUCCESS:
             localStorage.setItem('access', payload.access);
@@ -69,19 +79,19 @@ export default function (state = initialState, action) {
                 isAuthenticated: true,
                 access: payload.access,
                 refresh: payload.refresh
-            }
+            };
 
         case LOADED_USER_SUCCESS:
             return{
                 ...state,
                 user: payload
-            }
+            };
 
         case AUTHENTICATED_FAIL:
             return {
                 ...state,
                 isAuthenticated: false,
-            }   
+            }   ;
         
         case GOOGLE_AUTH_SUCCESS:
             localStorage.setItem('access', payload.access)
@@ -90,7 +100,7 @@ export default function (state = initialState, action) {
                 isAuthenticated: true,
                 access: payload.access,
                 refresh: payload.refresh
-            }
+            };
 
         case SIGNUP_FAIL:
         case ADMIN_SIGNUP_FAIL:
@@ -105,7 +115,7 @@ export default function (state = initialState, action) {
                 refresh: null,
                 isAuthenticated: false,
                 user: null
-            } 
+            } ;
             
         case PASSWORD_RESET_SUCCESS:
         case PASSWORD_RESET_FAIL:
@@ -115,20 +125,19 @@ export default function (state = initialState, action) {
         case ACTIVATION_FAIL:        
             return {
                 ...state
-            }
+            };
 
         case LOADED_USER_FAIL:
             return {
                 ...state,
                 user: null
-            }
+            };
             
         case AUTHENTICATED_SUCCESS:
             return {
                 ...state,
                 isAuthenticated: true,
-            } 
-
+            };
             
         // CUSTOMER MODULE REDUCERS
 
@@ -136,23 +145,23 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 customers: payload.data,
-            }
+            };
 
         case SAVE_CUSTOMER_FAIL:
             return{
                 ...state,
-            }
+            };
 
         case EDIT_CUSTOMER_SUCCESS:
             return {
                 ...state,
                 customers: payload.data,
-            }
+            };
 
         case EDIT_CUSTOMER_FAIL:
             return{
                 ...state,
-                }
+            };
             
         case CUSTOMER_ONLY_FETCH_SUCCESS:
             return {
@@ -210,6 +219,87 @@ export default function (state = initialState, action) {
             return {
                 ...state,
             };       
+            
+        // FARMER MODULE REDUCERS
+
+        case SAVE_FARMER_SUCCESS:
+            return {
+                ...state,
+                farmer: payload.data,
+            }
+
+        case SAVE_FARMER_FAIL:
+            return{
+                ...state,
+            }
+
+        case EDIT_FARMER_SUCCESS:
+            return {
+                ...state,
+                farmer: payload.data,
+            }
+
+        case EDIT_FARMER_FAIL:
+            return{
+                ...state,
+                }
+            
+        case FARMER_ONLY_FETCH_SUCCESS:
+            return {
+                ...state,
+                farmer: payload.data, // Store the fetched FARMER data
+            };
+
+        case FARMER_ONLY_FETCH_FAIL:
+            return {
+                ...state,
+                farmer: [], // Handle the failure case
+            }; 
+                
+        case FARMER_FETCH_ALL_SUCCESS:
+            return {
+                ...state,
+                farmer: payload.data, // Store the fetched FARMER data
+            };
+
+        case FARMER_FETCH_ALL_FAIL:
+            return {
+                ...state,
+                farmer: [], // Handle the failure case
+            }; 
+
+        case FARMER_FETCH_DETAILS_SUCCESS:
+            return {
+                ...state,
+                farmerDetails: payload.data, // Store the fetched FARMER data
+            };
+
+        case FARMER_FETCH_DETAILS_FAIL:
+            return {
+                ...state,
+                farmerDetails: [], // Store the fetched FARMER data
+            };   
+
+        case FARMER_UPDATE_LIST:
+            // Update the FARMER list by removing the deleted FARMER
+            const updatedFarmer = state.farmer.filter((farmer) => farmer.id !== payload);
+            return {
+                ...state,
+                farmer: updatedFarmer,
+            };
+
+        case FARMER_DELETE_SUCCESS: 
+            const updatedFarmers = state.farmer.filter(farmer => farmer.id !== payload.data);
+
+            return {
+                ...state,
+                farmer: updatedFarmers,
+            };
+
+        case FARMER_DELETE_FAIL:
+            return {
+                ...state,
+            };       
         
             // ORDERS MODULE REDUCERS
 
@@ -217,28 +307,28 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 orders: payload.data,
-            }
+            };
 
         case SAVE_ORDERS_FAIL:
             return{
                 ...state,
-            } 
+            } ;
 
         case EDIT_ORDERS_SUCCESS:
             return {
                 ...state,
                 orders: payload.data,
-            }
+            };
 
         case EDIT_ORDERS_FAIL:
             return {
                 ...state,
-            }
+            };
 
         case SAVE_ORDERS_FAIL:
             return{
                 ...state,
-            }    
+            } ;   
 
         case ORDERS_FETCH_ALL_SUCCESS:
             return {

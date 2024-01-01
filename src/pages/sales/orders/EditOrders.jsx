@@ -100,7 +100,6 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, editOrder }) => {
         }
     };
   
-
   // Update the amount when any of the input fields change
   const handleTraysChange = (e) => {
     const newFormData = { ...formData, trays: e.target.value };

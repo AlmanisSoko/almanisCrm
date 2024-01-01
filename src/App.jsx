@@ -7,9 +7,6 @@ import { Provider } from 'react-redux';
 import { load_user } from './actions/auth'; // Import the load_user action
 import './assets/css/argon-dashboard.min9c7f.css'
 import Layout from './hoc/Layout';
-import AddOders from './pages/sales/orders/AddOders';
-import EditOrders from './pages/sales/orders/EditOrders'
-import Orders from './pages/sales/orders/Orders'
 
 // Lazy-loaded components
 const Login = lazy(() => import('./pages/auth/Login'));
@@ -18,7 +15,13 @@ const Activate = lazy(() => import('./pages/auth/Activate'));
 const Home = lazy(() => import('./pages/general/Home'));
 const ResetPassword = lazy(() => import('./pages/auth/ResetPassword'));
 const ResetPasswordConfirm = lazy(() => import('./pages/auth/ResetPasswordConfirm'));
-const AdminSignup = lazy(() =>  import('./pages/auth/AdminSignup'))
+const AdminSignup = lazy(() =>  import('./pages/auth/AdminSignup'));
+const AddOders = lazy(() => import('./pages/sales/orders/AddOders'));
+const EditOrders = lazy(() => import('./pages/sales/orders/EditOrders'));
+const Orders = lazy(() => import('./pages/sales/orders/Orders'));
+const Customer = lazy(() => import('./pages/sales/customer/Customer'))
+const AddCustomer = lazy(() => import('./pages/sales/customer/AddCustomer'))
+const EditCustomer = lazy(() => import('./pages/sales/customer/EditCustomer'))
 
 function App() {
   useEffect(() => {
@@ -53,6 +56,12 @@ function App() {
                 <Route exact path="/neworders" element={<AddOders />}/>
                 <Route exact path="/orders" element={<Orders />}/>
                 <Route exact path="/ordersdetails/:id" element={<EditOrders />}/>
+
+                {/* Customers */}
+                <Route exact path="/customer" element={<Customer />}/>
+                <Route exact path="/addcustomer" element={<AddCustomer />}/>
+                <Route exact path="/customerdetails/:id" element={<EditCustomer />}/>
+
 
               </Routes>
             </Layout>

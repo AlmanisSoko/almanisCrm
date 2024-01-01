@@ -30,6 +30,15 @@ import {
      ORDER_SEARCH_SUCCESS, ORDER_SEARCH_FAIL,
      EDIT_ORDERS_SUCCESS, EDIT_ORDERS_FAIL,
 
+     // farmer
+    FARMER_SEARCH_SUCCESS, FARMER_SEARCH_FAIL,
+    EDIT_FARMER_SUCCESS, EDIT_FARMER_FAIL,
+    FARMER_ONLY_FETCH_SUCCESS, FARMER_ONLY_FETCH_FAIL,
+    FARMER_FETCH_ALL_SUCCESS, FARMER_FETCH_ALL_FAIL,
+    FARMER_DELETE_SUCCESS, FARMER_DELETE_FAIL, FARMER_UPDATE_LIST,
+    FARMER_FETCH_DETAILS_SUCCESS, FARMER_FETCH_DETAILS_FAIL, 
+    SAVE_FARMER_SUCCESS, SAVE_FARMER_FAIL,
+
 } from './types';
 
 // Application authentication and authorization 
@@ -551,7 +560,7 @@ try {
 }
 };
     
-export const saveCustomer = (name, phone, secondary_phone, town) => async (dispatch, getState) => {
+export const saveCustomer = (name, phone, secondary_phone, alternative_phone, town, region) => async (dispatch, getState) => {
 const { access } = getState().auth;
 
 const config = {
@@ -560,7 +569,7 @@ const config = {
         Authorization: `Bearer ${access}`,
     },
     method: 'POST',
-    body: JSON.stringify({ name, phone, secondary_phone, town })
+    body: JSON.stringify({ name, phone, secondary_phone, alternative_phone, town, region })
 };
 
 try {
@@ -589,7 +598,7 @@ try {
 }
 }
 
-export const editCustomer = (name, phone, secondary_phone, town, id) => async (dispatch, getState) => {
+export const editCustomer = (name, phone, secondary_phone, alternative_phone, town, region, id) => async (dispatch, getState) => {
 const { access } = getState().auth;
 
 const config = {
@@ -598,7 +607,7 @@ const config = {
     Authorization: `Bearer ${access}`,
     },
     method: 'PUT',
-    body: JSON.stringify({ name, phone, secondary_phone, town}),
+    body: JSON.stringify({ name, phone, secondary_phone, alternative_phone, town, region}),
 };
 
 try {
@@ -624,6 +633,200 @@ try {
     type: EDIT_CUSTOMER_FAIL, // Change this to the correct action type
     });
     return { success: false, error: 'Network error' };
+}
+};
+
+// API handler for the farmer
+
+export const fetchFarmerOnly = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    // Make an HTTP GET request to fetch batch data using the environment variable
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/farmeronly/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const farmerData = response.data;
+      dispatch({
+        type: FARMER_ONLY_FETCH_SUCCESS,
+        payload: farmerData,
+      });
+      return farmerData;
+    } else {
+      dispatch({
+        type: FARMER_ONLY_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error ONLY_fetching FARMER data:", error);
+    dispatch({
+      type: FARMER_ONLY_FETCH_FAIL,
+    });
+  }
+};
+
+export const fetchAllFarmer = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+  // Make an HTTP GET request to fetch FARMER data using the environment variable
+  const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/farmer/`, {
+      headers: {
+      Authorization: `Bearer ${access}`,
+      },
+  });
+
+  if (response.status === 200) {
+      const farmerData = response.data;
+      dispatch({
+      type: FARMER_FETCH_ALL_SUCCESS,
+      payload: farmerData,
+      });
+  } else {
+      dispatch({
+      type: FARMER_FETCH_ALL_FAIL,
+      });
+  }
+  } catch (error) {
+  console.error("Error fetching FARMER data:", error);
+  dispatch({
+      type: FARMER_FETCH_ALL_FAIL,
+  });
+  }
+};
+
+export const deleteFarmer = (id) => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+      const response = await Axios.delete(`${import.meta.env.VITE_REACT_APP_API_URL}/api/farmer/${id}/`, {
+          headers: {
+              Authorization: `Bearer ${access}`,
+          },
+      });
+
+      if (response.status === 200) {
+          // Dispatch a success action if the delete was successful
+          dispatch({ type: FARMER_DELETE_SUCCESS });
+
+          // Dispatch an action to update the FARMER list
+          dispatch({ type: FARMER_UPDATE_LIST, payload: id }); // Send the deleted FARMER ID
+      } else {
+          // Dispatch a failure action if the delete failed
+          dispatch({ type: FARMER_DELETE_FAIL });
+      }
+  } catch (error) {
+      console.log(error);
+      dispatch({ type: FARMER_DELETE_FAIL });
+  }
+};
+
+export const fetchFarmerDetails = (id) => async (dispatch, getState) => {
+const { access } = getState().auth;
+
+try {
+  const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/farmer/${id}/`, {
+  headers: {
+      Authorization: `Bearer ${access}`,
+  },
+  });
+  if (response.status === 200) {
+  const farmerData = response.data; // Access data from the "data" key
+  dispatch({
+      type: FARMER_FETCH_DETAILS_SUCCESS,
+      payload: farmerData,
+  });
+  return farmerData;
+  } else {
+  dispatch({
+      type: FARMER_FETCH_DETAILS_FAIL,
+  });
+  }
+} catch (error) {
+  console.error("Error fetching FARMER data:", error);
+  dispatch({
+  type: FARMER_FETCH_DETAILS_FAIL,
+  });
+}
+};
+  
+export const saveFarmer = (name, phone, secondary_phone, town) => async (dispatch, getState) => {
+const { access } = getState().auth;
+
+const config = {
+  headers: {
+      'Content-type': 'application/json',
+      Authorization: `Bearer ${access}`,
+  },
+  method: 'POST',
+  body: JSON.stringify({ name, phone, secondary_phone, town })
+};
+
+try {
+  const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/farmer/`, config);
+
+  if (res.ok) {
+      const data = await res.json();
+      dispatch({
+          type: SAVE_FARMER_SUCCESS,
+          payload: data,
+      });
+      return data;
+  } else {
+      const error = await res.json();
+      dispatch({
+          type: SAVE_FARMER_FAIL,
+          payload: error,
+      });
+      return { success: false, error };
+  }
+} catch (error) { 
+  dispatch({
+  type: SAVE_FARMER_FAIL,
+  });
+  return { success: false, error: 'Network error' };
+}
+}
+
+export const editFarmer = (name, phone, secondary_phone, town, id) => async (dispatch, getState) => {
+const { access } = getState().auth;
+
+const config = {
+  headers: {
+  'Content-type': 'application/json',
+  Authorization: `Bearer ${access}`,
+  },
+  method: 'PUT',
+  body: JSON.stringify({ name, phone, secondary_phone, town}),
+};
+
+try {
+  const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/farmer/${id}/`, config);
+
+  if (res.ok) {
+  const data = await res.json();
+  dispatch({
+      type: EDIT_FARMER_SUCCESS,
+      payload: data,
+  });
+  return data;
+  } else {
+  const error = await res.json();
+  dispatch({
+      type: EDIT_FARMER_FAIL,
+      payload: error,
+  });
+  return { success: false, error };
+  }
+} catch (error) {
+  dispatch({
+  type: EDIT_FARMER_FAIL, // Change this to the correct action type
+  });
+  return { success: false, error: 'Network error' };
 }
 };
 

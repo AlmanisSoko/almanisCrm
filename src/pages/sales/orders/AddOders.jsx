@@ -3,11 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
 import AutoCompleteCustomer from '../../../components/customer/AutoCompleteCustomer';
-import { saveOrder, fetchCustomerOnly } from '../../../actions/auth';
+import { saveOrder, fetchFarmerOnly } from '../../../actions/auth';
 import { toast } from 'react-toastify'; // Import ToastContainer
 import Select from 'react-select';
 
-const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
+const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         customer_name: '',
@@ -15,8 +15,16 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
         customer_id: '',
         town: '',
         Kgs: '',
+        packaging: '',
         discount: '',
-        vat: 'V.A.T', // Initialize with 0% VAT
+        transport: '',
+        transporters: '',
+        rider: '',
+        comment: '',
+        farmer: '',
+        rice_type: '',
+        vat: 0, // Initialize with 0% VAT
+        farmer_price: '',
         price: '',
         amount: '',
     });
@@ -56,8 +64,16 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
                 formData.customer_id,
                 formData.town,
                 formData.Kgs,
+                formData.packaging,
                 formData.discount,
+                formData.transport,
+                formData.transporters,
+                formData.rider,
+                formData.comment,
+                formData.farmer,
+                formData.rice_type,
                 formData.vat,
+                formData.farmer_price,
                 formData.price,
                 formData.amount
             );
@@ -78,8 +94,16 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
                         customer_id: '',
                         town: '',
                         Kgs: '',
+                        packaging: '',
                         discount: '',
+                        transport: '',
+                        transporters: '',
+                        rider: '',
+                        comment: '',
+                        farmer: '',
+                        rice_type: '',
                         vat: 0, // Initialize with 0% VAT
+                        farmer_price: '',
                         price: '',
                         amount: '',
                     });
@@ -109,12 +133,27 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
     } 
 
     // Update the amount when any of the input fields change
-    const handleTraysChange = (e) => {
+    const handleKgsChange = (e) => {
         const newFormData = { ...formData, Kgs: e.target.value };
         setFormData(newFormData);
     };
 
-    const handlePricePerTrayChange = (e) => {
+    const handlePackagingChange = (e) => {
+        const newFormData = { ...formData, packaging: e.target.value };
+        setFormData(newFormData);
+    };
+
+    const handleTransportChange = (e) => {
+        const newFormData = { ...formData, transport: e.target.value };
+        setFormData(newFormData);
+    };
+
+    const handleRiderChange = (e) => {
+        const newFormData = { ...formData, rider: e.target.value };
+        setFormData(newFormData);
+    };
+
+    const handleAlmanisPriceChange = (e) => {
         const newFormData = { ...formData, price: e.target.value };
         setFormData(newFormData);
     };
@@ -131,13 +170,16 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
 
     // Calculate total amount
     useEffect(() => {
-        const numberOfTraysFloat = parseFloat(formData.Kgs);
+        const numberOfKilosFloat = parseFloat(formData.Kgs);
         const trayPriceFloat = parseFloat(formData.price);
         const discountFloat = parseFloat(formData.discount);
+        const packagingFloat = parseFloat(formData.packaging);
+        const riderFloat = parseFloat(formData.rider);
+        const transportFloat = parseFloat(formData.transport);
     
-        if (!isNaN(numberOfTraysFloat) && !isNaN(trayPriceFloat) && !isNaN(discountFloat)) {
+        if (!isNaN(numberOfKilosFloat) && !isNaN(trayPriceFloat) && !isNaN(discountFloat)) {
             // Calculate the amount based on the current VAT value
-            const subTotal = numberOfTraysFloat * trayPriceFloat - discountFloat;
+            const subTotal = (numberOfKilosFloat * trayPriceFloat) + packagingFloat + riderFloat + transportFloat - discountFloat;
             const vatAmount = (subTotal * formData.vat) / 100;
             const calculatedAmount = subTotal + vatAmount;
             const newFormData = { ...formData, amount: isNaN(calculatedAmount) ? '' : calculatedAmount.toFixed(2) };
@@ -146,7 +188,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
             const newFormData = { ...formData, amount: '' };
             setFormData(newFormData);
         }
-    }, [formData.Kgs, formData.price, formData.discount, formData.vat]);
+    }, [formData.Kgs, formData.price, formData.discount, formData.vat, formData.rider]);
     
 
     const showDataInInputs = (index, item) => {
@@ -194,7 +236,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
     useEffect(() => {
         const fetchInvoiceData = async () => {
             try {
-                const farmer = await fetchCustomerOnly();
+                const farmer = await fetchFarmerOnly();
                 console.log(farmer)
                 setFarmerOptions(farmer);
             } catch (error) {
@@ -203,7 +245,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
         };
 
         fetchInvoiceData();
-    }, [fetchCustomerOnly]);
+    }, [fetchFarmerOnly]);
 
     const handleFarmerSelect = (selectedOption) => {
         setSelectedFarmerOption(selectedOption);
@@ -294,7 +336,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
                                                         id="Kgs"
                                                         placeholder="Kgs"
                                                         value={formData.Kgs}
-                                                        onChange={handleTraysChange}
+                                                        onChange={handleKgsChange}
                                                         required
                                                     />
                                                 </div>
@@ -304,10 +346,10 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        id="Kgs"
+                                                        id="packaging"
                                                         placeholder="Packaging"
-                                                        value={formData.Kgs}
-                                                        onChange={handleTraysChange}
+                                                        value={formData.packaging}
+                                                        onChange={handlePackagingChange}
                                                         required
                                                     />
                                                 </div>
@@ -333,10 +375,10 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        id="discount"
+                                                        id="transport"
                                                         placeholder="Transport"
-                                                        value={formData.discount}
-                                                        onChange={handleDiscountChange}
+                                                        value={formData.transport}
+                                                        onChange={handleTransportChange}
                                                         required
                                                     />
                                                 </div>
@@ -346,14 +388,14 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
                                                     <div className="input-group">
                                                         <select
                                                             className="form-control"
-                                                            name="vat"
-                                                            value={formData.vat}
-                                                            onChange={handleVATChange}
+                                                            name="transporters"
+                                                            value={formData.transporters}
+                                                            onChange={(e) => onChange(e)}
                                                             required
                                                         >
                                                             <option value="">Transporters</option>
-                                                            <option value={14}>Others</option>
-                                                            <option value={16}>Inhouse</option>
+                                                            <option value="1">Others</option>
+                                                            <option value="2">Inhouse</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -363,10 +405,10 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        id="discount"
+                                                        id="rider"
                                                         placeholder="Rider"
-                                                        value={formData.discount}
-                                                        onChange={handleDiscountChange}
+                                                        value={formData.rider}
+                                                        onChange={handleRiderChange}
                                                         required
                                                     />
                                                 </div>
@@ -376,10 +418,11 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        id="discount"
+                                                        id="comment"
+                                                        name='comment'
                                                         placeholder="Comment"
-                                                        value={formData.discount}
-                                                        onChange={handleDiscountChange}
+                                                        value={formData.comment}
+                                                        onChange={(e) => onChange(e)}
                                                         required
                                                     />
                                                 </div>
@@ -391,8 +434,8 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
                                                 <div className="form-group">
                                                     <div className="input-group">
                                                         <Select
-                                                            id="customer_id"
-                                                            name="customer_id"
+                                                            id="farmer_id"
+                                                            name="farmer_id"
                                                             className="form-control"
                                                             value={selectedFarmerOptions}
                                                             onChange={handleFarmerSelect}
@@ -400,9 +443,26 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
                                                                 value: batch.id,
                                                                 label: batch.name,
                                                             }))}
-                                                            placeholder="--- Search Customer ---"
+                                                            placeholder="--- Search Farmer ---"
                                                             isClearable
                                                         />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <div className="input-group">
+                                                        <select
+                                                            className="form-control"
+                                                            name="rice_type"
+                                                            value={formData.rice_type}
+                                                            onChange={(e) => onChange(e)}
+                                                            required
+                                                        >
+                                                            <option value="">Rice Type</option>
+                                                            <option value="1">Pishori</option>
+                                                            <option value="2">Komboka</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
@@ -423,15 +483,30 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchCustomerOnly }) => {
                                                     </div>
                                                 </div>
                                             </div>
+                                            
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        name="farmer_price"
+                                                        id="discount"
+                                                        placeholder="Farmer Price"
+                                                        value={formData.farmer_price}
+                                                        onChange={(e) => onChange(e)}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
                                             <div className="col-md-6">
                                                 <div className="form-group">
                                                     <input
                                                         type="text"
                                                         className="form-control"
                                                         id="price"
-                                                        placeholder="Price Per Tray"
+                                                        placeholder="Almanis Price"
                                                         value={formData.price}
-                                                        onChange={handlePricePerTrayChange}
+                                                        onChange={handleAlmanisPriceChange}
                                                         required
                                                     />
                                                 </div>
@@ -474,7 +549,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchCustomerOnly: () => dispatch(fetchCustomerOnly()),
+        fetchFarmerOnly: () => dispatch(fetchFarmerOnly()),
         saveOrder: (customer_id, product, invoice_details) =>
             dispatch(saveOrder(customer_id,  product, invoice_details))
     };
