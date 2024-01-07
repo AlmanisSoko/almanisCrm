@@ -433,9 +433,6 @@ const Invoice = ({ isAuthenticated, fetchAllInvoice, customer, invoice, saveInvo
                                                                     
                                                                 </a>
                                                             </th>
-                                                            <th data-sortable="" style={{ width: '10' }}>
-                                                                <a href="#" className="dataTable-sorter"></a>
-                                                            </th>
                                                         </tr>
                                                     </thead>
 
@@ -450,6 +447,9 @@ const Invoice = ({ isAuthenticated, fetchAllInvoice, customer, invoice, saveInvo
                                                                     </td>
                                                                      <td className="font-weight-bold">
                                                                         <span className="my-2 text-xs">{invoices.customer.name}</span>
+                                                                    </td>
+                                                                    <td className="text-xs font-weight-bold">
+                                                                        <span className="my-2 text-xs">{invoices.customer.phone}</span>
                                                                     </td>
                                                                     <td className="text-xs font-weight-bold">
                                                                         <span className="my-2 text-xs">{invoices.customer.town}</span>

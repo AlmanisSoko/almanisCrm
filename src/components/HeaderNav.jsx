@@ -20,6 +20,7 @@ function HeaderNav({ user }) {
       '/addpayment': 'Add Payment',
       '/invoice': 'Invoice',
       '/farmer': 'Farmers List',
+      '/analytics': 'Packaging, Kilos & Transport Analysis',
     };
 
     if (id) {

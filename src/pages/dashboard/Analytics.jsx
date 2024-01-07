@@ -41,53 +41,23 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
 
     // Apply media queries
     const mediaQuery = window.matchMedia('(min-width: 768px)');
-
-    const viewOrder = (orders_id) => {
-        navigate('/ordersdetails/' + orders_id);
-    };
-
-    const handleDelete = async (orders_id) => {
-        const confirmed = window.confirm('Are you sure you want to delete this order?');
-
-        if (!confirmed) {
-        // Show a SweetAlert message when the operation is canceled
-        swal.fire({
-            icon: 'info',
-            title: 'Operation Aborted',
-            text: 'Deletion has been canceled.',
-        });
-        return;
-        }
-
-        try {
-        await deleteOrder(orders_id);
-        await fetchAllOrders();
-        swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Order deleted successfully!',
-        });
-        } catch (error) {
-        swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to delete the order. Please try again.',
-        });
-        }
-    };
-
+    
     if (!orders) {
         orders = []; // Ensure orders is defined even if it's initially undefined
     }
-
-    const [searchQuery, setSearchQuery] = useState('');
+    
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
     const filteredOrders = orders
-        ? orders.filter((orders) =>
-              orders.town.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              orders.name.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        : [];
+    ? orders.filter((order) => {
+        const orderDate = new Date(order.added_on);
+        return (
+          (!startDate || orderDate >= startDate) &&
+          (!endDate || orderDate <= endDate)
+        );
+      })
+    : [];
 
     const indexOfLastOrder = currentPage * ordersPerPage;
     const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
@@ -105,6 +75,27 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
 
     const fileName = "orders_data";
 
+    console.log("start", startDate)
+    console.log("end", endDate)
+
+    const [filteredOrdersCount, setFilteredOrdersCount] = useState(0);
+
+    useEffect(() => {
+      // Update filteredOrdersCount when orders or date filters change
+      setFilteredOrdersCount(
+        orders.filter((order) => {
+          const orderDate = new Date(order.added_on);
+          return (
+            (!startDate || orderDate >= startDate) &&
+            (!endDate || orderDate <= endDate)
+          );
+        }).length
+      );
+    }, [orders, startDate, endDate]);
+
+
+  
+
   return (
     <div>
       <div className="min-height-300 bg-dark position-absolute w-100"></div>
@@ -113,12 +104,27 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
         <div className="container-fluid py-5">
           <div className="d-sm-flex justify-content-between">
             <div className="dropdown d-inline">
-              <Link to="/neworders" className="btn btn-outline-white">
-                <i className="fi fi-sr-bags-shopping"></i> New Order
-              </Link>
+                <ExportCSV csvData={orders} fileName={fileName} />
             </div>
             <div className="d-flex">
-                <ExportCSV csvData={orders} fileName={fileName} />
+              <div className='dropdown d-inline text-white'>
+                <label className='text-white'>Start Date</label>
+                <input
+                    className="dataTable-input"
+                    placeholder="Search..."
+                    type="date"
+                    onChange={(event) => setStartDate(new Date(event.target.value))}
+                />
+              </div>
+              <div className='dropdown d-inline text-white'>
+                <label className='text-white'>End Date</label>
+                <input
+                    className="dataTable-input"
+                    placeholder="Search..."
+                    type="date"
+                    onChange={(event) => setEndDate(new Date(event.target.value))}
+                />
+              </div>
             </div>
           </div>
 
@@ -128,15 +134,7 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
                 <div className="table-responsive">
                   <div className="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
                     <div className="dataTable-top">
-                      <div className="dataTable-search">
-                        <input
-                            className="dataTable-input"
-                            placeholder="Search..."
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                      </div>
+                      
                     </div>
 
                     <div className="dataTable-container">
@@ -144,34 +142,34 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
                       <table className="table table-flush dataTable-table" id="datatable-search">
                         <thead className="thead-light">
                           <tr>
-                            <th data-sortable="" style={{ width: '2.6514%' }}>
+                            <th data-sortable="" style={{ width: '5' }}>
                               <a href="#" className="dataTable-sorter">
                                 Id
                               </a>
                             </th>
-                            <th data-sortable="" style={{ width: '10.' }}>
+                            <th data-sortable="" style={{ width: '7.' }}>
                               <a href="#" className="dataTable-sorter">
                                 Customer
                               </a>
                             </th>
                             <th data-sortable="" style={{ width: '10' }}>
                               <a href="#" className="dataTable-sorter">
-                                Town
+                                Packaging
                               </a>
                             </th>
                             <th data-sortable="" style={{ width: '10' }}>
                               <a href="#" className="dataTable-sorter">
+                                Rice Type
+                              </a>
+                            </th>
+                            <th data-sortable="" style={{ width: '5' }}>
+                              <a href="#" className="dataTable-sorter">
+                                Farmer
+                              </a>
+                            </th>
+                            <th data-sortable="" style={{ width: '5' }}>
+                              <a href="#" className="dataTable-sorter">
                                 Kgs
-                              </a>
-                            </th>
-                            <th data-sortable="" style={{ width: '5' }}>
-                              <a href="#" className="dataTable-sorter">
-                                packaging
-                              </a>
-                            </th>
-                            <th data-sortable="" style={{ width: '5' }}>
-                              <a href="#" className="dataTable-sorter">
-                                discount
                               </a>
                             </th>
                             <th data-sortable="" style={{ width: '5' }}>
@@ -181,26 +179,28 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
                             </th>
                             <th data-sortable="" style={{ width: '5' }}>
                               <a href="#" className="dataTable-sorter">
-                                Farmer
+                                Rider
                               </a>
                             </th>
-                            <th data-sortable="" style={{ width: '10.6114%' }}>
+                            <th data-sortable="" style={{ width: '5' }}>
                               <a href="#" className="dataTable-sorter">
-                                Amount
-                              </a>
-                            </th>
-                            <th data-sortable="" style={{ width: '14%' }}>
-                              <a href="#" className="dataTable-sorter">
-                                Added on
+                                Farmer Price
                               </a>
                             </th>
                             <th data-sortable="" style={{ width: '5%' }}>
                               <a href="#" className="dataTable-sorter">
-                                Action
+                                Almanis Price
+                              </a>
+                            </th>
+                            <th data-sortable="" style={{ width: '5%' }}>
+                              <a href="#" className="dataTable-sorter">
+                                Discount
                               </a>
                             </th>
                             <th data-sortable="" style={{ width: '5' }}>
-                              <a href="#" className="dataTable-sorter"></a>
+                              <a href="#" className="dataTable-sorter">
+                                Ordered on
+                              </a>
                             </th>
                             <th data-sortable="" style={{ width: '12' }}>
                               <a href="#" className="dataTable-sorter">
@@ -211,8 +211,8 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
                         </thead>
 
                         <tbody>
-                          {currentOrders.length > 0 ? (
-                            currentOrders.map((orders) => (
+                        {currentOrders.length > 0 ? (
+                          currentOrders.map((orders) => (
                               <tr key={orders.id}>
                                 <td>
                                   <div className="d-flex align-items-center">
@@ -220,64 +220,48 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
                                   </div>
                                 </td>
                                 <td className="font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.name}</span>
-                                </td>
-                                <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.town}</span>
-                                </td>
-                                <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.kgs}</span>
+                                  <span className="my-2 text-xs">{orders.customer_id}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
                                   <span className="my-2 text-xs">{orders.packaging}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.discount}</span>
-                                </td>
-                                <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.transport}</span>
+                                  <span className="my-2 text-xs">{orders.rice_type === 1 ? "Pishori" : "Komboka"}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
                                   <span className="my-2 text-xs">{orders.farmer.name}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.amount}</span>
+                                  <span className="my-2 text-xs">{orders.kgs}</span>
+                                </td>
+                                <td className="text-xs font-weight-bold">
+                                  <span className="my-2 text-xs">{orders.transport}</span>
+                                </td>
+                                <td className="text-xs font-weight-bold">
+                                  <span className="my-2 text-xs">{orders.rider}</span>
+                                </td>
+                                <td className="text-xs font-weight-bold">
+                                  <span className="my-2 text-xs">{orders.farmer_price}</span>
+                                </td>
+                                <td className="text-xs font-weight-bold">
+                                  <span className="my-2 text-xs">{orders.price}</span>
+                                </td>
+                                <td className="text-xs font-weight-bold">
+                                  <span className="my-2 text-xs">{orders.discount}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
                                   <span className="my-2 text-xs">{new Date(orders.added_on).toLocaleString()}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <div className="d-flex align-items-center">
-                                    <button
-                                      className="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-2 btn-sm d-flex align-items-center justify-content-center"
-                                      onClick={() => viewOrder(orders.id)}
-                                    >
-                                      <i className="fas fa-eye" aria-hidden="true"></i>
-                                    </button>
-                                    <span>View</span>
-                                  </div>
-                                </td>
-                                <td className="text-xs font-weight-bold">
-                                  <div className="d-flex align-items-center">
-                                    <button
-                                      className="btn btn-icon-only btn-rounded btn-outline-danger mb-0 me-2 btn-sm d-flex align-items-center justify-content-center"
-                                      onClick={() => handleDelete(orders.id)}
-                                    >
-                                      <i className="fas fa-times" aria-hidden="true"></i>
-                                    </button>
-                                    <span className="my-2 text-xs">Delete</span>
-                                  </div>
-                                </td>
-                                <td className="text-xs font-weight-bold">
                                   <span className="my-2 text-xs">{orders.user}</span>
                                 </td>
                               </tr>
-                            ))
-                          ) : (
-                            <tr>
-                              <td colSpan="7">No records available.</td>
-                            </tr>
-                          )}
+                               ))
+                               ) : (
+                                 <tr>
+                                   <td colSpan="7">No records available.</td>
+                                 </tr>
+                               )}
                         </tbody>
                       </table>
                       ) : (
@@ -317,7 +301,7 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
                                 </a>
                                 </li>
                             ))}
-                            {currentPage + maxPagesDisplayed < Math.ceil(filteredOrders.length / ordersPerPage) && (
+                            {currentPage + maxPagesDisplayed < Math.ceil(filteredOrdersCount / ordersPerPage) && (
                                 <li className="pager">
                                 <a
                                     href="#"

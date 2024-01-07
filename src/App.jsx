@@ -30,7 +30,7 @@ const AddPayments = lazy(() => import('./pages/sales/payments/AddPayments'))
 const EditPayments = lazy(() => import('./pages/sales/payments/EditPayments'))
 const Invoice = lazy(() => import('./pages/sales/invoice/Invoice'))
 const DownloadInvoice = lazy(() => import('./pages/sales/invoice/DownloadInvoice'))
-
+const Analytics = lazy(() => import('./pages/dashboard/Analytics'))
 
 function App() {
   useEffect(() => {
@@ -43,7 +43,7 @@ function App() {
       <ToastContainer position="bottom-right" autoClose={5000} />
         <Router>
           <Suspense fallback={<div className="d-flex justify-content-center align-items-center min-vh-100">
-              <div className="spinner-border text-danger" role="status">
+              <div className="spinner-border text-success" role="status">
                   <span className="sr-only">Loading...</span>
               </div>
             </div>}>
@@ -84,6 +84,9 @@ function App() {
                 {/* Invoice */}         
                 <Route exact path="/invoice" element={<Invoice />} />
                 <Route exact path="/download-invoice/:id" element={<DownloadInvoice />} />
+
+                {/* Analytics & Dasboard */}         
+                <Route exact path="/analytics" element={<Analytics />} />
 
               </Routes>
             </Layout>
