@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import HeaderNav from '../../components/HeaderNav';
 import { connect } from 'react-redux';
 import { fetchAllOrders, deleteOrder } from '../../actions/auth';
-import swal from 'sweetalert2';
+import { useDownloadExcel } from 'react-export-table-to-excel';
 import { ExportCSV } from '../../components/csv/ExportCSV';
 
 const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
@@ -94,6 +94,13 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
       );
     }, [orders, startDate, endDate]);
 
+    const tableRef = useRef(null);
+
+    const { onDownload } = useDownloadExcel({
+        currentTableRef: tableRef.current,
+        filename: 'General Report',
+        sheet: 'Analytics'
+    })
   
   return (
     <div>
@@ -103,7 +110,16 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
         <div className="container-fluid py-5">
           <div className="d-sm-flex justify-content-between">
             <div className="dropdown d-inline">
-                <ExportCSV csvData={orders} fileName={fileName} />
+              <button 
+                onClick={onDownload}
+                className="btn btn-icon btn-outline-white ms-2 export dropdown d-inline" 
+                data-type="csv"
+              >
+                  <span className="btn-inner--icon">
+                      <i className="fa-regular fa-file-excel"></i>
+                  </span>
+                  <span className="btn-inner--text"> Export CSV</span>
+              </button>
             </div>
             <div className="d-flex">
               <div className='dropdown d-inline text-white'>
@@ -145,7 +161,7 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
 
                     <div className="dataTable-container">
                     {filteredOrders.length > 0 ? (
-                      <table className="table table-flush dataTable-table" id="datatable-search">
+                      <table className="table table-flush dataTable-table" id="datatable-search" ref={tableRef}>
                         <thead className="thead-light">
                           <tr>
                             <th data-sortable="" style={{ width: '5' }}>

@@ -3,6 +3,7 @@ import HeaderNav from '../../components/HeaderNav';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import MoneyCard from '../dashboard/cards/MoneyCard';
+import DashboardCard from '../dashboard/cards/DashboardCard';
 
 const Home = ({ isAuthenticated, user }) => {
     const navigate = useNavigate();
@@ -40,6 +41,8 @@ const Home = ({ isAuthenticated, user }) => {
                 <div className="container-fluid py-4" style={mediaQuery.matches ? desktopStyle : mobileStyle}>
 
                     <MoneyCard/>
+
+                    <DashboardCard/>
                     
                 </div>
             
