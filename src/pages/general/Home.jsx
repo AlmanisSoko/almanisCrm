@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import HeaderNav from '../../components/HeaderNav';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
+import MoneyCard from '../dashboard/cards/MoneyCard';
 
 const Home = ({ isAuthenticated, user }) => {
     const navigate = useNavigate();
@@ -38,7 +39,7 @@ const Home = ({ isAuthenticated, user }) => {
             <HeaderNav/>
                 <div className="container-fluid py-4" style={mediaQuery.matches ? desktopStyle : mobileStyle}>
 
-                    
+                    <MoneyCard/>
                     
                 </div>
             

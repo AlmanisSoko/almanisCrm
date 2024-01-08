@@ -50,6 +50,16 @@ import {
      INVOICE_DELETE_SUCCESS, INVOICE_DELETE_FAIL, INVOICE_UPDATE_LIST,
      SAVE_INVOICE_SUCCESS, SAVE_INVOICE_FAIL,
 
+     // dashboard
+    DASHBOARD_FETCH_SUCCESS, DASHBOARD_FETCH_FAIL,
+    BALANCE_FETCH_SUCCESS, BALANCE_FETCH_FAIL,
+    BIRDS_FETCH_SUCCESS, BIRDS_FETCH_FAIL,
+    DAILYCHART_FETCH_FAIL, DAILYCHART_FETCH_SUCCESS, 
+    MONTHLYCHART_FETCH_SUCCESS, MONTHLYCHART_FETCH_FAIL, 
+    YEARLYCHART_FETCH_SUCCESS, YEARLYCHART_FETCH_FAIL,
+    TRAYS_SOLD_FETCH_SUCCESS, TRAYS_SOLD_FETCH_FAIL,
+    OVERPAID_FETCH_SUCCESS, OVERPAID_FETCH_FAIL,
+
 } from '../actions/types'
 
 const initialState = {
@@ -519,6 +529,97 @@ export default function (state = initialState, action) {
                 return {
                     ...state,
                 };    
+
+                
+            // DASHBOARD MODULE REDUCERS
+
+        case BALANCE_FETCH_SUCCESS:
+            return {
+                ...state,
+                balance: payload
+            }
+
+        case BALANCE_FETCH_FAIL:
+            return {
+                ...state,
+            } 
+
+        case BIRDS_FETCH_SUCCESS:
+            return {
+                ...state,
+                birds: payload
+            }
+
+        case BIRDS_FETCH_FAIL:
+            return {
+                ...state,
+            } 
+
+        case TRAYS_SOLD_FETCH_SUCCESS:
+            return {
+                ...state,
+                traysSold: payload
+            }
+
+        case TRAYS_SOLD_FETCH_FAIL:
+            return {
+                ...state,
+            }
+
+        case OVERPAID_FETCH_SUCCESS:
+            return {
+                ...state,
+                overpaid: payload
+            }
+
+        case OVERPAID_FETCH_FAIL:
+            return {
+                ...state,
+            }
+
+        case DASHBOARD_FETCH_SUCCESS:
+            return {
+                ...state,
+                dashboard: payload
+            }
+
+        case DASHBOARD_FETCH_FAIL:
+            return {
+                ...state,
+            }
+
+        case DAILYCHART_FETCH_SUCCESS:
+            return {
+                ...state,
+                dailychart: payload
+            }
+
+        case DAILYCHART_FETCH_FAIL:
+            return {
+                ...state,
+            }
+
+        case MONTHLYCHART_FETCH_SUCCESS:
+            return {
+                ...state,
+                monthlychart: payload
+            }
+
+        case MONTHLYCHART_FETCH_FAIL:
+            return {
+                ...state,
+            }
+
+        case YEARLYCHART_FETCH_SUCCESS:
+            return {
+                ...state,
+                yearlychart: payload
+            }
+
+        case YEARLYCHART_FETCH_FAIL:
+            return {
+                ...state,
+            }
     
         default:
             return state;

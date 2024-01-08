@@ -52,7 +52,54 @@ import {
     INVOICE_DELETE_SUCCESS, INVOICE_DELETE_FAIL, INVOICE_UPDATE_LIST,
     SAVE_INVOICE_SUCCESS, SAVE_INVOICE_FAIL,
 
+     // dashboard
+     DASHBOARD_FETCH_SUCCESS, DASHBOARD_FETCH_FAIL,
+     BALANCE_FETCH_SUCCESS, BALANCE_FETCH_FAIL,
+     BIRDS_FETCH_SUCCESS, BIRDS_FETCH_FAIL,
+     DAILYCHART_FETCH_FAIL, DAILYCHART_FETCH_SUCCESS, 
+     MONTHLYCHART_FETCH_SUCCESS, MONTHLYCHART_FETCH_FAIL, 
+     YEARLYCHART_FETCH_SUCCESS, YEARLYCHART_FETCH_FAIL,
+     TRAYS_SOLD_FETCH_SUCCESS, TRAYS_SOLD_FETCH_FAIL,
+     OVERPAID_FETCH_SUCCESS, OVERPAID_FETCH_FAIL,
+
 } from './types';
+
+// Dashboard
+
+export const fetchDashboard = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/dashboard/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const balanceData = response.data;
+
+      console.log("Balance Data:", balanceData); // Log the retrieved data
+
+      dispatch({
+        type: BALANCE_FETCH_SUCCESS,
+        payload: balanceData,
+      });
+
+      return balanceData;
+    } else {
+      console.error("API Request Failed with Status Code:", response.status);
+      dispatch({
+        type: BALANCE_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching balance data:", error);
+    dispatch({
+      type: BALANCE_FETCH_FAIL,
+    });
+  }
+};
 
 // Application authentication and authorization 
 
