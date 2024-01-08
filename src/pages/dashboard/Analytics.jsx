@@ -9,14 +9,15 @@ import { ExportCSV } from '../../components/csv/ExportCSV';
 const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
-    const ordersPerPage = 9;
+    const ordersPerPage = 500;
     const maxPagesDisplayed = 5;
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (!isAuthenticated) {
         //navigate('/');
         } else {
-        fetchAllOrders();
+        fetchAllOrders().then(() => setLoading(false));;
         }
     }, [isAuthenticated, navigate, fetchAllOrders]);
 
@@ -49,12 +50,12 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
-    const filteredOrders = orders
+  const filteredOrders = orders
     ? orders.filter((order) => {
         const orderDate = new Date(order.added_on);
         return (
           (!startDate || orderDate >= startDate) &&
-          (!endDate || orderDate <= endDate)
+          (!endDate || orderDate <= new Date(endDate.getTime() + 86400000))
         );
       })
     : [];
@@ -93,9 +94,7 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
       );
     }, [orders, startDate, endDate]);
 
-
   
-
   return (
     <div>
       <div className="min-height-300 bg-dark position-absolute w-100"></div>
@@ -132,6 +131,13 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
             <div className="col-12">
               <div className="card">
                 <div className="table-responsive">
+                {loading ? (
+                  <div className="dataTable-container">
+                    <div className="text-center py-4">
+                      <p>Loading...</p>
+                    </div>
+                  </div>  
+                  ) : (
                   <div className="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
                     <div className="dataTable-top">
                       
@@ -316,6 +322,7 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => 
                         </nav>
                     </div>
                   </div>
+                  )}
                 </div>
               </div>
             </div>

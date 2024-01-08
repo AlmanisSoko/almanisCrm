@@ -9,16 +9,18 @@ import { ExportCSV } from '../../../components/csv/ExportCSV';
 const Payments = ({ isAuthenticated, fetchAllPayments, payments, deletePayment }) => {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
-    const paymentsPerPage = 9;
+    const paymentsPerPage = 129;
     const maxPagesDisplayed = 5;
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (!isAuthenticated) {
         //navigate('/');
-        } else { 
-        fetchAllPayments();
+        } else {
+          fetchAllPayments().then(() => setLoading(false));;
         }
-    }, [isAuthenticated, navigate, fetchAllPayments]);
+    }, [isAuthenticated, navigate]);
+
 
     if (!isAuthenticated) {
         navigate('/');
@@ -128,6 +130,13 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, deletePayment }
             <div className="col-12">
               <div className="card">
                 <div className="table-responsive">
+                {loading ? (
+                  <div className="dataTable-container">
+                    <div className="text-center py-4">
+                      <p>Loading...</p>
+                    </div>
+                  </div>  
+                  ) : (
                   <div className="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
                     <div className="dataTable-top">
                       <div className="dataTable-search">
@@ -323,6 +332,7 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, deletePayment }
                         </nav>
                     </div>
                   </div>
+                  )}
                 </div>
               </div>
             </div>

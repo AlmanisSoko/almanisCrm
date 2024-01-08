@@ -11,7 +11,7 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
   const { id } = useParams();
   const [orders, setOrders] = useState([]); // Initialize orders as an empty array
   const [currentPage, setCurrentPage] = useState(1);
-  const ordersPerPage = 5;
+  const ordersPerPage = 12;
   const maxPagesDisplayed = 5;
   const [customers, setCustomers] = useState({});
 
@@ -31,7 +31,7 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
 
   const [payments, setPayments] = useState([]);// Initialize orders as an empty array
   const [currentPaymentPage, setCurrentPaymentPage] = useState(1);
-  const paymentPerPage = 5;
+  const paymentPerPage = 12;
   const maxPaymentPagesDisplayed = 5;
 
   const indexOfLastPayment = currentPaymentPage * paymentPerPage;
@@ -275,7 +275,7 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                     <li className="nav-item pt-2">
                       <a className="nav-link text-body d-flex align-items-center" data-scroll="" href="#basic-info">
                         <i className="ni ni-books me-2 text-dark opacity-6"></i>
-                        Kilos <span className="text-sm font-weight-bolder"> : {customers? customers.kgs: 0}</span>
+                        Kilos <span className="text-sm font-weight-bolder"> : {customers? customers.kgs: 0} Kgs</span>
                       </a>
                     </li>
                     <li className="nav-item pt-2">
@@ -440,12 +440,17 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                               </th>
                               <th data-sortable="" style={{ width: '19%' }}>
                                 <a href="#" className="dataTable-sorter">
-                                  trays
+                                  Kilos
                                 </a>
                               </th>
                               <th data-sortable="" style={{ width: '19%' }}>
                                 <a href="#" className="dataTable-sorter">
-                                  Price Per tray
+                                  Price Per kg
+                                </a>
+                              </th>
+                              <th data-sortable="" style={{ width: '19%' }}>
+                                <a href="#" className="dataTable-sorter">
+                                  Farmer
                                 </a>
                               </th>
                               <th data-sortable="" style={{ width: '19%' }}>
@@ -471,10 +476,13 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                                     </div>
                                   </td>
                                   <td className="font-weight-bold">
-                                    <span className="my-2 text-xs">{order.trays}</span>
+                                    <span className="my-2 text-xs">{order.kgs}</span>
                                   </td>
                                   <td className="text-xs font-weight-bold">
                                     <span className="my-2 text-xs">{order.price}</span>
+                                  </td>
+                                  <td className="text-xs font-weight-bold">
+                                    <span className="my-2 text-xs">{order.farmer.name}</span>
                                   </td>
                                   <td className="text-xs font-weight-bold">
                                     <span className="my-2 text-xs">{order.amount}</span>

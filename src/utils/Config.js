@@ -112,14 +112,7 @@ class Config{
             title: "Tickets",
             url: "/tickets",
             icons: "fa-solid fa-ticket text-lg text-dark"
-        },
-
-        {
-            index: "16",
-            title: "PKT",
-            url: "/analytics",
-            icons: "fa-solid fa-chart-simple text-lg text-dark"
-        },
+        }
     ]
 }
 
