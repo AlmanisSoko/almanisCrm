@@ -101,6 +101,182 @@ export const fetchDashboard = () => async (dispatch, getState) => {
   }
 };
 
+export const fetchDiscount = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/total-discount/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const balanceData = response.data;
+
+      console.log("Balance Data:", balanceData); // Log the retrieved data
+
+      dispatch({
+        type: BALANCE_FETCH_SUCCESS,
+        payload: balanceData,
+      });
+
+      return balanceData;
+    } else {
+      console.error("API Request Failed with Status Code:", response.status);
+      dispatch({
+        type: BALANCE_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching balance data:", error);
+    dispatch({
+      type: BALANCE_FETCH_FAIL,
+    });
+  }
+};
+
+export const fetchTotalPayments = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/total-payment/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const balanceData = response.data;
+
+      console.log("Balance Data:", balanceData); // Log the retrieved data
+
+      dispatch({
+        type: BALANCE_FETCH_SUCCESS,
+        payload: balanceData,
+      });
+
+      return balanceData;
+    } else {
+      console.error("API Request Failed with Status Code:", response.status);
+      dispatch({
+        type: BALANCE_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching balance data:", error);
+    dispatch({
+      type: BALANCE_FETCH_FAIL,
+    });
+  }
+};
+
+export const fetchTotalKilos = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/total-kgs/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const balanceData = response.data;
+
+      console.log("Balance Data:", balanceData); // Log the retrieved data
+
+      dispatch({
+        type: BALANCE_FETCH_SUCCESS,
+        payload: balanceData,
+      });
+
+      return balanceData;
+    } else {
+      console.error("API Request Failed with Status Code:", response.status);
+      dispatch({
+        type: BALANCE_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching balance data:", error);
+    dispatch({
+      type: BALANCE_FETCH_FAIL,
+    });
+  }
+};
+
+export const fetchUnderPaid = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/total-balance/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const balanceData = response.data;
+
+      console.log("Balance Data:", balanceData); // Log the retrieved data
+
+      dispatch({
+        type: BALANCE_FETCH_SUCCESS,
+        payload: balanceData,
+      });
+
+      return balanceData;
+    } else {
+      console.error("API Request Failed with Status Code:", response.status);
+      dispatch({
+        type: BALANCE_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching balance data:", error);
+    dispatch({
+      type: BALANCE_FETCH_FAIL,
+    });
+  }
+};
+
+export const fetchMonthlyData = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/monthly_chart/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const monthlychartData = response.data;
+
+      console.log("monthlychart Data:", monthlychartData); // Log the retrieved data
+
+      dispatch({
+        type: MONTHLYCHART_FETCH_SUCCESS,
+        payload: monthlychartData,
+      });
+
+      return monthlychartData;
+    } else {
+      console.error("API Request Failed with Status Code:", response.status);
+      dispatch({
+        type: MONTHLYCHART_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching dashboaard data:", error);
+    dispatch({
+      type: MONTHLYCHART_FETCH_FAIL,
+    });
+  }
+};
+
+
 // Application authentication and authorization 
 
 export const load_user = () => async (dispatch) => {

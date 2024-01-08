@@ -4,6 +4,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import MoneyCard from '../dashboard/cards/MoneyCard';
 import DashboardCard from '../dashboard/cards/DashboardCard';
+import SaleMonthChart from '../dashboard/SaleMonthChart';
 
 const Home = ({ isAuthenticated, user }) => {
     const navigate = useNavigate();
@@ -43,6 +44,8 @@ const Home = ({ isAuthenticated, user }) => {
                     <MoneyCard/>
 
                     <DashboardCard/>
+
+                    <SaleMonthChart/>
                     
                 </div>
             

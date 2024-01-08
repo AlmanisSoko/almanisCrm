@@ -119,8 +119,8 @@ const Invoice = ({ isAuthenticated, fetchAllInvoice, customer, invoice, saveInvo
             const response = await saveInvoice(customer_id, invoice_details);
     
             console.log('API Response:', response);
-            if (response && response.error !== undefined) {
-                if (response.error === false) {
+            if (response && response.success !== undefined) {
+                if (response.success === true) {
                     toast.success('Invoice Added Successfully', { toastId: 'success' });
                     setButtonText('Invoice Added Successfully'); // Change button text
                     setSubmitSuccess(true);
