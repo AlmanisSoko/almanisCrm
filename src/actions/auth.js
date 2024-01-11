@@ -276,6 +276,40 @@ export const fetchMonthlyData = () => async (dispatch, getState) => {
   }
 };
 
+export const fetchCustomerRegion = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/customers_region/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const monthlychartData = response.data;
+
+      console.log("monthlychart Data:", monthlychartData); // Log the retrieved data
+
+      dispatch({
+        type: MONTHLYCHART_FETCH_SUCCESS,
+        payload: monthlychartData,
+      });
+
+      return monthlychartData;
+    } else {
+      console.error("API Request Failed with Status Code:", response.status);
+      dispatch({
+        type: MONTHLYCHART_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching dashboaard data:", error);
+    dispatch({
+      type: MONTHLYCHART_FETCH_FAIL,
+    });
+  }
+};
 
 // Application authentication and authorization 
 

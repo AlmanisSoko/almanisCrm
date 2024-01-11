@@ -311,6 +311,7 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                     <div className="row">
                       <div className="col-md-6">
                         <div className="form-group">
+                          <label>Name</label>
                           <input
                             type="text"
                             name="name"
@@ -323,6 +324,7 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                       </div>
                       <div className="col-md-6">
                         <div className="form-group">
+                          <label>Phone</label>
                           <input
                             type="text"
                             name="phone"
@@ -339,6 +341,7 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                     <div className="row">
                       <div className="col-md-6">
                         <div className="form-group">
+                        <label>Secondary Phone</label>
                           <input
                             type="text"
                             name="secondary_phone"
@@ -351,6 +354,7 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                       </div>
                       <div className="col-md-6">
                         <div className="form-group">
+                        <label>Alternative Phone</label>
                           <input
                             type="text"
                             name="alternative_phone"
@@ -364,8 +368,9 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                     </div>
 
                     <div className="row">
-                    <div className="col-md-6">
+                      <div className="col-md-6">
                         <div className="form-group">
+                        <label>Town</label>
                           <input
                             type="text"
                             name="town"
@@ -379,6 +384,7 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                       </div>
                       <div className="col-md-6">
                         <div className="form-group">
+                        <label>Region</label>
                           <select
                               className="form-control"
                               name="region"
@@ -455,6 +461,11 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                               </th>
                               <th data-sortable="" style={{ width: '19%' }}>
                                 <a href="#" className="dataTable-sorter">
+                                  comment
+                                </a>
+                              </th>
+                              <th data-sortable="" style={{ width: '19%' }}>
+                                <a href="#" className="dataTable-sorter">
                                   Amount
                                 </a>
                               </th>
@@ -483,6 +494,9 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                                   </td>
                                   <td className="text-xs font-weight-bold">
                                     <span className="my-2 text-xs">{order.farmer.name}</span>
+                                  </td>
+                                  <td className="text-xs font-weight-bold">
+                                    <span className="my-2 text-xs">{order.comment}</span>
                                   </td>
                                   <td className="text-xs font-weight-bold">
                                     <span className="my-2 text-xs">{order.amount}</span>

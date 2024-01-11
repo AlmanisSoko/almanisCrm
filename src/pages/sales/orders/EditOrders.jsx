@@ -2,11 +2,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
-import { editOrder, fetchOrdersDetails, fetchFarmerOnly } from '../../../actions/auth';
+import { editOrder, fetchOrdersDetails, fetchFarmerOnly, fetchCustomerOnly } from '../../../actions/auth';
 import { toast } from 'react-toastify'; // Import ToastContainer
 import Select from 'react-select';
 
-const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchFarmerOnly, editOrder }) => {
+const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fetchFarmerOnly, editOrder }) => {
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -250,7 +250,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchFarmerOnly, edit
 
   // Update your useEffect for fetching batch data
   useEffect(() => {
-    const fetchBatchData = async () => {
+    const fetchFarmerData = async () => {
         try {
             const farmers = await fetchFarmerOnly();
             console.log(farmers)
@@ -260,7 +260,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchFarmerOnly, edit
         }
     };
 
-    fetchBatchData();
+    fetchFarmerData();
 }, [fetchFarmerOnly]);
 
 const handleFarmerSelect = (selectedOption) => {
@@ -272,6 +272,39 @@ const handleFarmerSelect = (selectedOption) => {
         });
         setSelectedFarmerOption(selectedOption);
     }
+};
+
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [customerOptions, setCustomerOptions] = useState([]);
+  const [selectedCustomerOptions, setSelectedCustomerOption] = useState(null);
+
+  // Update your useEffect for fetching batch data
+  useEffect(() => {
+    const fetchCustomerData = async () => {
+        try {
+            const customers = await fetchCustomerOnly();
+            console.log(customers)
+            setCustomerOptions(customers);
+        } catch (error) {
+            console.error('Error fetching batch data:', error);
+        }
+    };
+
+    fetchCustomerData();
+}, [fetchFarmerOnly]);
+
+const handleCustomerSelect = (selectedOption) => {
+  setSelectedCustomerOption(selectedOption);
+  if (selectedOption) {
+      const selectedCustomer = customerOptions.find(customer => customer.id === selectedOption.value);
+      setFormData({
+          ...formData,
+          customer_id: selectedOption.value,
+          name: selectedCustomer.name,
+          phone: selectedCustomer.phone,
+      });
+      setSelectedCustomerOption(selectedOption);
+  }
 };
 
   return (
@@ -294,8 +327,9 @@ const handleFarmerSelect = (selectedOption) => {
                   <h5 className="font-weight-bolder">Edit Order</h5>
                   <form  method="POST" onSubmit={onSubmit}>
                     <div className="row">
-                      <div className="col-md-5">
+                      <div className="col-md-4">
                         <div className="form-group">
+                        <label>Phone</label>
                           <input
                             type="text"
                             name="phone"
@@ -303,11 +337,13 @@ const handleFarmerSelect = (selectedOption) => {
                             className="form-control"
                             value={formData.phone}
                             onChange={onChange}
+                            readOnly
                           />
                         </div>
                       </div>
-                      <div className="col-md-5">
+                      <div className="col-md-4">
                         <div className="form-group">
+                        <label>Customer Name</label>
                           <input
                             type="text"
                             name="name"
@@ -315,19 +351,31 @@ const handleFarmerSelect = (selectedOption) => {
                             className="form-control"
                             value={formData.name}
                             onChange={onChange}
+                            readOnly
                           />
                         </div>
                       </div>
-                      <div className="col-md-2">
+                      <div className="col-md-4">
                         <div className="form-group">
-                          <input
-                            type="text"
-                            name="customer_id"
-                            placeholder="Customer No"
-                            className="form-control"
-                            disabled
-                            value={formData.customer_id}
-                          />
+                          <label>Customer Name/Number</label>
+                          <div className="input-group">
+                            <Select
+                                id="customer_id"
+                                name="customer_id"
+                                className="form-control"
+                                value={{
+                                    value: formData && formData.customer_id,
+                                    label: formData && customerOptions.find(customer => customer.id === formData.customer_id)?.name
+                                }}
+                                options={customerOptions && customerOptions.map(customer => ({
+                                    value: customer.id,
+                                    label: customer.name
+                                }))}
+                                onChange={handleCustomerSelect}
+                                placeholder="--- Search Customer ---"
+                                isClearable
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -335,6 +383,7 @@ const handleFarmerSelect = (selectedOption) => {
                     <div className="row">
                       <div className="col-md-6">
                           <div className="form-group">
+                          <label>Town</label>
                               <input
                                   type="text"
                                   className="form-control"
@@ -349,6 +398,7 @@ const handleFarmerSelect = (selectedOption) => {
                       </div>
                       <div className="col-md-6">
                           <div className="form-group">
+                            <label>Kgs</label>
                               <input
                                   type="text"
                                   className="form-control"
@@ -362,6 +412,7 @@ const handleFarmerSelect = (selectedOption) => {
                       </div>
                       <div className="col-md-6">
                           <div className="form-group">
+                            <label>Packaging</label>
                               <input
                                   type="text"
                                   className="form-control"
@@ -375,6 +426,7 @@ const handleFarmerSelect = (selectedOption) => {
                       </div>
                       <div className="col-md-6">
                         <div className="form-group">
+                        <label>Discount</label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -391,6 +443,7 @@ const handleFarmerSelect = (selectedOption) => {
                     <div className="row">
                         <div className="col-md-6">
                             <div className="form-group">
+                            <label>Transport</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -404,6 +457,7 @@ const handleFarmerSelect = (selectedOption) => {
                         </div>
                         <div className="col-md-6">
                             <div className="form-group">
+                                <label>Transporters</label>
                                 <div className="input-group">
                                     <select
                                         className="form-control"
@@ -421,6 +475,7 @@ const handleFarmerSelect = (selectedOption) => {
                         </div>
                         <div className="col-md-6">
                             <div className="form-group">
+                                <label>Rider</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -434,6 +489,7 @@ const handleFarmerSelect = (selectedOption) => {
                         </div>
                         <div className="col-md-6">
                             <div className="form-group">
+                                <label>Comments</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -451,6 +507,7 @@ const handleFarmerSelect = (selectedOption) => {
                     <div className="row">
                         <div className="col-md-6">
                             <div className="form-group">
+                                <label>Farmer</label>
                                 <div className="input-group">
                                   <Select
                                       id="farmer_id"
@@ -464,13 +521,6 @@ const handleFarmerSelect = (selectedOption) => {
                                           value: farmer.id,
                                           label: farmer.name
                                       }))}
-                                      // onChange={selectedOption => {
-                                      //     if (selectedOption) {
-                                      //         // Update the selected fa with the new fa_id
-                                      //         const updatedFarmer = { ...formData, farmer_id: selectedOption.value };
-                                      //         setSelectedFarmer(updatedFarmer);
-                                      //     }
-                                      // }}
                                       onChange={handleFarmerSelect}
                                       placeholder="--- Search Farmer ---"
                                       isClearable
@@ -480,6 +530,7 @@ const handleFarmerSelect = (selectedOption) => {
                         </div>
                         <div className="col-md-6">
                             <div className="form-group">
+                                <label>Rice Type</label>
                                 <div className="input-group">
                                     <select
                                         className="form-control"
@@ -497,6 +548,7 @@ const handleFarmerSelect = (selectedOption) => {
                         </div>
                         <div className="col-md-6">
                             <div className="form-group">
+                                <label>V.A.T</label>
                                 <div className="input-group">
                                     <select
                                         className="form-control"
@@ -515,6 +567,7 @@ const handleFarmerSelect = (selectedOption) => {
                         
                         <div className="col-md-6">
                             <div className="form-group">
+                                <label>Farmer Price</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -529,6 +582,7 @@ const handleFarmerSelect = (selectedOption) => {
                         </div>
                         <div className="col-md-6">
                             <div className="form-group">
+                                <label>Almanis Price</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -542,6 +596,7 @@ const handleFarmerSelect = (selectedOption) => {
                         </div>
                         <div className="col-md-6">
                             <div className="form-group">
+                                <label>Amount</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -578,6 +633,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchFarmerOnly: () => dispatch(fetchFarmerOnly()),
+  fetchCustomerOnly: () => dispatch(fetchCustomerOnly()),
   fetchOrdersDetails: (orders_id) => dispatch(fetchOrdersDetails(orders_id)),
   editOrder: (orders_id, name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount) =>
     dispatch(editOrder(orders_id, name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount)),

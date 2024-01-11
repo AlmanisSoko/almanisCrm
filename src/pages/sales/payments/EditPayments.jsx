@@ -2,11 +2,11 @@ import React, { useEffect, useState, useRef  } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom'; // Import useNavigate
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
-import AutoCompleteOrder from '../../../components/order/AutoCompleteOrder';
-import { editPayment, fetchPaymentDetails } from '../../../actions/auth';
+import Select from 'react-select';
+import { editPayment, fetchPaymentDetails, fetchCustomerOnly } from '../../../actions/auth';
 import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer
 
-const EditPayments = ({ isAuthenticated, fetchPaymentDetails, editPayment }) => {
+const EditPayments = ({ isAuthenticated, fetchPaymentDetails, fetchCustomerOnly, editPayment }) => {
     const navigate = useNavigate(); // Get the navigate function
     
     const { id } = useParams();
@@ -133,6 +133,38 @@ const EditPayments = ({ isAuthenticated, fetchPaymentDetails, editPayment }) => 
     // Apply media queries
     const mediaQuery = window.matchMedia('(min-width: 768px)');
 
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [customerOptions, setCustomerOptions] = useState([]);
+    const [selectedCustomerOptions, setSelectedCustomerOption] = useState(null);
+
+    // Update your useEffect for fetching batch data
+    useEffect(() => {
+        const fetchCustomerData = async () => {
+            try {
+                const customers = await fetchCustomerOnly();
+                console.log(customers)
+                setCustomerOptions(customers);
+            } catch (error) {
+                console.error('Error fetching batch data:', error);
+            }
+        };
+
+        fetchCustomerData();
+    }, [fetchCustomerOnly]);
+
+    const handleCustomerSelect = (selectedOption) => {
+    setSelectedCustomerOption(selectedOption);
+    if (selectedOption) {
+        const selectedCustomer = customerOptions.find(customer => customer.id === selectedOption.value);
+        setFormData({
+            ...formData,
+            customer_id: selectedOption.value,
+        });
+        setSelectedCustomerOption(selectedOption);
+    }
+    };
+
+
     return (
         <div>
             <div className="min-height-300 bg-dark position-absolute w-100"></div>
@@ -187,19 +219,30 @@ const EditPayments = ({ isAuthenticated, fetchPaymentDetails, editPayment }) => 
                                         <div className="row">
                                             <div className="col-md-6">
                                                 <div className="form-group">
-                                                    <input
-                                                        type="text" 
-                                                        name='customer_id' 
-                                                        placeholder="Customer" 
-                                                        className="form-control"
-                                                        value={formData.customer_id} 
-                                                        onChange={onChange}
-                                                        disabled
-                                                    />
+                                                    <label>Customer Name/Number</label>
+                                                    <div className="input-group">
+                                                        <Select
+                                                            id="customer_id"
+                                                            name="customer_id"
+                                                            className="form-control"
+                                                            value={{
+                                                                value: formData && formData.customer_id,
+                                                                label: formData && customerOptions.find(customer => customer.id === formData.customer_id)?.name
+                                                            }}
+                                                            options={customerOptions && customerOptions.map(customer => ({
+                                                                value: customer.id,
+                                                                label: customer.name
+                                                            }))}
+                                                            onChange={handleCustomerSelect}
+                                                            placeholder="--- Search Customer ---"
+                                                            isClearable
+                                                        />
+                                                    </div>    
                                                 </div>
                                             </div>
                                             <div className="col-md-6">
                                                 <div className="form-group">
+                                                    <label>Paying Name/ Number</label>
                                                     <input 
                                                         type="text" 
                                                         name='paying_number' 
@@ -216,6 +259,7 @@ const EditPayments = ({ isAuthenticated, fetchPaymentDetails, editPayment }) => 
                                         <div className="row">
                                             <div className="col-md-6">
                                                 <div className="form-group">
+                                                    <label>Payment Mode</label>
                                                     <div className='input-group'>
                                                         <select 
                                                             className='form-control' 
@@ -228,12 +272,17 @@ const EditPayments = ({ isAuthenticated, fetchPaymentDetails, editPayment }) => 
                                                             <option value="1">Cash</option>
                                                             <option value="2">Mpesa</option>
                                                             <option value="3">Bank</option>
+                                                            <option value="4">Barter Trade</option>
+                                                            <option value="5">Promotion</option>
+                                                            <option value="6">Compensation</option>
+                                                            <option value="7">Top UP</option>
                                                         </select>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="col-md-6">
                                                 <div className="form-group">
+                                                    <label>Payment</label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control" 
@@ -273,6 +322,7 @@ const mapStateToProps = state => ({
   });
   
   const mapDispatchToProps = (dispatch) => ({
+    fetchCustomerOnly: () => dispatch(fetchCustomerOnly()),
     fetchPaymentDetails: (payments_id) => dispatch(fetchPaymentDetails(payments_id)),
     editPayment: (payments_id, orders_id, paying_number, amount, payment_mode, payment, customer_id,) =>
         dispatch(editPayment(payments_id, orders_id, paying_number, amount, payment_mode, payment, customer_id,)),
