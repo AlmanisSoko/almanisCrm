@@ -65,7 +65,7 @@ const TFCcard = ({ isAuthenticated, fetchHomePage }) => {
                                     </span> 
                                     <span className="text-lg ms-n2"></span>
                                 </h1>
-                                <h6 className="mb-0 font-weight-bolder">Trays Collected Today</h6>
+                                <h6 className="mb-0 font-weight-bolder">Inhouse Transport</h6>
                                 <p className="opacity-8 mb-0 text-sm"></p>
                             </div>
                         </div>
@@ -78,7 +78,7 @@ const TFCcard = ({ isAuthenticated, fetchHomePage }) => {
                                     <span id="status4" countto="417">{othersTransport}</span> 
                                     <span className="text-lg ms-n2"></span>
                                 </h1>
-                                <h6 className="mb-0 font-weight-bolder">Collected Eggs Today</h6>
+                                <h6 className="mb-0 font-weight-bolder">Other Transport</h6>
                                 <p className="opacity-8 mb-0 text-sm"></p>
                             </div>
                         </div>

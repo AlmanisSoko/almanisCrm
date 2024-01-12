@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import YearlySalesChart from '../../components/charts/YearlySalesChart';
+import CustomerRegionChart from '../../components/charts/CustomerRegionChart';
 
 
 const SaleMonthChart = ({ isAuthenticated, fetchCustomerRegion}) => {
     const navigate = useNavigate();
+
+    const [currentDate, setCurrentDate] = useState(new Date());
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -34,7 +37,30 @@ const SaleMonthChart = ({ isAuthenticated, fetchCustomerRegion}) => {
             </div>
 
             <div class="col-sm-5 mt-sm-0 mt-4">
-                
+                <div class="card h-100">
+                    <div class="card-header mt-4 pb-0 p-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="mb-0">Customer Location Graph</h6>
+                            </div>
+                            <div class="col-md-6 d-flex justify-content-end align-items-center">
+                                <i class="far fa-calendar-alt me-2" aria-hidden="true"></i>
+                                <small>{currentDate.toLocaleDateString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric'
+                                    })}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-3">
+                        <div className="chart mt-4">
+                            <CustomerRegionChart className="chart-canvas" height="100" width="100"/>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )
