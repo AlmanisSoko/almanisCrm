@@ -59,6 +59,7 @@ import {
     YEARLYCHART_FETCH_SUCCESS, YEARLYCHART_FETCH_FAIL,
     TRAYS_SOLD_FETCH_SUCCESS, TRAYS_SOLD_FETCH_FAIL,
     OVERPAID_FETCH_SUCCESS, OVERPAID_FETCH_FAIL,
+    DEBTORS_FETCH_SUCCESS, DEBTORS_FETCH_FAIL
 
 } from '../actions/types'
 
@@ -74,6 +75,7 @@ const initialState = {
     orders: [],
     payments: [],
     invoice: [], 
+    debtors: [],
 }
 
 export default function (state = initialState, action) {
@@ -620,6 +622,19 @@ export default function (state = initialState, action) {
             return {
                 ...state,
             }
+
+           
+        case DEBTORS_FETCH_SUCCESS:
+            return {
+                ...state,
+                debtors: payload.data
+            }
+
+        case DEBTORS_FETCH_FAIL:
+            return {
+                ...state,
+            } 
+
     
         default:
             return state;

@@ -4,7 +4,6 @@ import HeaderNav from '../../components/HeaderNav';
 import { connect } from 'react-redux';
 import { fetchAllOrders, deleteOrder } from '../../actions/auth';
 import { useDownloadExcel } from 'react-export-table-to-excel';
-import { ExportCSV } from '../../components/csv/ExportCSV';
 
 const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
     const navigate = useNavigate();

@@ -7,6 +7,8 @@ import { Provider } from 'react-redux';
 import { load_user } from './actions/auth'; // Import the load_user action
 import './assets/css/argon-dashboard.min9c7f.css'
 import Layout from './hoc/Layout';
+import Balance from './pages/dashboard/money/Balance';
+import Debtors from './pages/sales/payments/Debtors';
 
 // Lazy-loaded components
 const Login = lazy(() => import('./pages/auth/Login'));
@@ -80,6 +82,8 @@ function App() {
                 <Route exact path="/payments" element={<Payments />}/>
                 <Route exact path="/addpayment" element={<AddPayments />}/>
                 <Route exact path="/paymentsdetails/:id" element={<EditPayments />}/>
+                <Route exact path="/balance" element={<Balance />}/>
+                <Route exact path="/debtors-list" element={<Debtors />}/>
 
                 {/* Invoice */}         
                 <Route exact path="/invoice" element={<Invoice />} />

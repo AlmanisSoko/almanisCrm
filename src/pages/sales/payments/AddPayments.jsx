@@ -229,6 +229,10 @@ const AddPayments = ({ isAuthenticated, savePayment }) => {
                                                             <option value="1">Cash</option>
                                                             <option value="2">Mpesa</option>
                                                             <option value="3">Bank</option>
+                                                            <option value="4">Barter Trade</option>
+                                                            <option value="5">Promotion</option>
+                                                            <option value="6">Compensation</option>
+                                                            <option value="7">Top UP</option>
                                                         </select>
                                                     </div>
                                                 </div>

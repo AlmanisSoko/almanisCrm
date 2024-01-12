@@ -61,6 +61,7 @@ import {
      YEARLYCHART_FETCH_SUCCESS, YEARLYCHART_FETCH_FAIL,
      TRAYS_SOLD_FETCH_SUCCESS, TRAYS_SOLD_FETCH_FAIL,
      OVERPAID_FETCH_SUCCESS, OVERPAID_FETCH_FAIL,
+     DEBTORS_FETCH_SUCCESS, DEBTORS_FETCH_FAIL
 
 } from './types';
 
@@ -281,6 +282,146 @@ export const fetchCustomerRegion = () => async (dispatch, getState) => {
 
   try {
     const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/customers_region/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const monthlychartData = response.data;
+
+      console.log("monthlychart Data:", monthlychartData); // Log the retrieved data
+
+      dispatch({
+        type: MONTHLYCHART_FETCH_SUCCESS,
+        payload: monthlychartData,
+      });
+
+      return monthlychartData;
+    } else {
+      console.error("API Request Failed with Status Code:", response.status);
+      dispatch({
+        type: MONTHLYCHART_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching dashboaard data:", error);
+    dispatch({
+      type: MONTHLYCHART_FETCH_FAIL,
+    });
+  }
+};
+
+export const fetchDebtors = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/total-balance/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const monthlychartData = response.data;
+
+      console.log("monthlychart Data:", monthlychartData); // Log the retrieved data
+
+      dispatch({
+        type: MONTHLYCHART_FETCH_SUCCESS,
+        payload: monthlychartData,
+      });
+
+      return monthlychartData;
+    } else {
+      console.error("API Request Failed with Status Code:", response.status);
+      dispatch({
+        type: MONTHLYCHART_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching dashboaard data:", error);
+    dispatch({
+      type: MONTHLYCHART_FETCH_FAIL,
+    });
+  }
+};
+
+export const fetchDebtorsList = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/debtors/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const debtors = response.data;
+
+      console.log("monthlychart Data:", debtors); // Log the retrieved data
+
+      dispatch({
+        type: DEBTORS_FETCH_SUCCESS,
+        payload: debtors,
+      });
+
+      return debtors;
+    } else {
+      console.error("API Request Failed with Status Code:", response.status);
+      dispatch({
+        type: DEBTORS_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching dashboaard data:", error);
+    dispatch({
+      type: DEBTORS_FETCH_FAIL,
+    });
+  }
+};
+
+export const fetchOverdue = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/overpaid/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const monthlychartData = response.data;
+
+      console.log("monthlychart Data:", monthlychartData); // Log the retrieved data
+
+      dispatch({
+        type: MONTHLYCHART_FETCH_SUCCESS,
+        payload: monthlychartData,
+      });
+
+      return monthlychartData;
+    } else {
+      console.error("API Request Failed with Status Code:", response.status);
+      dispatch({
+        type: MONTHLYCHART_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching dashboaard data:", error);
+    dispatch({
+      type: MONTHLYCHART_FETCH_FAIL,
+    });
+  }
+};
+
+export const fetchOverdueList = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/overpaid/`, {
       headers: {
         Authorization: `Bearer ${access}`,
       },

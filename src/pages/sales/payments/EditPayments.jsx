@@ -190,6 +190,7 @@ const EditPayments = ({ isAuthenticated, fetchPaymentDetails, fetchCustomerOnly,
                                         <div className="row">
                                             <div className="col-md-6">
                                                 <div className="form-group">
+                                                    <label>Order Number</label>
                                                     <input
                                                         type="text"
                                                         name="orders_id"
@@ -202,6 +203,7 @@ const EditPayments = ({ isAuthenticated, fetchPaymentDetails, fetchCustomerOnly,
                                             </div>
                                             <div className="col-md-6">
                                                 <div className="form-group">
+                                                    <label>Order Amount</label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control" 

@@ -147,7 +147,10 @@ const DashboardCard = ({ isAuthenticated, fetchDiscount, fetchTotalKilos, fetchU
                                             </div>
                                             
                                             <div className="col-4 text-start">
-                                                <div className="icon icon-shape bg-gradient-warning shadow-primary text-center rounded-circle">
+                                                <div 
+                                                    className="icon icon-shape bg-gradient-warning shadow-primary text-center rounded-circle"
+                                                    onClick={() => navigate('/balance')}
+                                                >
                                                     <i className="fa-solid fa-building-columns text-white text-lg opacity-10" aria-hidden="true"></i>
                                                 </div>
                                             </div>

@@ -21,6 +21,7 @@ function HeaderNav({ user }) {
       '/invoice': 'Invoice',
       '/farmer': 'Farmers List',
       '/analytics': 'Packaging, Kilos & Transport Analysis',
+      '/debtors-list': 'Current Debt'
     };
 
     if (id) {
