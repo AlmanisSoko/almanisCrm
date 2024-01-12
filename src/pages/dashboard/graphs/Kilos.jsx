@@ -1,9 +1,9 @@
 import React from 'react'
 import HeaderNav from '../../../components/HeaderNav'
-import YearlyFarmer from '../../../components/charts/farmers/YearlyFarmer';
-import MonthlyFarmer from '../../../components/charts/farmers/MonthlyFarmer';
+import YearlyKilos from '../../../components/charts/kilos/YearlyKilos';
+import MonthlyKilos from '../../../components/charts/kilos/MonthlyKilos';
 
-function PaidFarmers() {
+function Kilos() {
     const desktopStyle = {
         width: 'calc(100% - 265px)',
         marginLeft: '265px',
@@ -26,7 +26,7 @@ function PaidFarmers() {
                     <div className="col-12 col-lg-12 mb-4 mb-lg-0">
                         <div className="card z-index-2 h-100">
                             <div className="card-header pb-0 pt-3 bg-transparent">
-                                <h6 className="text-capitalize">Monthly Paid To Farmers overview</h6>
+                                <h6 className="text-capitalize">Monthly Kilos overview</h6>
                                 <p className="text-sm mb-0">
                                     <i className="fa fa-arrow-up text-success" aria-hidden="true"></i>
                                     <span className="font-weight-bold">4% more</span> in 2023
@@ -34,7 +34,7 @@ function PaidFarmers() {
                             </div>
                             <div className="card-body p-3">
                                 <div className="chart">
-                                    <MonthlyFarmer className="chart-canvas" height="100" width="3992" style={{display: "block", boxSizing: "border-box", height: "300px", width: "1996.2px"}}/>
+                                    <MonthlyKilos className="chart-canvas" height="100" width="3992" style={{display: "block", boxSizing: "border-box", height: "300px", width: "1996.2px"}}/>
                                 </div>
                             </div>
                         </div>
@@ -45,7 +45,7 @@ function PaidFarmers() {
                     <div className="col-12 col-lg-12 mb-4 mb-lg-0">
                         <div className="card z-index-2 h-100">
                             <div className="card-header pb-0 pt-3 bg-transparent">
-                                <h6 className="text-capitalize">Yearly Paid To Farmers overview</h6>
+                                <h6 className="text-capitalize">Yearly Kilos overview</h6>
                                 <p className="text-sm mb-0">
                                     <i className="fa fa-arrow-up text-success" aria-hidden="true"></i>
                                     <span className="font-weight-bold">4% more</span> in 2023
@@ -53,7 +53,7 @@ function PaidFarmers() {
                             </div>
                             <div className="card-body p-3">
                                 <div className="chart">
-                                    <YearlyFarmer className="chart-canvas" height="100" width="3992" style={{display: "block", boxSizing: "border-box", height: "300px", width: "1996.2px"}}/>
+                                    <YearlyKilos className="chart-canvas" height="100" width="3992" style={{display: "block", boxSizing: "border-box", height: "300px", width: "1996.2px"}}/>
                                 </div>
                             </div>
                         </div>
@@ -64,4 +64,4 @@ function PaidFarmers() {
     )
 }
 
-export default PaidFarmers
+export default Kilos

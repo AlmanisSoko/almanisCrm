@@ -26,7 +26,7 @@ function Profit() {
                     <div className="col-12 col-lg-12 mb-4 mb-lg-0">
                         <div className="card z-index-2 h-100">
                             <div className="card-header pb-0 pt-3 bg-transparent">
-                                <h6 className="text-capitalize">Yearly Profit overview</h6>
+                                <h6 className="text-capitalize">Monthly Profit overview</h6>
                                 <p className="text-sm mb-0">
                                     <i className="fa fa-arrow-up text-success" aria-hidden="true"></i>
                                     <span className="font-weight-bold">4% more</span> in 2023
