@@ -26,7 +26,8 @@ function HeaderNav({ user }) {
       '/profit': 'Profit',
       '/paidfarmers': 'Farmers Graph',
       '/overheads': 'Over Heads',
-      '/kilos': 'Kilos'
+      '/kilos': 'Kilos',
+      '/discount': 'Discount'
     };
 
     if (id) {
