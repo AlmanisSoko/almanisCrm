@@ -23,7 +23,8 @@ function HeaderNav({ user }) {
       '/analytics': 'Packaging, Kilos & Transport Analysis',
       '/debtors-list': 'Current Debt',
       '/balance': 'Balance',
-      '/profit': 'Profit'
+      '/profit': 'Profit',
+      '/paidfarmers': 'Farmers Graph'
     };
 
     if (id) {
