@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import MoneyCard from '../dashboard/cards/MoneyCard';
 import DashboardCard from '../dashboard/cards/DashboardCard';
 import SaleMonthChart from '../dashboard/SaleMonthChart';
+import TFCcard from '../dashboard/cards/TFCcard';
 
 const Home = ({ isAuthenticated, user }) => {
     const navigate = useNavigate();
@@ -46,6 +47,8 @@ const Home = ({ isAuthenticated, user }) => {
                     <DashboardCard/>
 
                     <SaleMonthChart/>
+
+                    <TFCcard/>
                     
                 </div>
             

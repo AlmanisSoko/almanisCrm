@@ -452,6 +452,76 @@ export const fetchOverdueList = () => async (dispatch, getState) => {
   }
 };
 
+export const fetchHomePage = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/home_api/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const balanceData = response.data;
+
+      console.log("Balance Data:", balanceData); // Log the retrieved data
+
+      dispatch({
+        type: BALANCE_FETCH_SUCCESS,
+        payload: balanceData,
+      });
+
+      return balanceData;
+    } else {
+      console.error("API Request Failed with Status Code:", response.status);
+      dispatch({
+        type: BALANCE_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching balance data:", error);
+    dispatch({
+      type: BALANCE_FETCH_FAIL,
+    });
+  }
+};
+
+export const fetchYearlyData = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/yearly_chart/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const yearlychartData = response.data;
+
+      console.log("yearlychart Data:", yearlychartData); // Log the retrieved data
+
+      dispatch({
+        type: YEARLYCHART_FETCH_SUCCESS,
+        payload: yearlychartData,
+      });
+
+      return yearlychartData;
+    } else {
+      console.error("API Request Failed with Status Code:", response.status);
+      dispatch({
+        type: YEARLYCHART_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching dashboaard data:", error);
+    dispatch({
+      type: YEARLYCHART_FETCH_FAIL,
+    });
+  }
+};
+
 // Application authentication and authorization 
 
 export const load_user = () => async (dispatch) => {
