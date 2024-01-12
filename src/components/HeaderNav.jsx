@@ -24,7 +24,8 @@ function HeaderNav({ user }) {
       '/debtors-list': 'Current Debt',
       '/balance': 'Balance',
       '/profit': 'Profit',
-      '/paidfarmers': 'Farmers Graph'
+      '/paidfarmers': 'Farmers Graph',
+      '/overheads': 'Over Heads'
     };
 
     if (id) {

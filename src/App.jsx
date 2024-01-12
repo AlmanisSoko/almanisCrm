@@ -35,6 +35,7 @@ const Balance = lazy(() => import('./pages/dashboard/money/Balance'))
 const Debtors = lazy(() => import('./pages/sales/payments/Debtors'))
 const Profit = lazy(() => import('./pages/dashboard/graphs/Profit'))
 const PaidFarmers = lazy(() => import('./pages/dashboard/graphs/PiadFarmers'))
+const Overheads = lazy(() => import('./pages/dashboard/graphs/Overheads'))
 
 function App() {
   useEffect(() => {
@@ -95,6 +96,7 @@ function App() {
                 <Route exact path="/analytics" element={<Analytics />} />
                 <Route exact path="/profit" element={<Profit />} />
                 <Route exact path="/paidfarmers" element={<PaidFarmers />} />
+                <Route exact path="/overheads" element={<Overheads />} />
 
               </Routes>
             </Layout>
