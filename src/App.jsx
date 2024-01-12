@@ -38,6 +38,7 @@ const PaidFarmers = lazy(() => import('./pages/dashboard/graphs/PiadFarmers'))
 const Overheads = lazy(() => import('./pages/dashboard/graphs/Overheads'))
 const Kilos = lazy(() => import('./pages/dashboard/graphs/Kilos'))
 const Discount = lazy(() => import('./pages/dashboard/graphs/Discount'))
+const PaymentBreakdown = lazy(() => import('./pages/dashboard/money/PaymentBreakdown'))
 
 function App() {
   useEffect(() => {
@@ -101,6 +102,7 @@ function App() {
                 <Route exact path="/overheads" element={<Overheads />} />
                 <Route exact path="/kilos" element={<Kilos />} />
                 <Route exact path="/discount" element={<Discount />} />
+                <Route exact path="/total" element={<PaymentBreakdown />} />
 
               </Routes>
             </Layout>
