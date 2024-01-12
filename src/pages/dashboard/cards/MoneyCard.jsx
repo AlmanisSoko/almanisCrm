@@ -65,7 +65,7 @@ const MoneyCard = ({ isAuthenticated, fetchDashboard }) => {
                         <div className="col-lg-3 col-md-6 col-12">
                             <div className="card  mb-4">
                                 <div className="card-body p-3">
-                                    <div className="row">
+                                    <div className="row cursor-pointer" onClick={() => navigate('/profit')}>
                                         <div className="col-8">
                                             <div className="numbers">
                                                 <p className="text-sm mb-0 text-uppercase font-weight-bold">Gross profit</p>
@@ -84,8 +84,7 @@ const MoneyCard = ({ isAuthenticated, fetchDashboard }) => {
                                         </div>
                                         <div className="col-4 text-end">
                                             <div 
-                                                className="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle"
-                                                onClick={() => navigate('/profit')}
+                                                className="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle" 
                                             >
                                                 <i className="fa-solid fa-chart-line text-lg opacity-10" aria-hidden="true"></i>
                                             </div>
@@ -98,7 +97,7 @@ const MoneyCard = ({ isAuthenticated, fetchDashboard }) => {
                         <div className="col-lg-3 col-md-6 col-12">
                             <div className="card  mb-4">
                                 <div className="card-body p-3">
-                                    <div className="row">
+                                    <div className="row cursor-pointer" onClick={() => navigate('/paidfarmers')}>
                                         <div className="col-8">
                                             <div className="numbers">
                                                 <p className="text-sm mb-0 text-uppercase font-weight-bold">Paid To Farmers</p>
@@ -118,7 +117,6 @@ const MoneyCard = ({ isAuthenticated, fetchDashboard }) => {
                                         <div className="col-4 text-end">
                                             <div 
                                                 className="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle"
-                                                onClick={() => navigate('/paidfarmers')}
                                             >
                                                 <i className="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
                                             </div>
@@ -131,7 +129,7 @@ const MoneyCard = ({ isAuthenticated, fetchDashboard }) => {
                         <div className="col-lg-3 col-md-6 col-12">
                             <div className="card  mb-4">
                                 <div className="card-body p-3">
-                                    <div className="row">
+                                    <div className="row cursor-pointer" onClick={() => navigate('/overheads')}>
                                         <div className="col-8">
                                             <div className="numbers">
                                                 <p className="text-sm mb-0 text-uppercase font-weight-bold">Total Overheads</p>
@@ -151,7 +149,6 @@ const MoneyCard = ({ isAuthenticated, fetchDashboard }) => {
                                         <div className="col-4 text-end">
                                             <div 
                                                 className="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle"
-                                                onClick={() => navigate('/overheads')}
                                             >
                                                 <i className="fa-solid fa-truck-fast text-lg opacity-10" aria-hidden="true"></i>
                                             </div>

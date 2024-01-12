@@ -44,7 +44,7 @@ const DashboardCard = ({ isAuthenticated, fetchDiscount, fetchTotalKilos, fetchU
                                 <div className="row">
 
                                     <div className="col-3">
-                                        <div className="row">
+                                        <div className="row cursor-pointer" onClick={() => navigate('/discount')}>
                                             <div className="col-8">
                                                 <div className="numbers">
                                                     <p className="text-sm mb-0 text-end text-uppercase font-weight-bold">Total Discount</p>
@@ -72,7 +72,7 @@ const DashboardCard = ({ isAuthenticated, fetchDiscount, fetchTotalKilos, fetchU
                                     </div>
 
                                     <div className="col-3">
-                                        <div className="row">
+                                        <div className="row cursor-pointer" onClick={() => navigate('/total')}>
                                             <div className="col-8">
                                                 <div className="numbers">
                                                     <p className="text-sm mb-0 text-end text-uppercase font-weight-bold">Total Paid</p>
@@ -100,17 +100,15 @@ const DashboardCard = ({ isAuthenticated, fetchDiscount, fetchTotalKilos, fetchU
                                     </div>
 
                                     <div className="col-3">
-                                        <div className="row">
+                                        <div className="row cursor-pointer" onClick={() => navigate('/kilos')}>
                                             <div className="col-8">
                                                 <div className="numbers">
                                                     <p className="text-sm mb-0 text-end text-uppercase font-weight-bold">Total Kilos</p>
                                                     <h5 className="font-weight-bolder text-end">
                                                         {Number(totalKilos).toLocaleString('en-KE', {
-                                                            // style: 'currency',
-                                                            // currency: 'Kgs',
                                                             minimumFractionDigits: 2,
                                                             maximumFractionDigits: 2,
-                                                        })} Kgs
+                                                        }) + ' kgs'} 
                                                     </h5>
                                                     <p className="mb-0">
                                                         <span className="text-success text-sm font-weight-bolder"></span>
@@ -128,7 +126,7 @@ const DashboardCard = ({ isAuthenticated, fetchDiscount, fetchTotalKilos, fetchU
                                     </div>
 
                                     <div className="col-3">
-                                        <div className="row">
+                                        <div className="row cursor-pointer" onClick={() => navigate('/balance')}>
                                             <div className="col-8">
                                                 <div className="numbers">
                                                     <p className="text-sm mb-0 text-end text-uppercase font-weight-bold">Balance</p>
@@ -149,7 +147,6 @@ const DashboardCard = ({ isAuthenticated, fetchDiscount, fetchTotalKilos, fetchU
                                             <div className="col-4 text-start">
                                                 <div 
                                                     className="icon icon-shape bg-gradient-warning shadow-primary text-center rounded-circle"
-                                                    onClick={() => navigate('/balance')}
                                                 >
                                                     <i className="fa-solid fa-building-columns text-white text-lg opacity-10" aria-hidden="true"></i>
                                                 </div>

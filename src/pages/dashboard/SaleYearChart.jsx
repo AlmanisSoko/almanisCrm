@@ -5,7 +5,7 @@ import YearlySalesChart from '../../components/charts/YearlySalesChart';
 import CustomerRegionChart from '../../components/charts/CustomerRegionChart';
 
 
-const SaleMonthChart = ({ isAuthenticated, fetchCustomerRegion}) => {
+const SaleMonthChart = ({ isAuthenticated }) => {
     const navigate = useNavigate();
 
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -15,7 +15,7 @@ const SaleMonthChart = ({ isAuthenticated, fetchCustomerRegion}) => {
             navigate('/');
         }
 
-    }, [isAuthenticated, navigate, fetchCustomerRegion])
+    }, [isAuthenticated, navigate])
 
     return (
         <div className="row mt-4">

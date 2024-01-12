@@ -7,8 +7,6 @@ import { Provider } from 'react-redux';
 import { load_user } from './actions/auth'; // Import the load_user action
 import './assets/css/argon-dashboard.min9c7f.css'
 import Layout from './hoc/Layout';
-import Balance from './pages/dashboard/money/Balance';
-import Debtors from './pages/sales/payments/Debtors';
 
 // Lazy-loaded components
 const Login = lazy(() => import('./pages/auth/Login'));
@@ -33,6 +31,9 @@ const EditPayments = lazy(() => import('./pages/sales/payments/EditPayments'))
 const Invoice = lazy(() => import('./pages/sales/invoice/Invoice'))
 const DownloadInvoice = lazy(() => import('./pages/sales/invoice/DownloadInvoice'))
 const Analytics = lazy(() => import('./pages/dashboard/Analytics'))
+const Balance = lazy(() => import('./pages/dashboard/money/Balance'))
+const Debtors = lazy(() => import('./pages/sales/payments/Debtors'))
+const Profit = lazy(() => import('./pages/dashboard/graphs/Profit'))
 
 function App() {
   useEffect(() => {
@@ -89,8 +90,9 @@ function App() {
                 <Route exact path="/invoice" element={<Invoice />} />
                 <Route exact path="/download-invoice/:id" element={<DownloadInvoice />} />
 
-                {/* Analytics & Dasboard */}         
+                {/* Analytics & Dashboard */}         
                 <Route exact path="/analytics" element={<Analytics />} />
+                <Route exact path="/profit" element={<Profit />} />
 
               </Routes>
             </Layout>
