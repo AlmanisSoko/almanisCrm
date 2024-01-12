@@ -10,8 +10,8 @@ const YearlySalesChart = ({ fetchYearlyData }) => {
 
   useEffect(() => {
     fetchYearlyData().then((response) => {
-      const { year_total, year_discount } = response;
-      setYearlyChartData({ year_total, year_discount });
+      const { year_total, year_farmer, year_profit, year_discount } = response;
+      setYearlyChartData({ year_total, year_farmer, year_profit, year_discount });
       setDataFetched(true);
     });
   }, [fetchYearlyData]); 
@@ -44,9 +44,10 @@ const YearlySalesChart = ({ fetchYearlyData }) => {
 
     // Define predefined colors for each dataset
     const colors = [
-      'rgba(75, 192, 192, 0.4)',
-      'rgba(0, 230, 64, 0.4)',
-      'rgba(180, 132, 55, 0.4)',
+      'rgba(75, 192, 192, 0.8)',
+      'rgba(0, 230, 64, 0.8)',
+      'rgba(180, 132, 55, 0.8)',
+      'rgba(0, 132, 105, 0.8)',
     ];
   
     const formattedData = Object.keys(data).map((key, index) => ({

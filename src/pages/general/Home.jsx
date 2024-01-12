@@ -6,6 +6,7 @@ import MoneyCard from '../dashboard/cards/MoneyCard';
 import DashboardCard from '../dashboard/cards/DashboardCard';
 import SaleMonthChart from '../dashboard/SaleMonthChart';
 import TFCcard from '../dashboard/cards/TFCcard';
+import SaleYearChart from '../dashboard/SaleYearChart';
 
 const Home = ({ isAuthenticated, user }) => {
     const navigate = useNavigate();
@@ -49,6 +50,8 @@ const Home = ({ isAuthenticated, user }) => {
                     <SaleMonthChart/>
 
                     <TFCcard/>
+                    
+                    <SaleYearChart/>
                     
                 </div>
             
