@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
 import { fetchCustomerDetails, editCustomer } from '../../../actions/auth';
-import { ToastContainer, toast } from 'react-toastify'; 
+import { toast } from 'react-toastify'; 
 import avatar from '../../../assets/svgs/undraw_male_avatar_g98d.svg'
 
 const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, editCustomer }) => {
@@ -295,6 +295,16 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                         <i className="ni ni-ui-04 me-2 text-dark opacity-6"></i>
                         Balance <span className="text-sm font-weight-bolder">: {Number(customers? customers.balance: 0).toLocaleString('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                       </a>
+                    </li>
+                    <li className="nav-item pt-2">
+                      <div className="text-body d-flex align-items-center" data-scroll="" href="#2fa">
+                        <button 
+                          className="btn bg-gradient-dark btn-lg w-100"
+                          onClick={() => navigate('/addpayment')}
+                        >
+                          Add Payment
+                        </button>
+                      </div>
                     </li>
                   </ul>
                 </div>

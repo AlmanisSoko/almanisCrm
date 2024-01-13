@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
 import { editOrder, fetchOrdersDetails, fetchFarmerOnly, fetchCustomerOnly } from '../../../actions/auth';
-import { toast } from 'react-toastify'; // Import ToastContainer
+import { toast } from 'react-toastify';
 import Select from 'react-select';
 
 const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fetchFarmerOnly, editOrder }) => {
@@ -24,18 +24,16 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
     comment: '',
     farmer_id: '',
     rice_type: '',
-    vat: 0, // Initialize with 0% VAT
+    vat: 0,
     farmer_price: '',
     price: '',
     amount: '',
   });
 
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const formRef = useRef(null); // Create a ref for the form
-  const [buttonText, setButtonText] = useState('Edit Order'); // Initial button text
-  const [isButtonDisabled, setButtonDisabled] = useState(false); // Button state
+  const [buttonText, setButtonText] = useState('Edit Order');
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
 
-  // Function to reset the form fields
   const resetForm = () => {
     setFormData({
       name: '',
@@ -44,7 +42,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
       town: '',
       kgs: '',
       discount: '',
-      vat: 0, // Initialize with 0% VAT
+      vat: 0,
       price: '',
       amount: '',
     });
@@ -57,20 +55,15 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
       ...formData,
       [name]: value,
     });
-    setSelectedFarmer({
-        ...selectedFarmer,
-        [name]: value,
-      });
   };
 
   const onSubmit = async (e) => {
-      e.preventDefault();
+    e.preventDefault();
 
-      try {
+    try {
       setButtonDisabled(true);
       console.log('form data', formData);
 
-      // Call the editOrder action with the order ID (id) and the updated order data
       const response = await editOrder(
         formData.name,
         formData.phone,
@@ -94,70 +87,103 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
       console.log('API Response:', response);
 
       if (response && response.error !== undefined) {
-          console.log('Error Value:', response.error);
-          console.log('Message:', response.message);
+        console.log('Error Value:', response.error);
+        console.log('Message:', response.message);
 
-          if (response.error === false) {
+        if (response.error === false) {
           toast.success(response.message, { toastId: 'success' });
           setButtonText('Order Edited Successfully');
           setSubmitSuccess(true);
 
           setTimeout(() => {
-              setButtonText('Edit Order');
-              setButtonDisabled(false);
-              setSubmitSuccess(false);
+            setButtonText('Edit Order');
+            setButtonDisabled(false);
+            setSubmitSuccess(false);
           }, 2000);
           navigate('/orders');
-          } else {
+        } else {
           toast.error(response.message, { toastId: 'error' });
-          }
+        }
       } else {
-          toast.error('Something went wrong. Check Your Network', { toastId: 'error' });
+        toast.error('Something went wrong. Check Your Network', { toastId: 'error' });
       }
-      } catch (error) {
+    } catch (error) {
       console.log('Error during form submission', error);
       toast.error('Something went wrong. Check Your Network', { toastId: 'error' });
-      setButtonDisabled(false); // Re-enable the button
-      }
+      setButtonDisabled(false);
+    }
   };
 
-  // Update the amount when any of the input fields change
   const handleKgsChange = (e) => {
-    const newFormData = { ...formData, Kgs: e.target.value };
+    const newFormData = { ...formData, kgs: e.target.value };
     setFormData(newFormData);
+    calculateAmount(newFormData);
   };
 
   const handlePackagingChange = (e) => {
-      const newFormData = { ...formData, packaging: e.target.value };
-      setFormData(newFormData);
+    const newFormData = { ...formData, packaging: e.target.value };
+    setFormData(newFormData);
+    calculateAmount(newFormData);
   };
 
   const handleTransportChange = (e) => {
-      const newFormData = { ...formData, transport: e.target.value };
-      setFormData(newFormData);
+    const newFormData = { ...formData, transport: e.target.value };
+    setFormData(newFormData);
+    calculateAmount(newFormData);
   };
 
   const handleRiderChange = (e) => {
-      const newFormData = { ...formData, rider: e.target.value };
-      setFormData(newFormData);
+    const newFormData = { ...formData, rider: e.target.value };
+    setFormData(newFormData);
+    calculateAmount(newFormData);
   };
 
   const handleAlmanisPriceChange = (e) => {
-      const newFormData = { ...formData, price: e.target.value };
-      setFormData(newFormData);
+    const newFormData = { ...formData, price: e.target.value };
+    setFormData(newFormData);
+    calculateAmount(newFormData);
   };
 
   const handleDiscountChange = (e) => {
-      const newFormData = { ...formData, discount: e.target.value };
-      setFormData(newFormData);
+    const newFormData = { ...formData, discount: e.target.value };
+    setFormData(newFormData); 
+    calculateAmount(newFormData);
   };
 
   const handleVATChange = (e) => {
-      const newFormData = { ...formData, vat: parseFloat(e.target.value) };
-      setFormData(newFormData);
+    const newFormData = { ...formData, vat: parseInt(e.target.value) };
+    setFormData(newFormData);
+    calculateAmount(newFormData);
   };
 
-  // Check if the user is authenticated
+  const calculateAmount = (data) => {
+    const numberOfKilosFloat = parseFloat(data.kgs);
+    const trayPriceFloat = parseFloat(data.price);
+    const discountFloat = parseFloat(data.discount);
+    const packagingFloat = parseFloat(data.packaging);
+    const riderFloat = parseFloat(data.rider);
+    const transportFloat = parseFloat(data.transport);
+
+    if (!isNaN(numberOfKilosFloat) && !isNaN(trayPriceFloat) && !isNaN(discountFloat)) {
+        const subTotal = (numberOfKilosFloat * trayPriceFloat) + packagingFloat + riderFloat + transportFloat - discountFloat;
+        const vatAmount = (subTotal * data.vat) / 100;
+        const calculatedAmount = subTotal + vatAmount;
+        const newFormData = { ...data, amount: isNaN(calculatedAmount) ? '' : calculatedAmount.toFixed(2) };
+        setFormData(newFormData);
+    } else {
+        const newFormData = { ...data, amount: '' };
+        setFormData(newFormData);
+    }
+};
+
+  const handleAmountChange = (e) => {
+    const { value } = e.target;
+    setFormData({
+      ...formData,
+      amount: value,
+    });
+  };
+
   useEffect(() => {
     console.log('Selected ID:', id);
     if (!isAuthenticated && !id) {
@@ -198,35 +224,8 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
       }
       fetchData();
     }
-  }, [id]);
+  }, [id, isAuthenticated, navigate, fetchOrdersDetails]);
 
-  useEffect(() => {
-    // Calculate the amount based on the current VAT value
-    const numberOfKilosFloat = parseFloat(formData.kgs);
-    const trayPriceFloat = parseFloat(formData.price);
-    const discountFloat = parseFloat(formData.discount);
-    const packagingFloat = parseFloat(formData.packaging);
-    const riderFloat = parseFloat(formData.rider);
-    const transportFloat = parseFloat(formData.transport);
-  
-    if (!isNaN(numberOfKilosFloat) && !isNaN(trayPriceFloat) && !isNaN(discountFloat)) {
-      const subTotal = (numberOfKilosFloat * trayPriceFloat) + packagingFloat + riderFloat + transportFloat - discountFloat;
-      const vatAmount = (subTotal * formData.vat) / 100;
-      const calculatedAmount = subTotal + vatAmount;
-      
-      setFormData({
-        ...formData,
-        amount: isNaN(calculatedAmount) ? '' : calculatedAmount.toFixed(2),
-      });
-    } else {
-      setFormData({
-        ...formData,
-        amount: '',
-      });
-    }
-  }, [formData.kgs, formData.price, formData.discount, formData.vat]);
-  
-  // Styles
   const responsiveStyle = {
     width: '100%',
     marginLeft: '0',
@@ -248,64 +247,62 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
   const [farmerOptions, setFarmerOptions] = useState([]);
   const [selectedFarmerOptions, setSelectedFarmerOption] = useState(null);
 
-  // Update your useEffect for fetching batch data
   useEffect(() => {
     const fetchFarmerData = async () => {
-        try {
-            const farmers = await fetchFarmerOnly();
-            console.log(farmers)
-            setFarmerOptions(farmers);
-        } catch (error) {
-            console.error('Error fetching batch data:', error);
-        }
+      try {
+        const farmers = await fetchFarmerOnly();
+        console.log(farmers);
+        setFarmerOptions(farmers);
+      } catch (error) {
+        console.error('Error fetching farmer data:', error);
+      }
     };
 
     fetchFarmerData();
-}, [fetchFarmerOnly]);
+  }, [fetchFarmerOnly]);
 
-const handleFarmerSelect = (selectedOption) => {
+  const handleFarmerSelect = (selectedOption) => {
     setSelectedFarmerOption(selectedOption);
     if (selectedOption) {
-        setFormData({
-            ...formData,
-            farmer_id: selectedOption.value, // Assign the selected batch's id to batch_id
-        });
-        setSelectedFarmerOption(selectedOption);
+      setFormData({
+        ...formData,
+        farmer_id: selectedOption.value,
+      });
+      setSelectedFarmerOption(selectedOption);
     }
-};
+  };
 
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customerOptions, setCustomerOptions] = useState([]);
   const [selectedCustomerOptions, setSelectedCustomerOption] = useState(null);
 
-  // Update your useEffect for fetching batch data
   useEffect(() => {
     const fetchCustomerData = async () => {
-        try {
-            const customers = await fetchCustomerOnly();
-            console.log(customers)
-            setCustomerOptions(customers);
-        } catch (error) {
-            console.error('Error fetching batch data:', error);
-        }
+      try {
+        const customers = await fetchCustomerOnly();
+        console.log(customers);
+        setCustomerOptions(customers);
+      } catch (error) {
+        console.error('Error fetching customer data:', error);
+      }
     };
 
     fetchCustomerData();
-}, [fetchFarmerOnly]);
+  }, [fetchCustomerOnly]);
 
-const handleCustomerSelect = (selectedOption) => {
-  setSelectedCustomerOption(selectedOption);
-  if (selectedOption) {
-      const selectedCustomer = customerOptions.find(customer => customer.id === selectedOption.value);
+  const handleCustomerSelect = (selectedOption) => {
+    setSelectedCustomerOption(selectedOption);
+    if (selectedOption) {
+      const selectedCustomer = customerOptions.find((customer) => customer.id === selectedOption.value);
       setFormData({
-          ...formData,
-          customer_id: selectedOption.value,
-          name: selectedCustomer.name,
-          phone: selectedCustomer.phone,
+        ...formData,
+        customer_id: selectedOption.value,
+        name: selectedCustomer.name,
+        phone: selectedCustomer.phone,
       });
       setSelectedCustomerOption(selectedOption);
-  }
-};
+    }
+  };
 
   return (
     <div>
@@ -603,6 +600,7 @@ const handleCustomerSelect = (selectedOption) => {
                                     id="amount"
                                     placeholder="Amount"
                                     value={formData.amount}
+                                    onChange={handleAmountChange}
                                     disabled
                                 />
                             </div>

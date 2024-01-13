@@ -9,7 +9,7 @@ import { ExportCSV } from '../../../components/csv/ExportCSV';
 const Customer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer, isSidebarOpen, user }) => {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
-    const customersPerPage = 9;
+    const customersPerPage = 24;
     const maxPagesDisplayed = 5;
 
     const desktopStyle = isSidebarOpen

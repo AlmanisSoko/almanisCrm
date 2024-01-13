@@ -9,7 +9,7 @@ import { ExportCSV } from '../../../components/csv/ExportCSV';
 const Payments = ({ isAuthenticated, fetchAllPayments, payments, deletePayment }) => {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
-    const paymentsPerPage = 129;
+    const paymentsPerPage = 29;
     const maxPagesDisplayed = 5;
     const [loading, setLoading] = useState(true);
 
