@@ -39,6 +39,7 @@ const AutoCompleteCustomer = (props) => {
 
     return (
         <div style={{ position: 'relative' }}>
+            <label>Phone</label>
             <input
                 type="text"
                 id="phone"

@@ -39,6 +39,7 @@ const AutoCompleteOrder = (props) => {
 
     return (
         <div style={{ position: 'relative' }}>
+            <label>Order Number</label>
             <input
                 type="text"
                 id="orders_id"

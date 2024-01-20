@@ -121,6 +121,7 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
                     <div className="row">
                       <div className="col-md-6">
                         <div className="form-group">
+                          <label>Customer Name</label>
                           <input
                             required
                             type="text"
@@ -134,6 +135,7 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
                       </div>
                       <div className="col-md-6">
                         <div className="form-group">
+                          <label>Primary Phone</label>
                           <input
                             required
                             type="text"
@@ -151,6 +153,7 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
                     <div className="row">
                       <div className="col-md-6">
                         <div className="form-group">
+                          <label>Secondary Phone</label>
                           <input
                             required
                             type="text"
@@ -164,6 +167,7 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
                       </div>
                       <div className="col-md-6">
                         <div className="form-group">
+                          <label>Alternative Phone</label>
                           <input
                             required
                             type="text"
@@ -181,6 +185,7 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
                       
                       <div className="col-md-6">
                         <div className="form-group">
+                          <label>Town</label>
                           <input
                             required
                             name="town"
@@ -195,6 +200,7 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
                       </div>
                       <div className="col-md-6">
                           <div className="form-group">
+                          <label>Region</label>
                               <div className="input-group">
                                   <select
                                       className="form-control"

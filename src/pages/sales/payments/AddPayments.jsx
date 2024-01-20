@@ -170,6 +170,7 @@ const AddPayments = ({ isAuthenticated, savePayment }) => {
                                                 </div>
                                                 <div className="col-md-6">
                                                     <div className="form-group">
+                                                    <label>Amount</label>
                                                         <input 
                                                             type="text" 
                                                             className="form-control" 
@@ -188,6 +189,7 @@ const AddPayments = ({ isAuthenticated, savePayment }) => {
                                             {ordersDetails.map((item, index) => (
                                                 <div className="col-md-6" key={index}>
                                                     <div className="form-group">
+                                                    <label>Customer</label>
                                                         <input
                                                             type="text" 
                                                             name='customer_id' 
@@ -201,6 +203,7 @@ const AddPayments = ({ isAuthenticated, savePayment }) => {
                                             ))}
                                             <div className="col-md-6">
                                                 <div className="form-group">
+                                                    <label>Payment Source</label>
                                                     <input 
                                                         type="text" 
                                                         name='paying_number' 
@@ -217,6 +220,7 @@ const AddPayments = ({ isAuthenticated, savePayment }) => {
                                         <div className="row">
                                             <div className="col-md-6">
                                                 <div className="form-group">
+                                                    <label>Payment Mode</label>
                                                     <div className='input-group'>
                                                         <select 
                                                             className='form-control' 
@@ -239,6 +243,7 @@ const AddPayments = ({ isAuthenticated, savePayment }) => {
                                             </div>
                                             <div className="col-md-6">
                                                 <div className="form-group">
+                                                    <label>Payment Amount</label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control" 

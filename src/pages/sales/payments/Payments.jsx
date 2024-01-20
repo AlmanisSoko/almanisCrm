@@ -234,10 +234,18 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, deletePayment }
                                       ? "Cash"
                                       : payment.payment_mode === 2
                                       ? "Mpesa"
-                                      : payment.payment_mode === 3
-                                      ? " Bank"
-                                      : payment.payment_mode
-                                    }
+                                      : payments.payment_mode === 3
+                                      ? "Bank"
+                                      : payments.payment_mode === 4
+                                      ? "Trade in" 
+                                      : payments.payment_mode === 5
+                                      ? "Promotion"
+                                      : payments.payment_mode === 6
+                                      ? "Compensation"
+                                      : payments.payment_mode === 7
+                                      ? "Top Up"
+                                      : payments.payment_mode
+                                      }
                                   </span>
                                 </td>
                                 <td className="text-xs font-weight-bold">

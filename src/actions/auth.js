@@ -83,7 +83,7 @@ export const fetchDashboard = () => async (dispatch, getState) => {
       console.log("Balance Data:", balanceData); // Log the retrieved data
 
       dispatch({
-        type: BALANCE_FETCH_SUCCESS,
+        type: DASHBOARD_FETCH_SUCCESS,
         payload: balanceData,
       });
 
@@ -91,13 +91,13 @@ export const fetchDashboard = () => async (dispatch, getState) => {
     } else {
       console.error("API Request Failed with Status Code:", response.status);
       dispatch({
-        type: BALANCE_FETCH_FAIL,
+        type: DASHBOARD_FETCH_FAIL,
       });
     }
   } catch (error) {
     console.error("Error fetching balance data:", error);
     dispatch({
-      type: BALANCE_FETCH_FAIL,
+      type: DASHBOARD_FETCH_FAIL,
     });
   }
 };
@@ -398,7 +398,7 @@ export const fetchOverdue = () => async (dispatch, getState) => {
       console.log("monthlychart Data:", monthlychartData); // Log the retrieved data
 
       dispatch({
-        type: MONTHLYCHART_FETCH_SUCCESS,
+        type: OVERPAID_FETCH_SUCCESS,
         payload: monthlychartData,
       });
 
@@ -406,13 +406,13 @@ export const fetchOverdue = () => async (dispatch, getState) => {
     } else {
       console.error("API Request Failed with Status Code:", response.status);
       dispatch({
-        type: MONTHLYCHART_FETCH_FAIL,
+        type: OVERPAID_FETCH_FAIL,
       });
     }
   } catch (error) {
     console.error("Error fetching dashboaard data:", error);
     dispatch({
-      type: MONTHLYCHART_FETCH_FAIL,
+      type: OVERPAID_FETCH_FAIL,
     });
   }
 };

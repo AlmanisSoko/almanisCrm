@@ -8,7 +8,7 @@ import { useDownloadExcel } from 'react-export-table-to-excel';
 const Analytics = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
-    const ordersPerPage = 500;
+    const ordersPerPage = 15000;
     const maxPagesDisplayed = 5;
     const [loading, setLoading] = useState(true);
 
