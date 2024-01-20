@@ -270,18 +270,20 @@ const EditFarmer = ({ isAuthenticated, fetchFarmerDetails, farmerDetails, editFa
                     <div className="row">
                       <div className="col-md-6">
                         <div className="form-group">
+                          <label>Farmer Name</label>
                           <input
                             type="text"
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
-                            placeholder="Customer Name"
+                            placeholder="Farmer Name"
                             className="form-control"
                           />
                         </div>
                       </div>
                       <div className="col-md-6">
                         <div className="form-group">
+                          <label>Phone</label>
                           <input
                             type="text"
                             name="phone"
