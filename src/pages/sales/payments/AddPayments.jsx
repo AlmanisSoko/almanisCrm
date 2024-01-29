@@ -82,7 +82,8 @@ const AddPayments = ({ isAuthenticated, savePayment }) => {
                     setButtonText('Add Payment')
                     setButtonDisabled(false)
                     setSubmitSuccess(false)
-                }, 2000);
+                    window.location.reload();
+                }, 500);
             }
         } catch (error) {
             console.log('Error during form submission', error)
@@ -92,12 +93,12 @@ const AddPayments = ({ isAuthenticated, savePayment }) => {
     }
 
     // Check if the user is authenticated
-    useEffect(() => {
-      // Check if user is not authenticated and navigate to login
-      if (!isAuthenticated) {
-        navigate('/');
-      }
-    }, [isAuthenticated, navigate]);
+    // useEffect(() => {
+    //   // Check if user is not authenticated and navigate to login
+    //   if (!isAuthenticated) {
+    //     navigate('/');
+    //   }
+    // }, [isAuthenticated, navigate]);
 
     const showDataInInputs = (index, item) => {
         if (item) {

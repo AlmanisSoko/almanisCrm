@@ -111,7 +111,8 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                     setButtonText('Add Order')
                     setButtonDisabled(false)
                     setSubmitSuccess(false)
-                }, 2000);
+                    window.location.reload();
+                }, 500);
             }
         } catch (error) {
             console.log('Error during form submission', error)
@@ -120,17 +121,17 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
         }
     }
 
-    useEffect(() => {
-        if (!isAuthenticated) {
-           // navigate('/');
-        } else {
-            //
-        }
-    }, [isAuthenticated]);
+    // useEffect(() => {
+    //     if (!isAuthenticated) {
+    //        // navigate('/');
+    //     } else {
+    //         //
+    //     }
+    // }, [isAuthenticated]);
     
-    if (!isAuthenticated) {
-        navigate('/');
-    } 
+    // if (!isAuthenticated) {
+    //     navigate('/');
+    // } 
 
     // Update the amount when any of the input fields change
     const handleKgsChange = (e) => {
@@ -271,7 +272,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                             </Link>
                         </div>
                     </div>
-                    <div className="row">
+                    <div className="row"> 
                         <div className="col-12">
                             <div className="card">
                                 <div className="card-body">

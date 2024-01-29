@@ -13,6 +13,7 @@ const Login = lazy(() => import('./pages/auth/Login'));
 const Signup = lazy(() => import('./pages/auth/Signup'));
 const Activate = lazy(() => import('./pages/auth/Activate'));
 const Home = lazy(() => import('./pages/general/Home'));
+const Delivery = lazy(() => import('./pages/general/Delivery'));
 const ResetPassword = lazy(() => import('./pages/auth/ResetPassword'));
 const ResetPasswordConfirm = lazy(() => import('./pages/auth/ResetPasswordConfirm'));
 const AdminSignup = lazy(() =>  import('./pages/auth/AdminSignup'));
@@ -69,6 +70,7 @@ function App() {
             <Layout>
               <Routes>
                 <Route exact path="/home" element={<Home />}/>
+                <Route exact path="/delivery" element={<Delivery />}/>
 
                 {/* / Orders */}
                 <Route exact path="/neworders" element={<AddOders />}/>

@@ -105,23 +105,6 @@ const PrintableInvoice = ({ invoiceData, currentDate }) => (
                 </div>
             </div>
         </div>
-        <div className="card-footer mt-md-5 mt-4">
-            <div className="row">
-                <div className="col-lg-5 text-left text-lg1 ">
-                    <h5>Thank you!</h5>
-                    <p className="text-secondary text-lg1 ">
-                        If you encounter any issues related to the invoice you can contact us at:
-                    </p>
-                    <h6 className="text-secondary mb-0 text-lg1 ">
-                        email:
-                        <span className="text-dark text-lg1 "> 
-                            almanisenterprise001@gmail.com
-                        </span>
-                    </h6>
-                </div>
-                
-            </div>
-        </div>
     </div>
   </div>
 );
