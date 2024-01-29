@@ -63,6 +63,7 @@ const EditPayments = ({ isAuthenticated, fetchPaymentDetails, fetchCustomerOnly,
                 toast.success(response.message, { toastId: 'success' });
                 setButtonText('Payment Edited Successfully');
                 setSubmitSuccess(true);
+                navigate('/payments')
     
                 setTimeout(() => {
                     setButtonText('Edit Payment');

@@ -316,7 +316,7 @@ export const fetchDebtors = () => async (dispatch, getState) => {
   const { access } = getState().auth;
 
   try {
-    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/total-balance/`, {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/customers/total-balance/`, {
       headers: {
         Authorization: `Bearer ${access}`,
       },

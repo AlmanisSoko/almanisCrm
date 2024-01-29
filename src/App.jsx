@@ -33,6 +33,7 @@ const DownloadInvoice = lazy(() => import('./pages/sales/invoice/DownloadInvoice
 const Analytics = lazy(() => import('./pages/dashboard/Analytics'))
 const Balance = lazy(() => import('./pages/dashboard/money/Balance'))
 const Debtors = lazy(() => import('./pages/sales/payments/Debtors'))
+const OverPaid = lazy(() => import('./pages/sales/payments/OverPaid'))
 const Profit = lazy(() => import('./pages/dashboard/graphs/Profit'))
 const PaidFarmers = lazy(() => import('./pages/dashboard/graphs/PiadFarmers'))
 const Overheads = lazy(() => import('./pages/dashboard/graphs/Overheads'))
@@ -90,6 +91,7 @@ function App() {
                 <Route exact path="/paymentsdetails/:id" element={<EditPayments />}/>
                 <Route exact path="/balance" element={<Balance />}/>
                 <Route exact path="/debtors-list" element={<Debtors />}/>
+                <Route exact path="/overpaid-list" element={<OverPaid />}/>
 
                 {/* Invoice */}         
                 <Route exact path="/invoice" element={<Invoice />} />

@@ -105,7 +105,7 @@ const MDBList = ({ isAuthenticated, fetchDebtors, fetchOverdue }) => {
                                     <div className="col-4 text-end">
                                         <div 
                                             className="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle"
-                                            onClick={() => navigate('/profit')}
+                                            onClick={() => navigate('/overpaid-list')}
                                         >
                                             <i className="fa-solid fa-chart-line text-lg opacity-10" aria-hidden="true"></i>
                                         </div>

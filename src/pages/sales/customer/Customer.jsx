@@ -22,19 +22,19 @@ const Customer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer
             marginLeft: '265px',
         }; 
 
-        useEffect(() => {
-                if (isAuthenticated) {
-                    // Fetch customer data only if authenticated
-                     fetchAllCustomer();
-                } else {
-                    // navigate('/');
-                }
-        }, [isAuthenticated, navigate, fetchAllCustomer]);
+    useEffect(() => {
+            if (isAuthenticated) {
+                // Fetch customer data only if authenticated
+                    fetchAllCustomer();
+            } else {
+                // navigate('/');
+            }
+    }, [isAuthenticated, navigate, fetchAllCustomer]);
 
-        if (!isAuthenticated) {
-            navigate('/');
-        } 
-        
+    if (!isAuthenticated) {
+        navigate('/');
+    } 
+    
 
     const responsiveStyle = {
         width: '100%',

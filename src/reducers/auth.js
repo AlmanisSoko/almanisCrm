@@ -76,6 +76,7 @@ const initialState = {
     payments: [],
     invoice: [], 
     debtors: [],
+    overpaid: [],
 }
 
 export default function (state = initialState, action) {
@@ -634,7 +635,6 @@ export default function (state = initialState, action) {
             return {
                 ...state,
             } 
-
     
         default:
             return state;

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { fetchDiscount, fetchTotalPayments, fetchTotalKilos, fetchUnderPaid } from '../../../actions/auth';
+import { fetchDiscount, fetchTotalPayments, fetchTotalKilos, fetchDebtors } from '../../../actions/auth';
 
-const DashboardCard = ({ isAuthenticated, fetchDiscount, fetchTotalKilos, fetchUnderPaid, fetchTotalPayments }) => {
+const DashboardCard = ({ isAuthenticated, fetchDiscount, fetchTotalKilos, fetchDebtors, fetchTotalPayments }) => {
     const navigate = useNavigate();
 
     const [totalDiscount, setTotalDiscount] = useState(0);
     const [totalPayment, setTotalPayment] = useState(0);
     const [totalKilos, setTotalKilos] = useState(0);
     const [totalUnderPaid, setTotalUnderPaid] = useState(0);
-
+ 
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/');
@@ -28,7 +28,7 @@ const DashboardCard = ({ isAuthenticated, fetchDiscount, fetchTotalKilos, fetchU
             setTotalKilos(response.total_kgs);
         });
 
-        fetchUnderPaid().then((response) => {
+        fetchDebtors().then((response) => {
             setTotalUnderPaid(response.total_balance);
         });
 
@@ -175,7 +175,7 @@ const mapDispatchToProps = (dispatch) => {
         fetchDiscount: () => dispatch(fetchDiscount()),
         fetchTotalPayments: () => dispatch(fetchTotalPayments()),
         fetchTotalKilos: () => dispatch(fetchTotalKilos()),
-        fetchUnderPaid: () => dispatch(fetchUnderPaid())
+        fetchDebtors: () => dispatch(fetchDebtors())
     };
 };
 

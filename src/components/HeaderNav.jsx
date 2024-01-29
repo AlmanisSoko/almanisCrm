@@ -22,6 +22,7 @@ function HeaderNav({ user }) {
       '/farmer': 'Farmers List',
       '/analytics': 'Packaging, Kilos & Transport Analysis',
       '/debtors-list': 'Current Debt',
+      '/overpaid-list': 'Over Paid',
       '/balance': 'Balance',
       '/profit': 'Profit',
       '/paidfarmers': 'Farmers Graph',

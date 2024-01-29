@@ -2,13 +2,13 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
-import { fetchDebtorsList } from '../../../actions/auth';
+import { fetchOverdueList } from '../../../actions/auth';
 import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 
-const Debtors = ({ isAuthenticated, fetchDebtorsList, debtors, isSidebarOpen, user }) => {
+const OverPaid = ({ isAuthenticated, fetchOverdueList, overpaid, isSidebarOpen, user }) => {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
-    const debtorsPerPage = 50;
+    const overpaidPerPage = 50;
     const maxPagesDisplayed = 5;
 
     const desktopStyle = isSidebarOpen
@@ -24,11 +24,11 @@ const Debtors = ({ isAuthenticated, fetchDebtorsList, debtors, isSidebarOpen, us
         useEffect(() => {
                 if (isAuthenticated) {
                     // Fetch debtor data only if authenticated
-                     fetchDebtorsList();
+                     fetchOverdueList();
                 } else {
                     // navigate('/');
                 }
-        }, [isAuthenticated, navigate, fetchDebtorsList]);
+        }, [isAuthenticated, navigate, fetchOverdueList]);
 
         if (!isAuthenticated) {
             navigate('/');
@@ -49,17 +49,17 @@ const Debtors = ({ isAuthenticated, fetchDebtorsList, debtors, isSidebarOpen, us
 
     const [searchQuery, setSearchQuery] = useState('');
 
-    const filtereddebtors = debtors
-        ? debtors.filter((debtor) =>
-              debtor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              debtor.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              debtor.town.toLowerCase().includes(searchQuery.toLowerCase()) 
+    const filteredOverpaid = overpaid
+        ? overpaid.filter((overpaid) =>
+              overpaid.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              overpaid.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              overpaid.town.toLowerCase().includes(searchQuery.toLowerCase()) 
           )
         : [];
 
-    const indexOfLastdebtor = currentPage * debtorsPerPage;
-    const indexOfFirstdebtor = indexOfLastdebtor - debtorsPerPage;
-    const currentdebtors = filtereddebtors.slice(indexOfFirstdebtor, indexOfLastdebtor);
+    const indexOfLastOverpaid = currentPage * overpaidPerPage;
+    const indexOfFirstOverpaid = indexOfLastOverpaid - overpaidPerPage;
+    const currentOverpaid = filteredOverpaid.slice(indexOfFirstOverpaid, indexOfLastOverpaid);
 
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -67,7 +67,7 @@ const Debtors = ({ isAuthenticated, fetchDebtorsList, debtors, isSidebarOpen, us
 
     const startPage = Math.max(1, currentPage - Math.floor(maxPagesDisplayed / 2));
     const endPage = Math.min(
-        Math.ceil(filtereddebtors.length / debtorsPerPage),
+        Math.ceil(filteredOverpaid.length / overpaidPerPage),
         startPage + maxPagesDisplayed - 1
     );
 
@@ -113,7 +113,7 @@ const Debtors = ({ isAuthenticated, fetchDebtorsList, debtors, isSidebarOpen, us
                                         </div>
 
                                         <div className="dataTable-container">
-                                            {filtereddebtors.length > 0 ? (
+                                            {filteredOverpaid.length > 0 ? (
                                                 <table className="table table-flush dataTable-table" id="datatable-search">
                                                     <thead className="thead-light">
                                                         <tr>
@@ -151,31 +151,31 @@ const Debtors = ({ isAuthenticated, fetchDebtorsList, debtors, isSidebarOpen, us
                                                     </thead>
 
                                                     <tbody>
-                                                        {currentdebtors.length > 0 ? (
-                                                            currentdebtors.map((debtor) => (
-                                                                <tr key={debtor.id}>
+                                                        {currentOverpaid.length > 0 ? (
+                                                            currentOverpaid.map((overpaid) => (
+                                                                <tr key={overpaid.id}>
                                                                     <td>
                                                                         <div className="d-flex align-items-center">
-                                                                            <p className="text-xs font-weight-bold ms-2 mb-0">#{debtor.id}</p>
+                                                                            <p className="text-xs font-weight-bold ms-2 mb-0">#{overpaid.id}</p>
                                                                         </div>
                                                                     </td>
                                                                     <td className="font-weight-bold">
-                                                                        <span className="my-2 text-xs">{debtor.name}</span>
+                                                                        <span className="my-2 text-xs">{overpaid.name}</span>
                                                                     </td>
                                                                     <td className="text-xs font-weight-bold">
-                                                                        <span className="my-2 text-xs">{debtor.phone}</span>
+                                                                        <span className="my-2 text-xs">{overpaid.phone}</span>
                                                                     </td>
                                                                     <td className="text-xs font-weight-bold">
-                                                                        <span className="my-2 text-xs">{debtor.town}</span>
+                                                                        <span className="my-2 text-xs">{overpaid.town}</span>
                                                                     </td>
                                                                     <td className="text-xs font-weight-bold">
                                                                         <span className="my-2 text-xs">
-                                                                        {debtor.balance}
+                                                                        {overpaid.balance}
                                                                         </span>
                                                                     </td>
                                                                     <td className="text-xs font-weight-bold">
                                                                         <span className="my-2 text-xs">
-                                                                            {new Date(debtor.added_on).toLocaleString()}
+                                                                            {new Date(overpaid.added_on).toLocaleString()}
                                                                         </span>
                                                                     </td>
                                                                 </tr>
@@ -195,7 +195,7 @@ const Debtors = ({ isAuthenticated, fetchDebtorsList, debtors, isSidebarOpen, us
                                         </div>
 
                                         <div className="dataTable-bottom">
-                                            <div className="dataTable-info">Showing {filtereddebtors.length} entries</div>
+                                            <div className="dataTable-info">Showing {filteredOverpaid.length} entries</div>
                                             <nav className="dataTable-pagination">
                                                 <ul className="dataTable-pagination-list">
                                                     <li className="pager">
@@ -217,7 +217,7 @@ const Debtors = ({ isAuthenticated, fetchDebtorsList, debtors, isSidebarOpen, us
                                                             </a>
                                                         </li>
                                                     ))}
-                                                    {currentPage + maxPagesDisplayed < Math.ceil(filtereddebtors.length / debtorsPerPage) && (
+                                                    {currentPage + maxPagesDisplayed < Math.ceil(filteredOverpaid.length / overpaidPerPage) && (
                                                         <li className="pager">
                                                             <a
                                                                 href="#"
@@ -244,14 +244,14 @@ const Debtors = ({ isAuthenticated, fetchDebtorsList, debtors, isSidebarOpen, us
 
 const mapStateToProps = (state) => ({
     isAuthenticated: state.auth.isAuthenticated,
-    debtors: state.auth.debtors,
+    overpaid: state.auth.overpaid,
     user: state.auth.user
 });
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchDebtorsList: () => dispatch(fetchDebtorsList()),
+        fetchOverdueList: () => dispatch(fetchOverdueList()),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Debtors);
+export default connect(mapStateToProps, mapDispatchToProps)(OverPaid);

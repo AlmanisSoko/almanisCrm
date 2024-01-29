@@ -94,13 +94,13 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
           toast.success(response.message, { toastId: 'success' });
           setButtonText('Order Edited Successfully');
           setSubmitSuccess(true);
+          navigate('/orders');
 
           setTimeout(() => {
             setButtonText('Edit Order');
             setButtonDisabled(false);
             setSubmitSuccess(false);
           }, 2000);
-          navigate('/orders');
         } else {
           toast.error(response.message, { toastId: 'error' });
         }
