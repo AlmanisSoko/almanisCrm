@@ -31,60 +31,6 @@ const Delivery = ({ isAuthenticated, fetchCustomerOnly }) => {
         inv_date: '',
     });
 
-    const [orderNos, setOrderNos] = useState([{ id: 1, value: '' }]);
-    const [selectedInvoiceOptions, setSelectedInvoiceOption] = useState(null);
-    const [invoiceOptions, setInvoiceOptions] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [buttonText, setButtonText] = useState('Add Delivery'); // Initial button text
-    const [isButtonDisabled, setButtonDisabled] = useState(false); // Button state
-
-    const [formData, setFormData] = useState({
-        customer_id: '',
-    });
-
-    useEffect(() => {
-        const fetchInvoiceData = async () => {
-            try {
-                const invoices = await fetchCustomerOnly();
-                setInvoiceOptions(invoices);
-            } catch (error) {
-                console.error('Error fetching customer data:', error);
-            }
-        };
-
-        fetchInvoiceData();
-    }, [fetchCustomerOnly]);
-
-    const openModal = () => {
-        setModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setModalOpen(false);
-        setFormData({
-            customer_id: '',
-        });
-    };
-
-    const handleModalSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            // Assuming you have a function to fetch data based on customer_id and orders
-            // Modify this part based on your actual implementation
-            const customerData = await fetchCustomerDetails(formData.customer_id);
-            setInvoiceData({
-                id: customerData.id || '',
-                name: customerData.name || '',
-                phone: customerData.phone || '',
-                town: customerData.town || '',
-            });
-            closeModal();
-        } catch (error) {
-            console.error('Error fetching customer data:', error);
-        }
-    };
-
     useEffect(() => {
         if (!isAuthenticated && !id) {
             navigate('/');
@@ -118,36 +64,6 @@ const Delivery = ({ isAuthenticated, fetchCustomerOnly }) => {
         document.body.innerHTML = originalContents;
     };
 
-    const addOrderNo = () => {
-        const newOrderNos = [...orderNos, { id: orderNos.length + 1, value: '' }];
-        setOrderNos(newOrderNos);
-    };
-
-    const removeOrderNo = () => {
-        if (orderNos.length > 1) {
-            const newOrderNos = orderNos.slice(0, -1);
-            setOrderNos(newOrderNos);
-        }
-    };
-    
-
-    const handleBatchSelect = async (selectedOption) => {
-        setSelectedInvoiceOption(selectedOption);
-        if (selectedOption) {
-            try {
-                const customerData = await fetchCustomerDetails(selectedOption.value);
-                setInvoiceData({
-                    id: customerData.id || '',
-                    name: customerData.name || '',
-                    phone: customerData.phone || '',
-                    town: customerData.town || '',
-                });
-            } catch (error) {
-                console.error('Error fetching customer data:', error);
-            }
-        }
-    };
-
     const fetchCustomerDetails = async (customerId) => {
         try {
             const customerData = await fetchCustomerOnly(customerId);
@@ -157,23 +73,6 @@ const Delivery = ({ isAuthenticated, fetchCustomerOnly }) => {
             throw error;
         }
     };
-
-    const handleOrderNoChange = (e, orderId) => {
-        const newOrderNos = orderNos.map((orderNo) =>
-            orderNo.id === orderId ? { ...orderNo, value: e.target.value } : orderNo
-        );
-        setOrderNos(newOrderNos);
-
-        const updatedInvoiceDetails = newOrderNos.map((orderNo) => ({
-            orders_id: orderNo.value,
-        }));
-
-        setInvoiceData({
-            ...invoiceData,
-            invoice_details: updatedInvoiceDetails,
-        });
-    };
-
 
     return (
         <div>
@@ -187,102 +86,10 @@ const Delivery = ({ isAuthenticated, fetchCustomerOnly }) => {
                             <button
                                 type="button"
                                 className="btn btn-outline-white"
-                                onClick={openModal}
                             >
                                 <i className="fa-solid fa-receipt"></i> Create Delivery Note
                             </button>
-                            {isModalOpen && (
-                                <div
-                                    className="modal fade show"
-                                    id="modal-form"
-                                    tabIndex="-1"
-                                    role="dialog"
-                                    aria-modal="true"
-                                    style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
-                                    onClick={closeModal}
-                                >
-                                    <div
-                                        className="modal-dialog modal-dialog-centered modal-md"
-                                        role="document"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        <div className="modal-content">
-                                            <div className="modal-body p-0">
-                                                <div className="card card-plain">
-                                                    <div className="card-header pb-0 text-left">
-                                                        <span className="close" onClick={closeModal}>
-                                                        &times;
-                                                        </span>
-                                                        <h3 className="font-weight-bolder text-dark text-gradient">
-                                                          New Delivery
-                                                        </h3>
-                                                    </div>
-                                                    <div className="card-body">
-                                                        <form role="form text-left" method="POST" >
-                                                            <label>Cutomer Name</label>
-                                                            <div className="input-group mb-3">
-                                                                <Select
-                                                                    id="customer_id"
-                                                                    name="customer_id"
-                                                                    className="form-control"
-                                                                    value={selectedInvoiceOptions}
-                                                                    onChange={handleBatchSelect}
-                                                                    options={invoiceOptions && invoiceOptions.map((batch) => ({
-                                                                        value: batch.id,
-                                                                        label: batch.name,
-                                                                    }))}
-                                                                    placeholder="--- Search Customer ---"
-                                                                    isClearable
-                                                                />
-                                                            </div>
-                                                           
-                                                            <button
-                                                                className="btn btn-icon-only btn-rounded btn-outline-danger btn-sm"
-                                                                onClick={removeOrderNo}
-                                                            >
-                                                                <i className="fa-solid fa-minus"></i>
-                                                            </button>
-                                                            <label>Order No :</label>
-                                                            <button
-                                                                className="btn btn-icon-only btn-rounded btn-outline-success btn-sm"
-                                                                onClick={addOrderNo}
-                                                            >
-                                                                <i className="fa-solid fa-plus"></i>
-                                                            </button>
-                                                            {orderNos.map((orderNo) => (
-                                                                <div key={orderNo.id} className="input-group mb-3">
-                                                                    <input
-                                                                        type="text"
-                                                                        className="form-control"
-                                                                        name={`order_no_${orderNo.id}`}
-                                                                        placeholder={`Order No ${orderNo.id}`}
-                                                                        value={orderNo.value}
-                                                                        onChange={(e) => handleOrderNoChange(e, orderNo.id)}
-                                                                        required
-                                                                    />
-                                                                </div>
-                                                            ))}
-                                                            
-                                                            <div className="text-center">
-                                                                <button
-                                                                    type="submit"
-                                                                    className="btn btn-round bg-gradient-dark btn-lg w-100 mt-4 mb-0"
-                                                                    disabled={isButtonDisabled}
-                                                                    onClick={handleModalSubmit}
-                                                                >
-                                                                    {buttonText}
-                                                                </button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                    <div className="card-footer text-center pt-0 px-lg-2 px-1">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+                            
                         </div>
                     </div>
                     <div className="row">
@@ -300,10 +107,10 @@ const Delivery = ({ isAuthenticated, fetchCustomerOnly }) => {
                                                     <p className="d-block text-secondary text-lg1 ">tel: +254 (0) 792 902809</p>
                                                 </div>
                                                 <div className="col-lg-3 col-md-7 text-md-end text-start mt-5">
-                                                    <h6 className="d-block mt-2 mb-0 text-lg1 ">Delivered to: {invoiceData.name}</h6>
+                                                    <h6 className="d-block mt-2 mb-0 text-lg1 ">Delivered to: {""}</h6>
                                                     <p className="text-secondary text-lg1 ">
-                                                        {invoiceData.phone}<br/>
-                                                        {invoiceData.town}
+                                                        {""}<br/>
+                                                        {""}
                                                     </p>
                                                 </div>
                                             </div>
@@ -344,34 +151,30 @@ const Delivery = ({ isAuthenticated, fetchCustomerOnly }) => {
                                             <div className="row">
                                                 <div className="col-12">
                                                     <div className="table-responsive border-radius-lg">
-                                                        {invoiceData.invoice_details > 0 && (
-                                                            <table className="table text-right">
-                                                                <thead className="bg-default">
-                                                                    <tr>
-                                                                        <th scope="col" className="pe-2 text-start ps-2 text-white text-lg1 " colSpan="4">
-                                                                            OrderNo
-                                                                        </th>
-                                                                        <th scope="col" className="pe-2 text-white text-lg1 " colSpan="4">
+                                                        <table className="table text-right">
+                                                            <thead className="bg-default">
+                                                                <tr>
+                                                                    <th scope="col" className="pe-2 text-start ps-2 text-white text-lg1 " colSpan="4">
+                                                                        OrderNo
+                                                                    </th>
+                                                                    <th scope="col" className="pe-2 text-white text-lg1 " colSpan="4">
                                                                         Description
-                                                                        </th>
-                                                                        <th scope="col" className="pe-2 text-white text-lg1 " colSpan="4">
-                                                                            Kilos
-                                                                        </th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    {invoiceData.invoice_details.map((detail) => (
-                                                                        <tr key={detail.id}>
-                                                                            <td className="text-start text-lg1 " colSpan="4">{detail.orders?.id || ''}</td>
-                                                                            <td className="ps-4 text-lg1 " colSpan="4"> {detail.orders?.comment || ''}</td>
-                                                                            <td className="ps-4 text-lg1 " colSpan="4">
-                                                                            {detail.orders?.kgs || ''}
-                                                                            </td>
-                                                                        </tr>
-                                                                    ))}
-                                                                </tbody>
-                                                            </table>
-                                                        )}
+                                                                    </th>
+                                                                    <th scope="col" className="pe-2 text-white text-lg1 " colSpan="4">
+                                                                        Kilos
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr key={''}>
+                                                                    <td className="text-start text-lg1 " colSpan="4">{''}</td>
+                                                                    <td className="ps-4 text-lg1 " colSpan="4">{''}</td>
+                                                                    <td className="ps-4 text-lg1 " colSpan="4">
+                                                                        {''}
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>

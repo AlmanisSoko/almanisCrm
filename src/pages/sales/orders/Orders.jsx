@@ -4,7 +4,8 @@ import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
 import { fetchAllOrders, deleteOrder } from '../../../actions/auth';
 import swal from 'sweetalert2';
-import { ExportCSV } from '../../../components/csv/ExportCSV';
+import ReactHTMLTableToExcel from 'react-html-table-to-excel';
+import { ExportDailyCSV } from '../../../components/csv/ExportDailyCSV';
 
 const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
     const navigate = useNavigate();
@@ -12,6 +13,9 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
     const ordersPerPage = 30;
     const maxPagesDisplayed = 5;
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -22,7 +26,7 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
     }, [isAuthenticated, navigate, fetchAllOrders]);
 
 
-    if (!isAuthenticated) {
+    if (!isAuthenticated) { 
         navigate('/');
     } 
 
@@ -82,14 +86,21 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
         orders = []; // Ensure orders is defined even if it's initially undefined
     }
 
-    const [searchQuery, setSearchQuery] = useState('');
+    const handleSearchQueryChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
 
     const filteredOrders = orders
-        ? orders.filter((orders) =>
-              orders.town.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              orders.name.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        : [];
+    ? orders.filter((order) => {
+          const orderDate = new Date(order.added_on);
+          const startDateFilter = !startDate || new Date(startDate) <= orderDate;
+          const endDateFilter = !endDate || new Date(endDate) >= orderDate;
+          const matchesSearch =
+              order.town.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              order.name.toLowerCase().includes(searchQuery.toLowerCase());
+          return startDateFilter && endDateFilter && matchesSearch;
+      })
+    : [];
 
     const indexOfLastOrder = currentPage * ordersPerPage;
     const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
@@ -105,7 +116,25 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
         startPage + maxPagesDisplayed - 1
     );
 
-    const fileName = "orders_data";
+    console.log("start", startDate)
+    console.log("end", endDate)
+
+    const [filteredOrdersCount, setFilteredOrdersCount] = useState(0);
+
+    useEffect(() => {
+      // Update filteredOrdersCount when orders or date filters change
+      setFilteredOrdersCount(
+        orders.filter((order) => {
+          const orderDate = new Date(order.added_on);
+          return (
+            (!startDate || orderDate >= startDate) &&
+            (!endDate || orderDate <= endDate)
+          );
+        }).length
+      );
+    }, [orders, startDate, endDate]);
+
+    const fileName = 'daily_data';
 
   return (
     <div>
@@ -120,7 +149,7 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
               </Link>
             </div>
             <div className="d-flex">
-                <ExportCSV csvData={orders} fileName={fileName} />
+              <ExportDailyCSV csvData={filteredOrders} fileName={fileName} />
             </div>
           </div>
 
@@ -138,13 +167,28 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
                   <div className="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
                     <div className="dataTable-top">
                       <div className="dataTable-search">
-                        <input
-                            className="dataTable-input"
-                            placeholder="Search..."
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
+                        <div className="d-flex">
+                            <label htmlFor="start-date">Start Date:</label>
+                            <input
+                                type="date"
+                                id="start-date"
+                                onChange={(event) => setStartDate(new Date(event.target.value))}
+                            />
+                            <label htmlFor="end-date">End Date:</label>
+                            <input
+                                type="date"
+                                id="end-date"
+                                className='me-2'
+                                onChange={(event) => setEndDate(new Date(event.target.value))}
+                            /> 
+                            <input
+                                className="dataTable-input"
+                                placeholder="Search..."
+                                type="text"
+                                value={searchQuery}
+                                onChange={handleSearchQueryChange}
+                            />
+                        </div>
                       </div>
                     </div>
 
