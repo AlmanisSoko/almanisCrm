@@ -238,7 +238,7 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders }) => {
                                   <span className="my-2 text-xs">{orders.packaging}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.rice_type === 1 ? "Pishori" : "Komboka"}</span>
+                                  <span className="my-2 text-xs">{orders.rice_type === 1 ? "Pishori" : orders.rice_type === 2 ? "Komboka" : "Brown"}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
                                   <span className="my-2 text-xs">{orders.farmer.name}</span>

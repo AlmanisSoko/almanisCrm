@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
 import { fetchCustomerDetails, editCustomer } from '../../../actions/auth';
@@ -8,6 +8,8 @@ import avatar from '../../../assets/svgs/undraw_male_avatar_g98d.svg'
 
 const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, editCustomer }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  
   const { id } = useParams();
   const [orders, setOrders] = useState([]); // Initialize orders as an empty array
   const [currentPage, setCurrentPage] = useState(1);
@@ -300,9 +302,17 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                       <div className="text-body d-flex align-items-center" data-scroll="" href="#2fa">
                         <button 
                           className="btn bg-gradient-dark btn-lg w-100"
-                          onClick={() => navigate('/addpayment')}
+                          onClick={() => navigate('/addPayment', { state: { from: location } })}
                         >
                           Add Payment
+                        </button>
+                      </div>
+                      <div className="text-body d-flex align-items-center" data-scroll="" href="#2fa">
+                        <button 
+                          className="btn bg-gradient-dark btn-lg w-100"
+                          onClick={() => navigate('/neworders')}
+                        >
+                          Place Order
                         </button>
                       </div>
                     </li>

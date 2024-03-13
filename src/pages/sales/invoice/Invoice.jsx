@@ -29,12 +29,6 @@ const Invoice = ({ isAuthenticated, fetchAllInvoice, customer, invoice, saveInvo
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalOpen, setModalOpen] = useState(false);
 
-    useEffect(() => {
-        if (!isAuthenticated) {
-            navigate('/');
-        } 
-    }, [isAuthenticated, navigate, ]);
-
     // Update useEffect for fetching custome data
     useEffect(() => {
         const fetchInvoice = async () => {

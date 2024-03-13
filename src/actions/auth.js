@@ -1361,7 +1361,7 @@ export const fetchAllOrders = () => async (dispatch, getState) => {
       });
   
       if (response.status === 200) {
-        const ordersData = response.data;
+        const ordersData = response.data.data;
         dispatch({
           type: ORDERS_FETCH_ALL_SUCCESS,
           payload: ordersData,
@@ -1378,6 +1378,7 @@ export const fetchAllOrders = () => async (dispatch, getState) => {
       });
     }
 };
+
 
 export const deleteOrder = (id) => async (dispatch, getState) => {
     const { access } = getState().auth;

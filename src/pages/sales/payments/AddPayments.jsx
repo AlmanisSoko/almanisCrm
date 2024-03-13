@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef  } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Link, useNavigate, useLocation } from 'react-router-dom'; // Import useNavigate
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
 import AutoCompleteOrder from '../../../components/order/AutoCompleteOrder';
@@ -8,6 +8,8 @@ import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer
 
 const AddPayments = ({ isAuthenticated, savePayment }) => {
     const navigate = useNavigate(); // Get the navigate function
+    const location = useLocation();
+
     const [formData, setFormData] = useState({
         orders_id: '',
         paying_number: '',
@@ -82,7 +84,8 @@ const AddPayments = ({ isAuthenticated, savePayment }) => {
                     setButtonText('Add Payment')
                     setButtonDisabled(false)
                     setSubmitSuccess(false)
-                    window.location.reload();
+                    const redirectTo = location.state?.from || '/';
+                    navigate(redirectTo, { replace: true });
                 }, 500);
             }
         } catch (error) {
@@ -91,14 +94,6 @@ const AddPayments = ({ isAuthenticated, savePayment }) => {
             setButtonDisabled(false); // Re-enable the button
         }
     }
-
-    // Check if the user is authenticated
-    // useEffect(() => {
-    //   // Check if user is not authenticated and navigate to login
-    //   if (!isAuthenticated) {
-    //     navigate('/');
-    //   }
-    // }, [isAuthenticated, navigate]);
 
     const showDataInInputs = (index, item) => {
         if (item) {

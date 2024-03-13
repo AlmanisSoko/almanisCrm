@@ -538,6 +538,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
                                     >
                                         <option value="">Rice Type</option>
                                         <option value="1">Pishori</option>
+                                        <option value="3">Brown</option>
                                         <option value="2">Komboka</option>
                                     </select>
                                 </div>

@@ -6,6 +6,11 @@ const PrintableInvoice = ({ invoiceData, currentDate }) => (
   <div id="bill">
     <div className="card my-sm-5 my-lg-0">
         <div className="card-header text-center">
+            <div className="row align-items-center">
+                <div className="col-lg-12 col-md-7 text-md-center text-center mt-5">
+                    <h1 className="d-block mt-2 mb-0 ">Profoma Invoice</h1>
+                </div>
+            </div>
             <div className="row justify-content-between">
                 <div className="col-md-4 text-start">
                     <img className="mb-2 w-25 p-2" src={navLogo} alt="Logo"/>

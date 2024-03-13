@@ -87,6 +87,7 @@ const Customer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer
         ? customers.filter((customer) =>
               customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
               customer.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              customer.secondary_phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
               customer.town.toLowerCase().includes(searchQuery.toLowerCase()) 
           )
         : [];

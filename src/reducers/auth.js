@@ -327,7 +327,7 @@ export default function (state = initialState, action) {
                 ...state,
             };       
         
-            // ORDERS MODULE REDUCERS
+        // ORDERS MODULE REDUCERS
 
         case SAVE_ORDERS_SUCCESS:
             return {
@@ -359,7 +359,7 @@ export default function (state = initialState, action) {
         case ORDERS_FETCH_ALL_SUCCESS:
             return {
                 ...state,
-                orders: payload.data, // Store the fetched customer data
+                orders: payload, // Store the fetched customer data
             };
 
         case ORDERS_FETCH_ALL_FAIL:

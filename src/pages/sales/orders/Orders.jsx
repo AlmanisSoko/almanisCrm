@@ -4,7 +4,6 @@ import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
 import { fetchAllOrders, deleteOrder } from '../../../actions/auth';
 import swal from 'sweetalert2';
-import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import { ExportDailyCSV } from '../../../components/csv/ExportDailyCSV';
 
 const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
@@ -24,7 +23,6 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
         fetchAllOrders().then(() => setLoading(false));;
         }
     }, [isAuthenticated, navigate, fetchAllOrders]);
-
 
     if (!isAuthenticated) { 
         navigate('/');
@@ -116,24 +114,6 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
         startPage + maxPagesDisplayed - 1
     );
 
-    console.log("start", startDate)
-    console.log("end", endDate)
-
-    const [filteredOrdersCount, setFilteredOrdersCount] = useState(0);
-
-    useEffect(() => {
-      // Update filteredOrdersCount when orders or date filters change
-      setFilteredOrdersCount(
-        orders.filter((order) => {
-          const orderDate = new Date(order.added_on);
-          return (
-            (!startDate || orderDate >= startDate) &&
-            (!endDate || orderDate <= endDate)
-          );
-        }).length
-      );
-    }, [orders, startDate, endDate]);
-
     const fileName = 'daily_data';
 
   return (
@@ -149,6 +129,13 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
               </Link>
             </div>
             <div className="d-flex">
+              <button className="btn btn-icon btn-outline-white ms-2 export dropdown d-inline" >
+                  <span className="btn-inner--icon">
+                      <i className="fa-solid fa-weight-scale"></i>
+                  </span>
+                  <span className="btn-inner--text"> Today kilos {orders && orders.daily_kgs ? orders.daily_kgs : 0}</span>
+              </button>
+
               <ExportDailyCSV csvData={filteredOrders} fileName={fileName} />
             </div>
           </div>

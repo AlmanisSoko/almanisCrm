@@ -402,7 +402,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                             onChange={(e) => onChange(e)}
                                                             required
                                                         >
-                                                            <option value="">Transporters</option>
+                                                            <option value="">-- Transporters --</option>
                                                             <option value="1">Others</option>
                                                             <option value="2">Inhouse</option>
                                                         </select>
@@ -472,8 +472,9 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                             onChange={(e) => onChange(e)}
                                                             required
                                                         >
-                                                            <option value="">Rice Type</option>
+                                                            <option value="">-- Rice Type --</option>
                                                             <option value="1">Pishori</option>
+                                                            <option value="3">Brown</option>
                                                             <option value="2">Komboka</option>
                                                         </select>
                                                     </div>
