@@ -110,7 +110,7 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, deletePayment }
     const fileName = "payment_data";
 
   return (
-    <div>
+    <>
       <div className="min-height-300 bg-dark position-absolute w-100"></div>
       <HeaderNav />
       <div style={mediaQuery.matches ? desktopStyle : mobileStyle}>
@@ -347,7 +347,7 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, deletePayment }
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

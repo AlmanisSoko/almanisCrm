@@ -72,7 +72,7 @@ const OverPaid = ({ isAuthenticated, fetchOverdueList, overpaid, isSidebarOpen, 
     );
 
     return (
-        <div>
+        <>
             <div className="min-height-300 bg-dark position-absolute w-100"></div>
             <HeaderNav />
             <div style={mediaQuery.matches ? desktopStyle : mobileStyle}>
@@ -238,7 +238,7 @@ const OverPaid = ({ isAuthenticated, fetchOverdueList, overpaid, isSidebarOpen, 
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

@@ -48,8 +48,7 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
   const endPaymentPage = Math.min(
       Math.ceil(orders.length / paymentPerPage),
       startPage + maxPagesDisplayed - 1
-  );
-  
+  ); 
 
   const [formData, setFormData] = useState({
     name: '',
@@ -189,7 +188,7 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
   };
 
   return (
-    <div>
+    <>
       <div className="min-height-300 bg-dark position-absolute w-100"></div>
       <HeaderNav />
       <div style={mediaQuery.matches ? desktopStyle : mobileStyle}>
@@ -749,7 +748,7 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
 
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

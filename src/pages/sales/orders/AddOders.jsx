@@ -260,7 +260,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
     };
 
     return (
-        <div>
+        <>
             <div className="min-height-300 bg-dark position-absolute w-100"></div>
             <HeaderNav />
             <div style={mediaQuery.matches ? desktopStyle : mobileStyle}>
@@ -556,7 +556,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

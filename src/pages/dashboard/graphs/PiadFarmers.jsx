@@ -18,7 +18,7 @@ function PaidFarmers() {
     const mediaQuery = window.matchMedia('(min-width: 768px)');
 
     return (
-        <div>
+        <>
             <div className="min-height-300 bg-dark position-absolute w-100"></div>
             <HeaderNav/>
             <div className="container-fluid py-4" style={mediaQuery.matches ? desktopStyle : mobileStyle}>
@@ -60,7 +60,7 @@ function PaidFarmers() {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

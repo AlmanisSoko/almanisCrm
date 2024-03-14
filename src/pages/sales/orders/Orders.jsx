@@ -6,7 +6,7 @@ import { fetchAllOrders, deleteOrder } from '../../../actions/auth';
 import swal from 'sweetalert2';
 import { ExportDailyCSV } from '../../../components/csv/ExportDailyCSV';
 
-const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
+const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKilos }) => {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const ordersPerPage = 30;
@@ -20,7 +20,9 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
         if (!isAuthenticated) {
         //navigate('/');
         } else {
-        fetchAllOrders().then(() => setLoading(false));;
+        fetchAllOrders().then(() => {
+          setLoading(false);
+        });
         }
     }, [isAuthenticated, navigate, fetchAllOrders]);
 
@@ -117,7 +119,7 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
     const fileName = 'daily_data';
 
   return (
-    <div>
+    <>
       <div className="min-height-300 bg-dark position-absolute w-100"></div>
       <HeaderNav />
       <div style={mediaQuery.matches ? desktopStyle : mobileStyle}>
@@ -133,7 +135,7 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
                   <span className="btn-inner--icon">
                       <i className="fa-solid fa-weight-scale"></i>
                   </span>
-                  <span className="btn-inner--text"> Today kilos {orders && orders.daily_kgs ? orders.daily_kgs : 0}</span>
+                  <span className="btn-inner--text"> Today kilos {dailyKilos ? dailyKilos.daily_kgs: 0}</span>
               </button>
 
               <ExportDailyCSV csvData={filteredOrders} fileName={fileName} />
@@ -379,13 +381,14 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder }) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   orders: state.auth.orders,
+  dailyKilos: state.auth.dailyKilos
 });
 
 const mapDispatchToProps = (dispatch) => {

@@ -29,6 +29,7 @@ import {
      SAVE_ORDERS_SUCCESS, SAVE_ORDERS_FAIL,
      ORDER_SEARCH_SUCCESS, ORDER_SEARCH_FAIL,
      EDIT_ORDERS_SUCCESS, EDIT_ORDERS_FAIL,
+     ORDERS_FETCH_KILOS_SUCCESS, ORDERS_FETCH_KILOS_FAIL,
 
      // farmer
     FARMER_SEARCH_SUCCESS, FARMER_SEARCH_FAIL,
@@ -486,7 +487,6 @@ export const fetchHomePage = () => async (dispatch, getState) => {
     });
   }
 };
-
 
 export const fetchPaymentBreakdown= () => async (dispatch, getState) => {
   const { access } = getState().auth;
@@ -1362,13 +1362,14 @@ export const fetchAllOrders = () => async (dispatch, getState) => {
   
       if (response.status === 200) {
         const ordersData = response.data.data;
+        const kilosData = response.data
         dispatch({
-          type: ORDERS_FETCH_ALL_SUCCESS,
-          payload: ordersData,
+          type: ORDERS_FETCH_ALL_SUCCESS, ORDERS_FETCH_KILOS_SUCCESS,
+          payload: ordersData, kilosData,
         });
       } else {
         dispatch({
-          type: ORDERS_FETCH_ALL_FAIL,
+          type: ORDERS_FETCH_ALL_FAIL, ORDERS_FETCH_KILOS_FAIL,
         });
       }
     } catch (error) {

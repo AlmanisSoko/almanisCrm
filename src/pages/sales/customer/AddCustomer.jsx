@@ -97,7 +97,7 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
   const mediaQuery = window.matchMedia('(min-width: 768px)');
 
   return (
-    <div>
+    <>
       <div className="min-height-300 bg-dark position-absolute w-100"></div>
       <HeaderNav />
       <div style={mediaQuery.matches ? desktopStyle : mobileStyle}>
@@ -238,7 +238,7 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

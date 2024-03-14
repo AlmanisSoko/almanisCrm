@@ -34,7 +34,7 @@ import {
      ORDERS_FETCH_DETAILS_SUCCESS, ORDERS_FETCH_DETAILS_FAIL,
      ORDER_DELETE_SUCCESS, ORDER_DELETE_FAIL, ORDER_UPDATE_LIST,
      SAVE_ORDERS_SUCCESS, SAVE_ORDERS_FAIL,
-     ORDER_SEARCH_SUCCESS, ORDER_SEARCH_FAIL,
+     ORDERS_FETCH_KILOS_SUCCESS, ORDERS_FETCH_KILOS_FAIL,
      EDIT_ORDERS_SUCCESS, EDIT_ORDERS_FAIL,
 
      // payments
@@ -73,6 +73,7 @@ const initialState = {
     paymentsDetails: null,
     farmer: [],
     orders: [],
+    dailyKilos: null,
     payments: [],
     invoice: [], 
     debtors: [],
@@ -372,6 +373,18 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 orders: payload.data, // Store the fetched orders data
+            };
+
+        case ORDERS_FETCH_KILOS_SUCCESS:
+            return {
+                ...state,
+                dailyKilos: payload.data, // Store the fetched orders data
+            };
+
+        case ORDERS_FETCH_KILOS_FAIL:
+            return {
+                ...state,
+                dailyKilos: [], // Store the fetched orders data
             };
 
         case ORDERS_FETCH_DETAILS_FAIL:

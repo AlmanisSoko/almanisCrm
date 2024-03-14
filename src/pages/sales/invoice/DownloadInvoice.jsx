@@ -78,7 +78,7 @@ const DownloadInvoice = ({ isAuthenticated, fetchInvoiceDetails, invoiceDetails 
     }
 
     return (
-        <div>
+        <>
             <div className="min-height-300 bg-dark position-absolute w-100"></div>
             <HeaderNav />
             
@@ -108,8 +108,7 @@ const DownloadInvoice = ({ isAuthenticated, fetchInvoiceDetails, invoiceDetails 
                     </div>
                 </div>
             </div>
-            
-        </div>
+        </>
     )
 }
 

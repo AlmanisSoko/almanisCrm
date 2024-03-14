@@ -258,7 +258,7 @@ const Invoice = ({ isAuthenticated, fetchAllInvoice, customer, invoice, saveInvo
     }
     
     return (
-        <div>
+        <>
             <div className="min-height-300 bg-dark position-absolute w-100"></div>
             <HeaderNav />
             <div style={mediaQuery.matches ? desktopStyle : mobileStyle}>
@@ -535,7 +535,7 @@ const Invoice = ({ isAuthenticated, fetchAllInvoice, customer, invoice, saveInvo
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
