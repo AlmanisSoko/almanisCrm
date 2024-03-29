@@ -36,126 +36,124 @@ const DashboardCard = ({ isAuthenticated, fetchDiscount, fetchTotalKilos, fetchD
 
     return (
         <>
-            <div className="col-xs-12">
-                <div className="row">
-                    <div className="col-12">
-                        <div className="card">
-                            <div className="card-body p-3">
-                                <div className="row">
+            <div className="row">
+                <div className="col-12">
+                    <div className="card">
+                        <div className="card-body p-3">
+                            <div className="row">
 
-                                    <div className="col-3">
-                                        <div className="row cursor-pointer" onClick={() => navigate('/discount')}>
-                                            <div className="col-8">
-                                                <div className="numbers">
-                                                    <p className="text-sm mb-0 text-end text-uppercase font-weight-bold">Total Discount</p>
-                                                    <h5 className="font-weight-bolder text-end">
-                                                        {Number(totalDiscount).toLocaleString('en-KE', {
-                                                            style: 'currency',
-                                                            currency: 'KES',
-                                                            minimumFractionDigits: 2,
-                                                            maximumFractionDigits: 2,
-                                                        })}
-                                                    </h5>
-                                                    <p className="mb-0">
-                                                        <span className="text-success text-sm font-weight-bolder"></span>
-                                                    </p>
-                                                </div>
+                                <div className="col-md-3 col-12 mt-3">
+                                    <div className="row cursor-pointer" onClick={() => navigate('/discount')}>
+                                        <div className="col-8">
+                                            <div className="numbers">
+                                                <p className="text-sm mb-0 text-end text-uppercase font-weight-bold">Total Discount</p>
+                                                <h5 className="font-weight-bolder text-end">
+                                                    {Number(totalDiscount).toLocaleString('en-KE', {
+                                                        style: 'currency',
+                                                        currency: 'KES',
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2,
+                                                    })}
+                                                </h5>
+                                                <p className="mb-0">
+                                                    <span className="text-success text-sm font-weight-bolder"></span>
+                                                </p>
                                             </div>
-                                            
-                                            <div className="col-4 text-start">
-                                                <div className="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                                                    <i className="fi fi-rs-badge-percent text-white text-lg opacity-10" aria-hidden="true"></i>
-                                                </div>
-                                            </div>
-                                            
                                         </div>
-                                    </div>
-
-                                    <div className="col-3">
-                                        <div className="row cursor-pointer" onClick={() => navigate('/total')}>
-                                            <div className="col-8">
-                                                <div className="numbers">
-                                                    <p className="text-sm mb-0 text-end text-uppercase font-weight-bold">Total Paid</p>
-                                                    <h5 className="font-weight-bolder text-end">
-                                                        {Number(totalPayment).toLocaleString('en-KE', {
-                                                            style: 'currency',
-                                                            currency: 'KES',
-                                                            minimumFractionDigits: 2,
-                                                            maximumFractionDigits: 2,
-                                                        })}
-                                                    </h5>
-                                                    <p className="mb-0">
-                                                        <span className="text-success text-sm font-weight-bolder"></span>
-                                                    </p>
-                                                </div>
+                                        
+                                        <div className="col-4 text-start">
+                                            <div className="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                                                <i className="fi fi-rs-badge-percent text-white text-lg opacity-10" aria-hidden="true"></i>
                                             </div>
-                                            
-                                            <div className="col-4 text-start">
-                                                <div className="icon icon-shape bg-gradient-success shadow-primary text-center rounded-circle">
-                                                    <i className="fa-solid fa-credit-card text-white text-lg opacity-10" aria-hidden="true"></i>
-                                                </div>
-                                            </div>
-                                            
                                         </div>
+                                        
                                     </div>
-
-                                    <div className="col-3">
-                                        <div className="row cursor-pointer" onClick={() => navigate('/kilos')}>
-                                            <div className="col-8">
-                                                <div className="numbers">
-                                                    <p className="text-sm mb-0 text-end text-uppercase font-weight-bold">Total Kilos</p>
-                                                    <h5 className="font-weight-bolder text-end">
-                                                        {Number(totalKilos).toLocaleString('en-KE', {
-                                                            minimumFractionDigits: 2,
-                                                            maximumFractionDigits: 2,
-                                                        }) + ' kgs'} 
-                                                    </h5>
-                                                    <p className="mb-0">
-                                                        <span className="text-success text-sm font-weight-bolder"></span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            
-                                            <div className="col-4 text-start">
-                                                <div className="icon icon-shape bg-gradient-secondary shadow-primary text-center rounded-circle">
-                                                    <i className="fa-solid fa-scale-unbalanced-flip text-white text-lg opacity-10" aria-hidden="true"></i>
-                                                </div>
-                                            </div>
-                                            
-                                        </div>
-                                    </div>
-
-                                    <div className="col-3">
-                                        <div className="row cursor-pointer" onClick={() => navigate('/balance')}>
-                                            <div className="col-8">
-                                                <div className="numbers">
-                                                    <p className="text-sm mb-0 text-end text-uppercase font-weight-bold">Balance</p>
-                                                    <h5 className="font-weight-bolder text-end">
-                                                        {Number(totalUnderPaid).toLocaleString('en-KE', {
-                                                            style: 'currency',
-                                                            currency: 'KES',
-                                                            minimumFractionDigits: 2,
-                                                            maximumFractionDigits: 2,
-                                                        })}
-                                                    </h5>
-                                                    <p className="mb-0">
-                                                        <span className="text-success text-sm font-weight-bolder"></span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            
-                                            <div className="col-4 text-start">
-                                                <div 
-                                                    className="icon icon-shape bg-gradient-warning shadow-primary text-center rounded-circle"
-                                                >
-                                                    <i className="fa-solid fa-building-columns text-white text-lg opacity-10" aria-hidden="true"></i>
-                                                </div>
-                                            </div>
-                                            
-                                        </div>
-                                    </div>
-
                                 </div>
+
+                                <div className="col-md-3 col-12 mt-3">
+                                    <div className="row cursor-pointer" onClick={() => navigate('/total')}>
+                                        <div className="col-8">
+                                            <div className="numbers">
+                                                <p className="text-sm mb-0 text-end text-uppercase font-weight-bold">Total Paid</p>
+                                                <h5 className="font-weight-bolder text-end">
+                                                    {Number(totalPayment).toLocaleString('en-KE', {
+                                                        style: 'currency',
+                                                        currency: 'KES',
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2,
+                                                    })}
+                                                </h5>
+                                                <p className="mb-0">
+                                                    <span className="text-success text-sm font-weight-bolder"></span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="col-4 text-start">
+                                            <div className="icon icon-shape bg-gradient-success shadow-primary text-center rounded-circle">
+                                                <i className="fa-solid fa-credit-card text-white text-lg opacity-10" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+
+                                <div className="col-md-3 col-12 mt-3">
+                                    <div className="row cursor-pointer" onClick={() => navigate('/kilos')}>
+                                        <div className="col-8">
+                                            <div className="numbers">
+                                                <p className="text-sm mb-0 text-end text-uppercase font-weight-bold">Total Kilos</p>
+                                                <h5 className="font-weight-bolder text-end">
+                                                    {Number(totalKilos).toLocaleString('en-KE', {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2,
+                                                    }) + ' kgs'} 
+                                                </h5>
+                                                <p className="mb-0">
+                                                    <span className="text-success text-sm font-weight-bolder"></span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="col-4 text-start">
+                                            <div className="icon icon-shape bg-gradient-secondary shadow-primary text-center rounded-circle">
+                                                <i className="fa-solid fa-scale-unbalanced-flip text-white text-lg opacity-10" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+
+                                <div className="col-md-3 col-12 mt-3">
+                                    <div className="row cursor-pointer" onClick={() => navigate('/balance')}>
+                                        <div className="col-8">
+                                            <div className="numbers">
+                                                <p className="text-sm mb-0 text-end text-uppercase font-weight-bold">Balance</p>
+                                                <h5 className="font-weight-bolder text-end">
+                                                    {Number(totalUnderPaid).toLocaleString('en-KE', {
+                                                        style: 'currency',
+                                                        currency: 'KES',
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2,
+                                                    })}
+                                                </h5>
+                                                <p className="mb-0">
+                                                    <span className="text-success text-sm font-weight-bolder"></span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="col-4 text-start">
+                                            <div 
+                                                className="icon icon-shape bg-gradient-warning shadow-primary text-center rounded-circle"
+                                            >
+                                                <i className="fa-solid fa-building-columns text-white text-lg opacity-10" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>

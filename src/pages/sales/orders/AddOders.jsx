@@ -336,7 +336,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                 <div className="form-group">
                                                     <label>Kilos</label>
                                                     <input
-                                                        type="text"
+                                                        type="number"
                                                         className="form-control"
                                                         id="Kgs"
                                                         placeholder="Kgs"
@@ -350,7 +350,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                 <div className="form-group">
                                                     <label>Packaging</label>
                                                     <input
-                                                        type="text"
+                                                        type="number"
                                                         className="form-control"
                                                         id="packaging"
                                                         placeholder="Packaging"
@@ -364,7 +364,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                 <div className="form-group">
                                                     <label>Discount</label>
                                                     <input
-                                                        type="text"
+                                                        type="number"
                                                         className="form-control"
                                                         id="discount"
                                                         placeholder="Discount"
@@ -381,7 +381,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                 <div className="form-group">
                                                     <label>Transport</label>
                                                     <input
-                                                        type="text"
+                                                        type="number"
                                                         className="form-control"
                                                         id="transport"
                                                         placeholder="Transport"
@@ -413,7 +413,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                 <div className="form-group">
                                                     <label>Rider</label>
                                                     <input
-                                                        type="text"
+                                                        type="number"
                                                         className="form-control"
                                                         id="rider"
                                                         placeholder="Rider"
@@ -503,7 +503,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                 <div className="form-group">
                                                     <label>Farmer Price</label>
                                                     <input
-                                                        type="text"
+                                                        type="number"
                                                         className="form-control"
                                                         name="farmer_price"
                                                         id="farmer_price"
@@ -518,7 +518,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                 <div className="form-group">
                                                     <label>Almanis Price</label>
                                                     <input
-                                                        type="text"
+                                                        type="number"
                                                         className="form-control"
                                                         id="price"
                                                         placeholder="Almanis Price"
@@ -532,7 +532,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                 <div className="form-group">
                                                     <label>Amount</label>
                                                     <input
-                                                        type="text"
+                                                        type="number"
                                                         className="form-control"
                                                         id="amount"
                                                         placeholder="Amount"

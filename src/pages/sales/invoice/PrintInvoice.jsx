@@ -4,7 +4,7 @@ import navLogo from '../../../assets/logo/logo192.png'
 
 const PrintableInvoice = ({ invoiceData, currentDate }) => (
   <div id="bill">
-    <div className="card my-sm-5 my-lg-0">
+    <div className="card my-sm-5 my-lg-0"> 
         <div className="card-header text-center">
             <div className="row align-items-center">
                 <div className="col-lg-12 col-md-7 text-md-center text-center mt-5">

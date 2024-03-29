@@ -29,8 +29,8 @@ const TFCcard = ({ isAuthenticated, fetchHomePage }) => {
         <div className="row">
             <div className="col-xl-12  mt-xl-0 mt-4">
 
-                <div className="row mt-4">
-                    <div className="col-md-3">
+                <div className="row">
+                    <div className="col-md-3 col-12 mt-4">
                         <div className="card">
                             <div className="card-body text-center">
                                 <h1 className="text-gradient text-primary">
@@ -43,7 +43,7 @@ const TFCcard = ({ isAuthenticated, fetchHomePage }) => {
                         </div>
                     </div>
 
-                    <div className="col-md-3">
+                    <div className="col-md-3 col-12 mt-4">
                         <div className="card">
                             <div className="card-body text-center">
                                 <h1 className="text-gradient text-primary"> 
@@ -56,7 +56,7 @@ const TFCcard = ({ isAuthenticated, fetchHomePage }) => {
                         </div>
                     </div>
                 
-                    <div className="col-md-3">
+                    <div className="col-md-3 col-12 mt-4">
                         <div className="card">
                             <div className="card-body text-center">
                                 <h1 className="text-gradient text-primary">
@@ -71,7 +71,7 @@ const TFCcard = ({ isAuthenticated, fetchHomePage }) => {
                         </div>
                     </div>
 
-                    <div className="col-md-3">
+                    <div className="col-md-3 col-12 mt-4">
                         <div className="card">
                             <div className="card-body text-center">
                                 <h1 className="text-gradient text-primary">

@@ -397,7 +397,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
                           <div className="form-group">
                             <label>Kgs</label>
                               <input
-                                  type="text"
+                                  type="number"
                                   className="form-control"
                                   id="Kgs"
                                   placeholder="Kgs"
@@ -411,7 +411,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
                           <div className="form-group">
                             <label>Packaging</label>
                               <input
-                                  type="text"
+                                  type="number"
                                   className="form-control"
                                   id="packaging"
                                   placeholder="Packaging"
@@ -425,7 +425,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
                         <div className="form-group">
                         <label>Discount</label>
                             <input
-                                type="text"
+                                type="number"
                                 className="form-control"
                                 id="discount"
                                 placeholder="Discount"
@@ -442,7 +442,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
                             <div className="form-group">
                             <label>Transport</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     className="form-control"
                                     id="transport"
                                     placeholder="Transport"
@@ -474,7 +474,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
                             <div className="form-group">
                                 <label>Rider</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     className="form-control"
                                     id="rider"
                                     placeholder="Rider"
@@ -567,7 +567,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
                             <div className="form-group">
                                 <label>Farmer Price</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     className="form-control"
                                     name="farmer_price"
                                     id="discount"
@@ -582,7 +582,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
                             <div className="form-group">
                                 <label>Almanis Price</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     className="form-control"
                                     id="price"
                                     placeholder="Almanis Price"
