@@ -7,7 +7,7 @@ import backgroundImage from '../../assets/images/login-bg.jpg'
 
 const Login = ({ login, isAuthenticated, user }) => {
     const navigate = useNavigate()
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({ 
       email: '',
       password: ''
     });

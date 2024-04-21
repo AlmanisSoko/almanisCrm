@@ -6,11 +6,12 @@ import { fetchAllOrders, deleteOrder } from '../../../actions/auth';
 import swal from 'sweetalert2';
 import { ExportDailyCSV } from '../../../components/csv/ExportDailyCSV';
 
-const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKilos }) => {
+const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKilos, total, previous, next }) => {
     const navigate = useNavigate();
-    const [currentPage, setCurrentPage] = useState(1);
-    const ordersPerPage = 30;
+    const itemsPerPage = 50; // This should match your API's pagination setup
+    const totalPages = Math.ceil(total / itemsPerPage);
     const maxPagesDisplayed = 5;
+    const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [startDate, setStartDate] = useState(null);
@@ -102,19 +103,38 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
       })
     : [];
 
-    const indexOfLastOrder = currentPage * ordersPerPage;
-    const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-    const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-
-    const paginate = (pageNumber) => {
-        setCurrentPage(pageNumber);
+    const handlePageChange = pageNumber => {
+      if (!pageNumber) return;
+      console.log("Navigating to page:", pageNumber);
+      navigate(`?page=${pageNumber}`);  // Assuming you're in a routed environment
+      fetchAllOrders(pageNumber).then(() => {
+        setLoading(false);
+      }).catch(error => {
+        console.error("Error fetching orders:", error);
+        setLoading(false);
+      });
     };
-
-    const startPage = Math.max(1, currentPage - Math.floor(maxPagesDisplayed / 2));
-    const endPage = Math.min(
-        Math.ceil(filteredOrders.length / ordersPerPage),
-        startPage + maxPagesDisplayed - 1
-    );
+    
+    useEffect(() => {
+      const page = new URLSearchParams(window.location.search).get('page') || 1;
+      setCurrentPage(parseInt(page, 10));
+      fetchAllOrders(page).then(() => setLoading(false));
+    }, [navigate]);
+       
+     
+    function getPageRange(current, total) {
+      const sidePages = Math.floor(maxPagesDisplayed / 2);
+      let start = Math.max(current - sidePages, 1);
+      let end = Math.min(start + maxPagesDisplayed - 1, total);
+    
+      // Adjust the range if we're at the edge
+      if ((end - start + 1) < maxPagesDisplayed) {
+        start = Math.max(1, end - maxPagesDisplayed + 1);
+      }
+    
+      return Array.from({ length: (end - start + 1) }, (_, i) => start + i);
+    }
+    
 
     const fileName = 'daily_data';
 
@@ -253,8 +273,8 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
                         </thead>
 
                         <tbody>
-                          {currentOrders.length > 0 ? (
-                            currentOrders.map((orders) => (
+                          {filteredOrders.length > 0 ? (
+                            filteredOrders.map((orders) => (
                               <tr key={orders.id}>
                                 <td>
                                   <div className="d-flex align-items-center">
@@ -331,48 +351,33 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
 
                     {/* Pagination controls */}
                     <div className="dataTable-bottom">
-                        <div className="dataTable-info">
-                            Showing {filteredOrders.length} entries
-                        </div>
-                        <nav className="dataTable-pagination">
-                            <ul className="dataTable-pagination-list">
+                      <div className="dataTable-info">
+                        Showing {orders.length} of {total} entries
+                      </div>
+                      <nav className="dataTable-pagination">
+                        <ul className="dataTable-pagination-list">
+                          {previous && (
                             <li className="pager">
-                                <a
-                                href="#"
-                                data-page="1"
-                                onClick={() => paginate(1)}
-                                >
-                                ‹
-                                </a>
+                              <button onClick={() => handlePageChange(previous)}>‹ Previous</button>
                             </li>
-                            {Array.from({ length: endPage - startPage + 1 }).map((_, index) => (
-                                <li
-                                key={index}
-                                className={currentPage === startPage + index ? 'active' : ''}
-                                >
-                                <a
-                                    href="#"
-                                    data-page={startPage + index}
-                                    onClick={() => paginate(startPage + index)}
-                                >
-                                    {startPage + index}
-                                </a>
-                                </li>
-                            ))}
-                            {currentPage + maxPagesDisplayed < Math.ceil(filteredOrders.length / ordersPerPage) && (
-                                <li className="pager">
-                                <a
-                                    href="#"
-                                    data-page={currentPage + 1}
-                                    onClick={() => paginate(currentPage + 1)}
-                                >
-                                    ›
-                                </a>
-                                </li>
-                            )}
-                            </ul>
-                        </nav>
+                          )}
+                          {getPageRange(currentPage, totalPages).map(page => (
+                            <li key={page} className={`pager ${page === currentPage ? 'active' : ''}`}>
+                           
+                           <button onClick={() => handlePageChange(page.toString())}>
+                              {page}
+                            </button>
+                            </li>
+                          ))}
+                          {next && (
+                            <li className="pager">
+                              <button onClick={() => handlePageChange(next)}>Next ›</button>
+                            </li>
+                          )}
+                        </ul>
+                      </nav>
                     </div>
+
                   </div>
                   )}
                 </div>
@@ -388,12 +393,16 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   orders: state.auth.orders,
-  dailyKilos: state.auth.dailyKilos
+  dailyKilos: state.auth.dailyKilos,
+  next: state.auth.next,
+  previous: state.auth.previous,
+  total: state.auth.count // Total number of items if provided
+
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAllOrders: () => dispatch(fetchAllOrders()),
+    fetchAllOrders: (pageNumber) => dispatch(fetchAllOrders(pageNumber)),
     deleteOrder: (orders_id) => dispatch(deleteOrder(orders_id)),
   };
 };

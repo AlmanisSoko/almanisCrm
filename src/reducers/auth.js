@@ -360,7 +360,10 @@ export default function (state = initialState, action) {
         case ORDERS_FETCH_ALL_SUCCESS:
             return {
                 ...state,
-                orders: payload, // Store the fetched customer data
+                orders: payload.results, // Store the fetched customer data   
+                count: payload.count,
+                next: payload.next,
+                previous: payload.previous,
             };
 
         case ORDERS_FETCH_ALL_FAIL:

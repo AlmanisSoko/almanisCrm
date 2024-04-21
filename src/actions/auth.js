@@ -904,7 +904,7 @@ export const logout= () => dispatch => {
         type: LOGOUT
     });
 }
-
+ 
 // API handler for the customer
 
 const fetchCustomerByName = async (phone, token) => {
@@ -954,7 +954,7 @@ export const searchCustomer = (phone) => async (dispatch) => {
           type: CUSTOMER_SEARCH_FAIL,
         })
         return [];
-      }
+      } 
     } catch (error) {
       console.error("Error fetching customer data:", error); // Log any network errors
       return [];
@@ -1349,37 +1349,63 @@ try {
 
 // Api Handler for Orders
 
-export const fetchAllOrders = () => async (dispatch, getState) => {
-    const { access } = getState().auth;
+// export const fetchAllOrders = () => async (dispatch, getState) => {
+//     const { access } = getState().auth;
   
-    try {
-      // Make an HTTP GET request to fetch orders data using the environment variable
-      const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/orders/`, {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      });
+//     try {
+//       // Make an HTTP GET request to fetch orders data using the environment variable
+//       const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/orders/`, {
+//         headers: {
+//           Authorization: `Bearer ${access}`,
+//         },
+//       });
   
-      if (response.status === 200) {
-        const ordersData = response.data.data;
-        const kilosData = response.data
-        dispatch({
-          type: ORDERS_FETCH_ALL_SUCCESS, ORDERS_FETCH_KILOS_SUCCESS,
-          payload: ordersData, kilosData,
-        });
-      } else {
-        dispatch({
-          type: ORDERS_FETCH_ALL_FAIL, ORDERS_FETCH_KILOS_FAIL,
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching orders data:", error);
-      dispatch({
-        type: ORDERS_FETCH_ALL_FAIL,
-      });
-    }
-};
+//       if (response.status === 200) {
+//         const ordersData = response.data.data;
+//         const kilosData = response.data
+//         dispatch({
+//           type: ORDERS_FETCH_ALL_SUCCESS, ORDERS_FETCH_KILOS_SUCCESS,
+//           payload: ordersData, kilosData,
+//         });
+//       } else {
+//         dispatch({
+//           type: ORDERS_FETCH_ALL_FAIL, ORDERS_FETCH_KILOS_FAIL,
+//         });
+//       }
+//     } catch (error) {
+//       console.error("Error fetching orders data:", error);
+//       dispatch({
+//         type: ORDERS_FETCH_ALL_FAIL,
+//       });
+//     }
+// };
 
+export const fetchAllOrders = (pageNumber = 1) => async (dispatch, getState) => {
+  const { access } = getState().auth;
+  const url = `${import.meta.env.VITE_REACT_APP_API_URL}/api/orders/?page=${pageNumber}`;  // Ensure this is the correct endpoint
+  console.log("Fetching orders for page:", pageNumber, "URL:", url);  // This will log the URL used
+
+  try {
+    const response = await Axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const { results, count, next, previous } = response.data.data;
+      dispatch({
+        type: ORDERS_FETCH_ALL_SUCCESS,
+        payload: { results, count, next, previous },
+      });
+    } else {
+      dispatch({ type: ORDERS_FETCH_ALL_FAIL });
+    }
+  } catch (error) {
+    console.error("Error fetching orders data:", error);
+    dispatch({ type: ORDERS_FETCH_ALL_FAIL });
+  }
+};
 
 export const deleteOrder = (id) => async (dispatch, getState) => {
     const { access } = getState().auth;

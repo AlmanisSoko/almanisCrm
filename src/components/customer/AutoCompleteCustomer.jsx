@@ -85,4 +85,4 @@ const AutoCompleteCustomer = (props) => {
     );
 };
 
-export default AutoCompleteCustomer;
+export default AutoCompleteCustomer; 

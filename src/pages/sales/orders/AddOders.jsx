@@ -121,18 +121,6 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
         }
     }
 
-    // useEffect(() => {
-    //     if (!isAuthenticated) {
-    //        // navigate('/');
-    //     } else {
-    //         //
-    //     }
-    // }, [isAuthenticated]);
-    
-    // if (!isAuthenticated) {
-    //     navigate('/');
-    // } 
-
     // Update the amount when any of the input fields change
     const handleKgsChange = (e) => {
         const newFormData = { ...formData, Kgs: e.target.value };
@@ -210,7 +198,6 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
             }
         }
     };
-    
 
     // Styles
     const responsiveStyle = {
@@ -233,7 +220,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
     const [selectedFarmerOptions, setSelectedFarmerOption] = useState(null);
     const [farmerOptions, setFarmerOptions] = useState([]);
 
-    // Update useEffect for fetching custome data
+    // Update useEffect for fetching farmer data
     useEffect(() => {
         const fetchFamerData = async () => {
             try {
