@@ -106,21 +106,16 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
     const handlePageChange = pageNumber => {
       if (!pageNumber) return;
       console.log("Navigating to page:", pageNumber);
-      navigate(`?page=${pageNumber}`);  // Assuming you're in a routed environment
-      fetchAllOrders(pageNumber).then(() => {
-        setLoading(false);
-      }).catch(error => {
-        console.error("Error fetching orders:", error);
-        setLoading(false);
-      });
+      localStorage.setItem('currentPage', pageNumber);
+      setCurrentPage(parseInt(pageNumber, 10));
+      fetchAllOrders(pageNumber).then(() => setLoading(false));
     };
     
     useEffect(() => {
-      const page = new URLSearchParams(window.location.search).get('page') || 1;
-      setCurrentPage(parseInt(page, 10));
-      fetchAllOrders(page).then(() => setLoading(false));
-    }, [navigate]);
-       
+      const storedPage = localStorage.getItem('currentPage') || 1;
+      setCurrentPage(parseInt(storedPage, 10));
+      fetchAllOrders(storedPage).then(() => setLoading(false));
+    }, []);
      
     function getPageRange(current, total) {
       const sidePages = Math.floor(maxPagesDisplayed / 2);
@@ -134,7 +129,6 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
     
       return Array.from({ length: (end - start + 1) }, (_, i) => start + i);
     }
-    
 
     const fileName = 'daily_data';
 
@@ -358,20 +352,24 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
                         <ul className="dataTable-pagination-list">
                           {previous && (
                             <li className="pager">
-                              <button onClick={() => handlePageChange(previous)}>‹ Previous</button>
+                              <a href="#" data-page="1" >
+                                ‹ 
+                              </a>
                             </li>
                           )}
                           {getPageRange(currentPage, totalPages).map(page => (
-                            <li key={page} className={`pager ${page === currentPage ? 'active' : ''}`}>
+                            <li key={page} className={` ${page === currentPage ? 'active' : ''}`}>
                            
-                           <button onClick={() => handlePageChange(page.toString())}>
+                           <a onClick={() => handlePageChange(page.toString())}>
                               {page}
-                            </button>
+                            </a>
                             </li>
                           ))}
                           {next && (
                             <li className="pager">
-                              <button onClick={() => handlePageChange(next)}>Next ›</button>
+                              <a href="#" data-page="1" > 
+                               ›
+                              </a>
                             </li>
                           )}
                         </ul>
