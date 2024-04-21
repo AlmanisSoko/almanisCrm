@@ -205,7 +205,10 @@ export default function (state = initialState, action) {
         case CUSTOMER_FETCH_ALL_SUCCESS:
             return {
                 ...state,
-                customers: payload.data, // Store the fetched customer data
+                customers: payload.results, // Store the fetched customer data 
+                count: payload.count,
+                next: payload.next,
+                previous: payload.previous,
             };
 
         case CUSTOMER_FETCH_ALL_FAIL:

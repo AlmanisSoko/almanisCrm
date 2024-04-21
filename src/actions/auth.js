@@ -992,23 +992,24 @@ export const fetchCustomerOnly = () => async (dispatch, getState) => {
     }
 };
   
-export const fetchAllCustomer = () => async (dispatch, getState) => {
+export const fetchAllCustomer = (pageNumber = 1) => async (dispatch, getState) => {
     const { access } = getState().auth;
+    const url = `${import.meta.env.VITE_REACT_APP_API_URL}/api/customer/?page=${pageNumber}`;  // Ensure this is the correct endpoint
+  console.log("Fetching orders for page:", pageNumber, "URL:", url);  // This will log the URL used
 
     try {
-    // Make an HTTP GET request to fetch customer data using the environment variable
-    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/customer/`, {
+      const response = await Axios.get(url, {
         headers: {
-        Authorization: `Bearer ${access}`,
+          Authorization: `Bearer ${access}`,
         },
-    });
+      });
 
     if (response.status === 200) {
-        const customerData = response.data;
-        dispatch({
+      const { results, count, next, previous } = response.data.data;
+      dispatch({
         type: CUSTOMER_FETCH_ALL_SUCCESS,
-        payload: customerData,
-        });
+        payload: { results, count, next, previous }
+      });
     } else {
         dispatch({
         type: CUSTOMER_FETCH_ALL_FAIL,
@@ -1348,37 +1349,6 @@ try {
 };
 
 // Api Handler for Orders
-
-// export const fetchAllOrders = () => async (dispatch, getState) => {
-//     const { access } = getState().auth;
-  
-//     try {
-//       // Make an HTTP GET request to fetch orders data using the environment variable
-//       const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/orders/`, {
-//         headers: {
-//           Authorization: `Bearer ${access}`,
-//         },
-//       });
-  
-//       if (response.status === 200) {
-//         const ordersData = response.data.data;
-//         const kilosData = response.data
-//         dispatch({
-//           type: ORDERS_FETCH_ALL_SUCCESS, ORDERS_FETCH_KILOS_SUCCESS,
-//           payload: ordersData, kilosData,
-//         });
-//       } else {
-//         dispatch({
-//           type: ORDERS_FETCH_ALL_FAIL, ORDERS_FETCH_KILOS_FAIL,
-//         });
-//       }
-//     } catch (error) {
-//       console.error("Error fetching orders data:", error);
-//       dispatch({
-//         type: ORDERS_FETCH_ALL_FAIL,
-//       });
-//     }
-// };
 
 export const fetchAllOrders = (pageNumber = 1) => async (dispatch, getState) => {
   const { access } = getState().auth;
