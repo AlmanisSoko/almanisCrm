@@ -5,10 +5,11 @@ import { connect } from 'react-redux';
 import { fetchAllOrders, deleteOrder } from '../../actions/auth';
 import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 
-const Analytics = ({ isAuthenticated, fetchAllOrders, orders }) => {
+const Analytics = ({ isAuthenticated, fetchAllOrders, orders, total, previous, next }) => {
     const navigate = useNavigate();
+    const itemsPerPage = 50; // This should match your API's pagination setup
+    const totalPages = Math.ceil(total / itemsPerPage);
     const [currentPage, setCurrentPage] = useState(1);
-    const ordersPerPage = 150000000000000;
     const maxPagesDisplayed = 5;
     const [loading, setLoading] = useState(true);
 
@@ -16,7 +17,9 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders }) => {
         if (!isAuthenticated) {
         //navigate('/');
         } else {
-        fetchAllOrders().then(() => setLoading(false));;
+        fetchAllOrders().then(() => {
+          setLoading(false);
+        });
         }
     }, [isAuthenticated, navigate, fetchAllOrders]);
 
@@ -59,19 +62,33 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders }) => {
       })
     : [];
 
-    const indexOfLastOrder = currentPage * ordersPerPage;
-    const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-    const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-
-    const paginate = (pageNumber) => {
-        setCurrentPage(pageNumber);
+    const handlePageChange = pageNumber => {
+      if (!pageNumber) return;
+      console.log("Navigating to page:", pageNumber);
+      localStorage.setItem('currentPage', pageNumber);
+      setCurrentPage(parseInt(pageNumber, 10));
+      fetchAllOrders(pageNumber).then(() => setLoading(false));
     };
+    
+    useEffect(() => {
+      const storedPage = localStorage.getItem('currentPage') || 1;
+      setCurrentPage(parseInt(storedPage, 10));
+      fetchAllOrders(storedPage).then(() => setLoading(false));
+    }, []);
+     
+    function getPageRange(current, total) {
+      const sidePages = Math.floor(maxPagesDisplayed / 2);
+      let start = Math.max(current - sidePages, 1);
+      let end = Math.min(start + maxPagesDisplayed - 1, total);
+    
+      // Adjust the range if we're at the edge
+      if ((end - start + 1) < maxPagesDisplayed) {
+        start = Math.max(1, end - maxPagesDisplayed + 1);
+      }
+    
+      return Array.from({ length: (end - start + 1) }, (_, i) => start + i);
+    }
 
-    const startPage = Math.max(1, currentPage - Math.floor(maxPagesDisplayed / 2));
-    const endPage = Math.min(
-        Math.ceil(filteredOrders.length / ordersPerPage),
-        startPage + maxPagesDisplayed - 1
-    );
 
     console.log("start", startDate)
     console.log("end", endDate)
@@ -223,8 +240,8 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders }) => {
                         </thead>
 
                         <tbody>
-                        {currentOrders.length > 0 ? (
-                          currentOrders.map((orders) => (
+                        {filteredOrders.length > 0 ? (
+                          filteredOrders.map((orders) => (
                               <tr key={orders.id}>
                                 <td>
                                   <div className="d-flex align-items-center">
@@ -285,47 +302,35 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders }) => {
 
                     {/* Pagination controls */}
                     <div className="dataTable-bottom">
-                        <div className="dataTable-info">
-                            Showing {filteredOrders.length} entries
-                        </div>
-                        <nav className="dataTable-pagination">
-                            <ul className="dataTable-pagination-list">
+                      <div className="dataTable-info">
+                        Showing {orders.length} of {total} entries
+                      </div>
+                      <nav className="dataTable-pagination">
+                        <ul className="dataTable-pagination-list">
+                          {previous && (
                             <li className="pager">
-                                <a
-                                href="#"
-                                data-page="1"
-                                onClick={() => paginate(1)}
-                                >
-                                ‹
-                                </a>
+                              <a href="#" data-page="1" >
+                                ‹ 
+                              </a>
                             </li>
-                            {Array.from({ length: endPage - startPage + 1 }).map((_, index) => (
-                                <li
-                                key={index}
-                                className={currentPage === startPage + index ? 'active' : ''}
-                                >
-                                <a
-                                    href="#"
-                                    data-page={startPage + index}
-                                    onClick={() => paginate(startPage + index)}
-                                >
-                                    {startPage + index}
-                                </a>
-                                </li>
-                            ))}
-                            {currentPage + maxPagesDisplayed < Math.ceil(filteredOrdersCount / ordersPerPage) && (
-                                <li className="pager">
-                                <a
-                                    href="#"
-                                    data-page={currentPage + 1}
-                                    onClick={() => paginate(currentPage + 1)}
-                                >
-                                    ›
-                                </a>
-                                </li>
-                            )}
-                            </ul>
-                        </nav>
+                          )}
+                          {getPageRange(currentPage, totalPages).map(page => (
+                            <li key={page} className={` ${page === currentPage ? 'active' : ''}`}>
+                           
+                           <a onClick={() => handlePageChange(page.toString())}>
+                              {page}
+                            </a>
+                            </li>
+                          ))}
+                          {next && (
+                            <li className="pager">
+                              <a href="#" data-page="1" > 
+                               ›
+                              </a>
+                            </li>
+                          )}
+                        </ul>
+                      </nav>
                     </div>
                   </div>
                   )}
@@ -342,11 +347,14 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders }) => {
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   orders: state.auth.orders,
+  next: state.auth.next,
+  previous: state.auth.previous,
+  total: state.auth.count // Total number of items if provided
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAllOrders: () => dispatch(fetchAllOrders()),
+    fetchAllOrders: (pageNumber) => dispatch(fetchAllOrders(pageNumber)),
     deleteOrder: (orders_id) => dispatch(deleteOrder(orders_id)),
   };
 };
