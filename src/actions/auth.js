@@ -993,8 +993,8 @@ export const fetchCustomerOnly = () => async (dispatch, getState) => {
 };
   
 export const fetchAllCustomer = (pageNumber = 1) => async (dispatch, getState) => {
-    const { access } = getState().auth;
-    const url = `${import.meta.env.VITE_REACT_APP_API_URL}/api/customer/?page=${pageNumber}`;  // Ensure this is the correct endpoint
+  const { access } = getState().auth;
+  const url = `${import.meta.env.VITE_REACT_APP_API_URL}/api/customer/?page=${pageNumber}`;  // Ensure this is the correct endpoint
   console.log("Fetching orders for page:", pageNumber, "URL:", url);  // This will log the URL used
 
     try {
@@ -1187,23 +1187,24 @@ export const fetchFarmerOnly = () => async (dispatch, getState) => {
   }
 };
 
-export const fetchAllFarmer = () => async (dispatch, getState) => {
+export const fetchAllFarmer = (pageNumber = 1) => async (dispatch, getState) => {
   const { access } = getState().auth;
+  const url = `${import.meta.env.VITE_REACT_APP_API_URL}/api/farmer/?page=${pageNumber}`;  // Ensure this is the correct endpoint
+  console.log("Fetching orders for page:", pageNumber, "URL:", url);  // This will log the URL used
 
   try {
-  // Make an HTTP GET request to fetch FARMER data using the environment variable
-  const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/farmer/`, {
+    const response = await Axios.get(url, {
       headers: {
-      Authorization: `Bearer ${access}`,
+        Authorization: `Bearer ${access}`,
       },
-  });
+    });
 
   if (response.status === 200) {
-      const farmerData = response.data;
-      dispatch({
+    const { results, count, next, previous } = response.data.data;
+    dispatch({
       type: FARMER_FETCH_ALL_SUCCESS,
-      payload: farmerData,
-      });
+      payload: { results, count, next, previous },
+    });
   } else {
       dispatch({
       type: FARMER_FETCH_ALL_FAIL,

@@ -7,11 +7,13 @@ import swal from 'sweetalert2';
 import { ExportCSV } from '../../../components/csv/ExportCSV';
 import { toast } from 'react-toastify'; // Import ToastContainer
 
-const Farmer = ({ isAuthenticated, fetchAllFarmer, farmer, deleteFarmer, saveFarmer, isSidebarOpen, user }) => {
+const Farmer = ({ isAuthenticated, fetchAllFarmer, farmer, deleteFarmer, saveFarmer, isSidebarOpen, user, total, previous, next }) => {
     const navigate = useNavigate();
-    const [currentPage, setCurrentPage] = useState(1);
-    const farmersPerPage = 9;
+    const itemsPerPage = 50; // This should match your API's pagination setup
+    const totalPages = Math.ceil(total / itemsPerPage);
     const maxPagesDisplayed = 5;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(true);
 
     const desktopStyle = isSidebarOpen
     ? {
@@ -24,12 +26,13 @@ const Farmer = ({ isAuthenticated, fetchAllFarmer, farmer, deleteFarmer, saveFar
     }; 
 
     useEffect(() => {
-            if (isAuthenticated) {
-                // Fetch customer data only if authenticated
-                    fetchAllFarmer();
-            } else {
-                // navigate('/');
-            }
+        if (!isAuthenticated) {
+        //navigate('/');
+        } else {
+            fetchAllFarmer().then(() => {
+            setLoading(false);
+        });
+        }
     }, [isAuthenticated, navigate, fetchAllFarmer]);
 
     if (!isAuthenticated) {
@@ -48,7 +51,7 @@ const Farmer = ({ isAuthenticated, fetchAllFarmer, farmer, deleteFarmer, saveFar
 
     const mediaQuery = window.matchMedia('(min-width: 768px)');
 
-    const viewCustomer = (farmer_id) => {
+    const viewFarmer = (farmer_id) => {
         navigate('/farmerdetails/' + farmer_id);
     };
 
@@ -91,19 +94,32 @@ const Farmer = ({ isAuthenticated, fetchAllFarmer, farmer, deleteFarmer, saveFar
           )
         : [];
 
-    const indexOfLastFarmer = currentPage * farmersPerPage;
-    const indexOfFirstFarmer = indexOfLastFarmer - farmersPerPage;
-    const currentFarmers = filteredFarmers.slice(indexOfFirstFarmer, indexOfLastFarmer);
-
-    const paginate = (pageNumber) => {
-        setCurrentPage(pageNumber);
+    const handlePageChange = pageNumber => {
+        if (!pageNumber) return;
+        console.log("Navigating to page:", pageNumber);
+        localStorage.setItem('currentPage', pageNumber);
+        setCurrentPage(parseInt(pageNumber, 10));
+        fetchAllFarmer(pageNumber).then(() => setLoading(false));
     };
-
-    const startPage = Math.max(1, currentPage - Math.floor(maxPagesDisplayed / 2));
-    const endPage = Math.min(
-        Math.ceil(filteredFarmers.length / farmersPerPage),
-        startPage + maxPagesDisplayed - 1
-    );
+    
+    useEffect(() => {
+        const storedPage = localStorage.getItem('currentPage') || 1;
+        setCurrentPage(parseInt(storedPage, 10));
+        fetchAllFarmer(storedPage).then(() => setLoading(false));
+    }, []);
+        
+    function getPageRange(current, total) {
+        const sidePages = Math.floor(maxPagesDisplayed / 2);
+        let start = Math.max(current - sidePages, 1);
+        let end = Math.min(start + maxPagesDisplayed - 1, total);
+    
+        // Adjust the range if we're at the edge
+        if ((end - start + 1) < maxPagesDisplayed) {
+        start = Math.max(1, end - maxPagesDisplayed + 1);
+        }
+    
+        return Array.from({ length: (end - start + 1) }, (_, i) => start + i);
+    }
 
     const fileName = 'farmer_data';
 
@@ -290,153 +306,156 @@ const Farmer = ({ isAuthenticated, fetchAllFarmer, farmer, deleteFarmer, saveFar
                         <div className="col-12">
                             <div className="card">
                                 <div className="table-responsive">
-                                    <div className="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
-                                        <div className="dataTable-top">
-                                            <div className="dataTable-search">
-                                                <input
-                                                    className="dataTable-input"
-                                                    placeholder="Search..."
-                                                    type="text"
-                                                    value={searchQuery}
-                                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                                />
+                                    {loading ? (
+                                        <div className="dataTable-container">
+                                            <div className="text-center py-4">
+                                            <p>Loading...</p>
+                                            </div>
+                                        </div>  
+                                    ) : (
+                                        <div className="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
+                                            <div className="dataTable-top">
+                                                <div className="dataTable-search">
+                                                    <input
+                                                        className="dataTable-input"
+                                                        placeholder="Search..."
+                                                        type="text"
+                                                        value={searchQuery}
+                                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="dataTable-container">
+                                                {filteredFarmers.length > 0 ? (
+                                                    <table className="table table-flush dataTable-table" id="datatable-search">
+                                                        <thead className="thead-light">
+                                                            <tr>
+                                                                <th data-sortable="" style={{ width: '4.6514%' }}>
+                                                                    <a href="#" className="dataTable-sorter">
+                                                                        Id
+                                                                    </a>
+                                                                </th>
+                                                                <th data-sortable="" style={{ width: '26.3657%' }}>
+                                                                    <a href="#" className="dataTable-sorter">
+                                                                        Name
+                                                                    </a>
+                                                                </th>
+                                                                <th data-sortable="" style={{ width: '26.2286%' }}>
+                                                                    <a href="#" className="dataTable-sorter">
+                                                                        contact
+                                                                    </a>
+                                                                </th>
+                                                                <th data-sortable="" style={{ width: '24%' }}>
+                                                                    <a href="#" className="dataTable-sorter">
+                                                                        Added on
+                                                                    </a>
+                                                                </th>
+                                                                <th data-sortable="" style={{ width: '10%' }}>
+                                                                <a href="#" className="dataTable-sorter">
+                                                                    Action
+                                                                </a>
+                                                                </th>
+                                                                <th data-sortable="" style={{ width: '10' }}>
+                                                                <a href="#" className="dataTable-sorter"></a>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            {filteredFarmers.length > 0 ? (
+                                                                filteredFarmers.map((farmer) => (
+                                                                    <tr key={farmer.id}>
+                                                                        <td>
+                                                                            <div className="d-flex align-items-center">
+                                                                                <p className="text-xs font-weight-bold ms-2 mb-0">#{farmer.id}</p>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td className="font-weight-bold">
+                                                                            <span className="my-2 text-xs">{farmer.name}</span>
+                                                                        </td>
+                                                                        <td className="text-xs font-weight-bold">
+                                                                            <span className="my-2 text-xs">{farmer.phone}</span>
+                                                                        </td>
+                                                                        <td className="text-xs font-weight-bold">
+                                                                            <span className="my-2 text-xs">
+                                                                                {new Date(farmer.added_on).toLocaleString()}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td className="text-xs font-weight-bold">
+                                                                            <div className="d-flex align-items-center">
+                                                                                <button
+                                                                                    className="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-2 btn-sm d-flex align-items-center justify-content-center"
+                                                                                    onClick={() => viewFarmer(farmer.id)}
+                                                                                >
+                                                                                    <i className="fas fa-eye" aria-hidden="true"></i>
+                                                                                </button>
+                                                                                <span>View</span>
+                                                                            </div>
+                                                                        </td>
+                                                                        {user && user.user_type === 'admin' && (
+                                                                        <td className="text-xs font-weight-bold">
+                                                                            <div className="d-flex align-items-center">
+                                                                                <button
+                                                                                    className="btn btn-icon-only btn-rounded btn-outline-danger mb-0 me-2 btn-sm d-flex align-items-center justify-content-center"
+                                                                                    onClick={() => handleDelete(farmer.id)}
+                                                                                >
+                                                                                <i className="fas fa-times" aria-hidden="true"></i>
+                                                                                </button>
+                                                                                <span>Delete</span>
+                                                                            </div>
+                                                                        </td>
+                                                                        )}
+                                                                    </tr>
+                                                                ))
+                                                            ) : ( 
+                                                                <tr>
+                                                                    <td colSpan="7">No records found.</td>
+                                                                </tr>
+                                                            )}
+                                                        </tbody>
+                                                    </table>
+                                                ) : (
+                                                    <div className="text-center py-4">
+                                                        <p>No records found.</p>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Pagination controls */}
+                                            <div className="dataTable-bottom">
+                                                <div className="dataTable-info">
+                                                    Showing  {total} entries
+                                                </div>
+                                                <nav className="dataTable-pagination">
+                                                    <ul className="dataTable-pagination-list">
+                                                        {previous && (
+                                                            <li className="pager">
+                                                                <a href="#" data-page="1" >
+                                                                ‹ 
+                                                                </a>
+                                                            </li>
+                                                        )}
+                                                        {getPageRange(currentPage, totalPages).map(page => (
+                                                            <li key={page} className={` ${page === currentPage ? 'active' : ''}`}>
+                                                            
+                                                            <a onClick={() => handlePageChange(page.toString())}>
+                                                                {page}
+                                                            </a>
+                                                            </li>
+                                                        ))}
+                                                        {next && (
+                                                            <li className="pager">
+                                                                <a href="#" data-page="1" > 
+                                                                ›
+                                                                </a>
+                                                            </li>
+                                                        )}
+                                                    </ul>
+                                                </nav>
                                             </div>
                                         </div>
-
-                                        <div className="dataTable-container">
-                                            {filteredFarmers.length > 0 ? (
-                                                <table className="table table-flush dataTable-table" id="datatable-search">
-                                                    <thead className="thead-light">
-                                                        <tr>
-                                                            <th data-sortable="" style={{ width: '4.6514%' }}>
-                                                                <a href="#" className="dataTable-sorter">
-                                                                    Id
-                                                                </a>
-                                                            </th>
-                                                            <th data-sortable="" style={{ width: '26.3657%' }}>
-                                                                <a href="#" className="dataTable-sorter">
-                                                                    Name
-                                                                </a>
-                                                            </th>
-                                                            <th data-sortable="" style={{ width: '26.2286%' }}>
-                                                                <a href="#" className="dataTable-sorter">
-                                                                    contact
-                                                                </a>
-                                                            </th>
-                                                            <th data-sortable="" style={{ width: '24%' }}>
-                                                                <a href="#" className="dataTable-sorter">
-                                                                    Added on
-                                                                </a>
-                                                            </th>
-                                                            <th data-sortable="" style={{ width: '10%' }}>
-                                                              <a href="#" className="dataTable-sorter">
-                                                                Action
-                                                              </a>
-                                                            </th>
-                                                            <th data-sortable="" style={{ width: '10' }}>
-                                                              <a href="#" className="dataTable-sorter"></a>
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-
-                                                    <tbody>
-                                                        {currentFarmers.length > 0 ? (
-                                                            currentFarmers.map((farmer) => (
-                                                                <tr key={farmer.id}>
-                                                                    <td>
-                                                                        <div className="d-flex align-items-center">
-                                                                            <p className="text-xs font-weight-bold ms-2 mb-0">#{farmer.id}</p>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td className="font-weight-bold">
-                                                                        <span className="my-2 text-xs">{farmer.name}</span>
-                                                                    </td>
-                                                                    <td className="text-xs font-weight-bold">
-                                                                        <span className="my-2 text-xs">{farmer.phone}</span>
-                                                                    </td>
-                                                                    <td className="text-xs font-weight-bold">
-                                                                        <span className="my-2 text-xs">
-                                                                            {new Date(farmer.added_on).toLocaleString()}
-                                                                        </span>
-                                                                    </td>
-                                                                    <td className="text-xs font-weight-bold">
-                                                                        <div className="d-flex align-items-center">
-                                                                            <button
-                                                                                className="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-2 btn-sm d-flex align-items-center justify-content-center"
-                                                                                onClick={() => viewCustomer(farmer.id)}
-                                                                            >
-                                                                                <i className="fas fa-eye" aria-hidden="true"></i>
-                                                                            </button>
-                                                                            <span>View</span>
-                                                                        </div>
-                                                                    </td>
-                                                                    {user && user.user_type === 'admin' && (
-                                                                    <td className="text-xs font-weight-bold">
-                                                                        <div className="d-flex align-items-center">
-                                                                            <button
-                                                                                className="btn btn-icon-only btn-rounded btn-outline-danger mb-0 me-2 btn-sm d-flex align-items-center justify-content-center"
-                                                                                onClick={() => handleDelete(farmer.id)}
-                                                                            >
-                                                                              <i className="fas fa-times" aria-hidden="true"></i>
-                                                                            </button>
-                                                                            <span>Delete</span>
-                                                                        </div>
-                                                                    </td>
-                                                                    )}
-                                                                </tr>
-                                                            ))
-                                                        ) : ( 
-                                                            <tr>
-                                                                <td colSpan="7">No records found.</td>
-                                                            </tr>
-                                                        )}
-                                                    </tbody>
-                                                </table>
-                                            ) : (
-                                                <div className="text-center py-4">
-                                                    <p>No records found.</p>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        <div className="dataTable-bottom">
-                                            <div className="dataTable-info">Showing {filteredFarmers.length} entries</div>
-                                            <nav className="dataTable-pagination">
-                                                <ul className="dataTable-pagination-list">
-                                                    <li className="pager">
-                                                        <a href="#" data-page="1" onClick={() => paginate(1)}>
-                                                            ‹
-                                                        </a>
-                                                    </li>
-                                                    {Array.from({ length: endPage - startPage + 1 }).map((_, index) => (
-                                                        <li
-                                                            key={index}
-                                                            className={currentPage === startPage + index ? 'active' : ''}
-                                                        >
-                                                            <a
-                                                                href="#"
-                                                                data-page={startPage + index}
-                                                                onClick={() => paginate(startPage + index)}
-                                                            >
-                                                                {startPage + index}
-                                                            </a>
-                                                        </li>
-                                                    ))}
-                                                    {currentPage + maxPagesDisplayed < Math.ceil(filteredFarmers.length / farmersPerPage) && (
-                                                        <li className="pager">
-                                                            <a
-                                                                href="#"
-                                                                data-page={currentPage + 1}
-                                                                onClick={() => paginate(currentPage + 1)}
-                                                            >
-                                                                ›
-                                                            </a>
-                                                        </li>
-                                                    )}
-                                                </ul>
-                                            </nav>
-                                        </div>
-                                    </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -450,12 +469,15 @@ const Farmer = ({ isAuthenticated, fetchAllFarmer, farmer, deleteFarmer, saveFar
 const mapStateToProps = (state) => ({
     isAuthenticated: state.auth.isAuthenticated,
     farmer: state.auth.farmer,
-    user: state.auth.user
+    user: state.auth.user,
+    next: state.auth.next,
+    previous: state.auth.previous,
+    total: state.auth.count // Total number of items if provided
 });
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchAllFarmer: () => dispatch(fetchAllFarmer()),
+        fetchAllFarmer: (pageNumber) => dispatch(fetchAllFarmer(pageNumber)),
         deleteFarmer: (farmer_id) => dispatch(deleteFarmer(farmer_id)),
         saveFarmer: (name, phone) =>
             dispatch(saveFarmer(name, phone))

@@ -289,7 +289,10 @@ export default function (state = initialState, action) {
         case FARMER_FETCH_ALL_SUCCESS:
             return {
                 ...state,
-                farmer: payload.data, // Store the fetched FARMER data
+                farmer: payload.results, // Store the fetched FARMER data
+                count: payload.count,
+                next: payload.next,
+                previous: payload.previous,
             };
 
         case FARMER_FETCH_ALL_FAIL:
