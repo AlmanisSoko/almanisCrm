@@ -6,21 +6,23 @@ import { fetchAllPayments, deletePayment } from '../../../actions/auth';
 import swal from 'sweetalert2';
 import { ExportCSV } from '../../../components/csv/ExportCSV';
 
-const Payments = ({ isAuthenticated, fetchAllPayments, payments, deletePayment }) => {
+const Payments = ({ isAuthenticated, fetchAllPayments, payments, total, previous, next, deletePayment }) => {
     const navigate = useNavigate();
-    const [currentPage, setCurrentPage] = useState(1);
-    const paymentsPerPage = 29;
+    const itemsPerPage = 50; // This should match your API's pagination setup
+    const totalPages = Math.ceil(total / itemsPerPage);
     const maxPagesDisplayed = 5;
+    const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!isAuthenticated) {
-        //navigate('/');
-        } else {
-          fetchAllPayments().then(() => setLoading(false));;
-        }
-    }, [isAuthenticated, navigate]);
-
+      if (!isAuthenticated) {
+      //navigate('/');
+      } else {
+          fetchAllPayments().then(() => {
+          setLoading(false);
+      });
+      }
+  }, [isAuthenticated, navigate, fetchAllPayments]);;
 
     if (!isAuthenticated) {
         navigate('/');
@@ -93,19 +95,32 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, deletePayment }
     )
   : [];
 
-    const indexOfLastPayment = currentPage * paymentsPerPage;
-    const indexOfFirstPayment = indexOfLastPayment - paymentsPerPage;
-    const currentPayments = filteredPayment.slice(indexOfFirstPayment, indexOfLastPayment);
+  const handlePageChange = pageNumber => {
+      if (!pageNumber) return;
+      console.log("Navigating to page:", pageNumber);
+      localStorage.setItem('currentPage', pageNumber);
+      setCurrentPage(parseInt(pageNumber, 10));
+      fetchAllPayments(pageNumber).then(() => setLoading(false));
+  };
 
-    const paginate = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
+  useEffect(() => {
+      const storedPage = localStorage.getItem('currentPage') || 1;
+      setCurrentPage(parseInt(storedPage, 10));
+      fetchAllPayments(storedPage).then(() => setLoading(false));
+  }, []);
+      
+  function getPageRange(current, total) {
+      const sidePages = Math.floor(maxPagesDisplayed / 2);
+      let start = Math.max(current - sidePages, 1);
+      let end = Math.min(start + maxPagesDisplayed - 1, total);
 
-    const startPage = Math.max(1, currentPage - Math.floor(maxPagesDisplayed / 2));
-    const endPage = Math.min(
-        Math.ceil(filteredPayment.length / paymentsPerPage),
-        startPage + maxPagesDisplayed - 1
-    );
+      // Adjust the range if we're at the edge
+      if ((end - start + 1) < maxPagesDisplayed) {
+      start = Math.max(1, end - maxPagesDisplayed + 1);
+      }
+
+      return Array.from({ length: (end - start + 1) }, (_, i) => start + i);
+  }
 
     const fileName = "payment_data";
 
@@ -208,8 +223,8 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, deletePayment }
                         </thead>
 
                         <tbody>
-                          {currentPayments.length > 0 ? (
-                            currentPayments.map((payment) => (
+                          {filteredPayment.length > 0 ? (
+                            filteredPayment.map((payment) => (
                               <tr key={payment.id}>
                                 <td>
                                   <div className="d-flex align-items-center">
@@ -298,44 +313,32 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, deletePayment }
                     {/* Pagination controls */}
                     <div className="dataTable-bottom">
                         <div className="dataTable-info">
-                            Showing {filteredPayment.length} entries
+                            Showing  {total} entries
                         </div>
                         <nav className="dataTable-pagination">
                             <ul className="dataTable-pagination-list">
-                            <li className="pager">
-                                <a
-                                href="#"
-                                data-page="1"
-                                onClick={() => paginate(1)}
-                                >
-                                ‹
-                                </a>
-                            </li>
-                            {Array.from({ length: endPage - startPage + 1 }).map((_, index) => (
-                                <li
-                                key={index}
-                                className={currentPage === startPage + index ? 'active' : ''}
-                                >
-                                <a
-                                    href="#"
-                                    data-page={startPage + index}
-                                    onClick={() => paginate(startPage + index)}
-                                >
-                                    {startPage + index}
-                                </a>
-                                </li>
-                            ))}
-                            {currentPage + maxPagesDisplayed < Math.ceil(filteredPayment.length / paymentsPerPage) && (
-                                <li className="pager">
-                                <a
-                                    href="#"
-                                    data-page={currentPage + 1}
-                                    onClick={() => paginate(currentPage + 1)}
-                                >
-                                    ›
-                                </a>
-                                </li>
-                            )}
+                                {previous && (
+                                    <li className="pager">
+                                        <a href="#" data-page="1" >
+                                        ‹ 
+                                        </a>
+                                    </li>
+                                )}
+                                {getPageRange(currentPage, totalPages).map(page => (
+                                    <li key={page} className={` ${page === currentPage ? 'active' : ''}`}>
+                                    
+                                    <a onClick={() => handlePageChange(page.toString())}>
+                                        {page}
+                                    </a>
+                                    </li>
+                                ))}
+                                {next && (
+                                    <li className="pager">
+                                        <a href="#" data-page="1" > 
+                                        ›
+                                        </a>
+                                    </li>
+                                )}
                             </ul>
                         </nav>
                     </div>
@@ -354,11 +357,14 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, deletePayment }
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   payments: state.auth.payments,
+  next: state.auth.next,
+  previous: state.auth.previous,
+  total: state.auth.count // Total number of items if provided
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAllPayments: () => dispatch(fetchAllPayments()),
+    fetchAllPayments: (pageNumber) => dispatch(fetchAllPayments(pageNumber)),
     deletePayment: (payments_id) => dispatch(deletePayment(payments_id)),
   };
 };

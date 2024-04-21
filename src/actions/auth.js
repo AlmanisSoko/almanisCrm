@@ -1563,22 +1563,23 @@ export const editOrder = (name, phone, customer_id, town, kgs, packaging, discou
 
 // Api Handler for Payments
 
-export const fetchAllPayments = () => async (dispatch, getState) => {
+export const fetchAllPayments = (pageNumber = 1) => async (dispatch, getState) => {
   const { access } = getState().auth;
+  const url = `${import.meta.env.VITE_REACT_APP_API_URL}/api/payments/?page=${pageNumber}`;  // Ensure this is the correct endpoint
+  console.log("Fetching orders for page:", pageNumber, "URL:", url);  // This will log the URL used
 
   try {
-    // Make an HTTP GET request to fetch orders data using the environment variable
-    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/payments/`, {
+    const response = await Axios.get(url, {
       headers: {
         Authorization: `Bearer ${access}`,
       },
     });
 
     if (response.status === 200) {
-      const paymentsData = response.data;
+      const { results, count, next, previous } = response.data.data;
       dispatch({
         type: PAYMENTS_FETCH_ALL_SUCCESS,
-        payload: paymentsData,
+        payload: { results, count, next, previous },
       });
     } else {
       dispatch({
