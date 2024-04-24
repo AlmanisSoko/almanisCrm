@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import HeaderNav from '../../components/HeaderNav';
 import { connect } from 'react-redux';
-import { fetchAllOrders, deleteOrder } from '../../actions/auth';
+import { fetchAnalytics } from '../../actions/auth';
 import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 
-const Analytics = ({ isAuthenticated, fetchAllOrders, orders, total, previous, next }) => {
+const Analytics = ({ isAuthenticated, fetchAnalytics, analytics, total, previous, next }) => {
     const navigate = useNavigate();
     const itemsPerPage = 50; // This should match your API's pagination setup
     const totalPages = Math.ceil(total / itemsPerPage);
@@ -17,11 +17,11 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, total, previous, n
         if (!isAuthenticated) {
         //navigate('/');
         } else {
-        fetchAllOrders().then(() => {
+        fetchAnalytics().then(() => {
           setLoading(false);
         });
         }
-    }, [isAuthenticated, navigate, fetchAllOrders]);
+    }, [isAuthenticated, navigate, fetchAnalytics]);
 
     if (!isAuthenticated) {
         navigate('/');
@@ -45,16 +45,16 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, total, previous, n
     // Apply media queries
     const mediaQuery = window.matchMedia('(min-width: 768px)');
     
-    if (!orders) {
-        orders = []; // Ensure orders is defined even if it's initially undefined
+    if (!analytics) {
+        analytics = []; // Ensure analytics is defined even if it's initially undefined
     }
     
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
-  const filteredOrders = orders
-    ? orders.filter((order) => {
-        const orderDate = new Date(order.added_on);
+  const filteredAnalytics = analytics
+    ? analytics.filter((analytic) => {
+        const orderDate = new Date(analytic.added_on);
         return (
           (!startDate || orderDate >= startDate) &&
           (!endDate || orderDate <= new Date(endDate.getTime() + 86400000))
@@ -67,13 +67,13 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, total, previous, n
       console.log("Navigating to page:", pageNumber);
       localStorage.setItem('currentPage', pageNumber);
       setCurrentPage(parseInt(pageNumber, 10));
-      fetchAllOrders(pageNumber).then(() => setLoading(false));
+      fetchAnalytics(pageNumber).then(() => setLoading(false));
     };
     
     useEffect(() => {
       const storedPage = localStorage.getItem('currentPage') || 1;
       setCurrentPage(parseInt(storedPage, 10));
-      fetchAllOrders(storedPage).then(() => setLoading(false));
+      fetchAnalytics(storedPage).then(() => setLoading(false));
     }, []);
      
     function getPageRange(current, total) {
@@ -93,20 +93,20 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, total, previous, n
     console.log("start", startDate)
     console.log("end", endDate)
 
-    const [filteredOrdersCount, setFilteredOrdersCount] = useState(0);
+    const [filteredAnalyticsCount, setFilteredAnalyticsCount] = useState(0);
 
     useEffect(() => {
-      // Update filteredOrdersCount when orders or date filters change
-      setFilteredOrdersCount(
-        orders.filter((order) => {
-          const orderDate = new Date(order.added_on);
+      // Update filteredAnalyticsCount when orders or date filters change
+      setFilteredAnalyticsCount(
+        analytics.filter((analytic) => {
+          const orderDate = new Date(analytic.added_on);
           return (
             (!startDate || orderDate >= startDate) &&
             (!endDate || orderDate <= endDate)
           );
         }).length
       );
-    }, [orders, startDate, endDate]);
+    }, [analytics, startDate, endDate]);
 
     
   
@@ -167,7 +167,7 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, total, previous, n
                     </div>
 
                     <div className="dataTable-container">
-                    {filteredOrders.length > 0 ? (
+                    {filteredAnalytics.length > 0 ? (
                       <table className="table table-flush dataTable-table" id="datatable-search" >
                         <thead className="thead-light">
                           <tr>
@@ -240,49 +240,49 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, total, previous, n
                         </thead>
 
                         <tbody>
-                        {filteredOrders.length > 0 ? (
-                          filteredOrders.map((orders) => (
-                              <tr key={orders.id}>
+                        {filteredAnalytics.length > 0 ? (
+                          filteredAnalytics.map((analytics) => (
+                              <tr key={analytics.id}>
                                 <td>
                                   <div className="d-flex align-items-center">
-                                    <p className="text-xs font-weight-bold ms-2 mb-0">#{orders.id}</p>
+                                    <p className="text-xs font-weight-bold ms-2 mb-0">#{analytics.id}</p>
                                   </div>
                                 </td>
                                 <td className="font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.customer_id}</span>
+                                  <span className="my-2 text-xs">{analytics.customer_id}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.packaging}</span>
+                                  <span className="my-2 text-xs">{analytics.packaging}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.rice_type === 1 ? "Pishori" : orders.rice_type === 2 ? "Komboka" : "Brown"}</span>
+                                  <span className="my-2 text-xs">{analytics.rice_type === 1 ? "Pishori" : analytics.rice_type === 2 ? "Komboka" : "Brown"}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.farmer.name}</span>
+                                  <span className="my-2 text-xs">{analytics.farmer.name}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.kgs}</span>
+                                  <span className="my-2 text-xs">{analytics.kgs}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.transport}</span>
+                                  <span className="my-2 text-xs">{analytics.transport}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.rider}</span>
+                                  <span className="my-2 text-xs">{analytics.rider}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.farmer_price}</span>
+                                  <span className="my-2 text-xs">{analytics.farmer_price}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.price}</span>
+                                  <span className="my-2 text-xs">{analytics.price}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.discount}</span>
+                                  <span className="my-2 text-xs">{analytics.discount}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{new Date(orders.added_on).toLocaleString()}</span>
+                                  <span className="my-2 text-xs">{new Date(analytics.added_on).toLocaleString()}</span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{orders.user}</span>
+                                  <span className="my-2 text-xs">{analytics.user}</span>
                                 </td>
                               </tr>
                                ))
@@ -303,7 +303,7 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, total, previous, n
                     {/* Pagination controls */}
                     <div className="dataTable-bottom">
                       <div className="dataTable-info">
-                        Showing {orders.length} of {total} entries
+                        Showing {analytics.length} of {total} entries
                       </div>
                       <nav className="dataTable-pagination">
                         <ul className="dataTable-pagination-list">
@@ -346,16 +346,12 @@ const Analytics = ({ isAuthenticated, fetchAllOrders, orders, total, previous, n
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
-  orders: state.auth.orders,
-  next: state.auth.next,
-  previous: state.auth.previous,
-  total: state.auth.count // Total number of items if provided
+  analytics: state.auth.analytics,// Total number of items if provided
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAllOrders: (pageNumber) => dispatch(fetchAllOrders(pageNumber)),
-    deleteOrder: (orders_id) => dispatch(deleteOrder(orders_id)),
+    fetchAnalytics: () => dispatch(fetchAnalytics()),
   };
 };
 

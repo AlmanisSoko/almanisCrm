@@ -31,6 +31,9 @@ import {
      EDIT_ORDERS_SUCCESS, EDIT_ORDERS_FAIL,
      ORDERS_FETCH_KILOS_SUCCESS, ORDERS_FETCH_KILOS_FAIL,
 
+    //  Analytics
+    ANALYTICS_FETCH_ALL_SUCCESS, ANALYTICS_FETCH_ALL_FAIL,
+
      // farmer
     FARMER_SEARCH_SUCCESS, FARMER_SEARCH_FAIL,
     EDIT_FARMER_SUCCESS, EDIT_FARMER_FAIL,
@@ -1866,3 +1869,35 @@ export const saveInvoice = (customer_id, invoice_details) => async (dispatch, ge
       return { success: false, error: 'Network error' };
   }
 }  
+
+// PKT api handler
+
+export const fetchAnalytics = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    // Make an HTTP GET request to fetch orders data using the environment variable
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/analytics/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const analyticsData = response.data;
+      dispatch({
+        type: ANALYTICS_FETCH_ALL_SUCCESS,
+        payload: analyticsData,
+      });
+    } else {
+      dispatch({
+        type: ANALYTICS_FETCH_ALL_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching ANALYTICS data:", error);
+    dispatch({
+      type: ANALYTICS_FETCH_ALL_FAIL,
+    });
+  }
+};

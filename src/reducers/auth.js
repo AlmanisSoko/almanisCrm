@@ -19,6 +19,9 @@ import {
     CUSTOMER_DELETE_SUCCESS, CUSTOMER_DELETE_FAIL, CUSTOMER_UPDATE_LIST,
     CUSTOMER_FETCH_DETAILS_SUCCESS, CUSTOMER_FETCH_DETAILS_FAIL, 
     SAVE_CUSTOMER_SUCCESS, SAVE_CUSTOMER_FAIL,
+    
+    //  Analytics
+    ANALYTICS_FETCH_ALL_SUCCESS, ANALYTICS_FETCH_ALL_FAIL,
 
     // farmer
     FARMER_SEARCH_SUCCESS, FARMER_SEARCH_FAIL,
@@ -78,6 +81,7 @@ const initialState = {
     invoice: [], 
     debtors: [],
     overpaid: [],
+    analytics: [],
 }
 
 export default function (state = initialState, action) {
@@ -391,6 +395,18 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 orders: [], // Handle the failure case
+            };  
+
+        case ANALYTICS_FETCH_ALL_SUCCESS:
+            return {
+                ...state,
+                analytics: payload.data, 
+            };
+
+        case ANALYTICS_FETCH_ALL_FAIL:
+            return {
+                ...state,
+                analytics: [], // Handle the failure case
             };
 
         case ORDERS_FETCH_DETAILS_SUCCESS:
