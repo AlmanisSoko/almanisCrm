@@ -54,6 +54,10 @@ const Customer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer
         navigate('/customerdetails/' + customer_id);
     };
 
+    if (!customers) {
+        customers = []; // Ensure customers is defined even if it's initially undefined
+    }
+
     const handleDelete = async (customer_id) => {
         const confirmed = window.confirm('Are you sure you want to delete this customer?');
 
@@ -85,28 +89,26 @@ const Customer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer
 
     const [searchQuery, setSearchQuery] = useState('');
 
-    const filteredCustomers = customers
-        ? customers.filter((customer) =>
-              customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              customer.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              customer.secondary_phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              customer.town.toLowerCase().includes(searchQuery.toLowerCase()) 
-          )
-        : [];
+    const handleSearchQueryChange = (e) => {
+        const searchValue = e.target.value;
+        setSearchQuery(searchValue);
+        setCurrentPage(1);  // Reset to first page when search changes
+        fetchAllCustomer(1, searchValue);  // Fetch with new search query starting at page 1
+      };
 
     const handlePageChange = pageNumber => {
         if (!pageNumber) return;
         console.log("Navigating to page:", pageNumber);
         localStorage.setItem('currentPage', pageNumber);
-        setCurrentPage(parseInt(pageNumber, 10));
-        fetchAllCustomer(pageNumber).then(() => setLoading(false));
+        setCurrentPage(pageNumber);
+        fetchAllCustomer(pageNumber, searchQuery);
     };
     
     useEffect(() => {
         const storedPage = localStorage.getItem('currentPage') || 1;
         setCurrentPage(parseInt(storedPage, 10));
-        fetchAllCustomer(storedPage).then(() => setLoading(false));
-    }, []);
+        fetchAllCustomer(storedPage, searchQuery);  // Initial fetch with potentially stored search
+      }, [isAuthenticated, navigate, fetchAllCustomer, searchQuery]);
         
     function getPageRange(current, total) {
         const sidePages = Math.floor(maxPagesDisplayed / 2);
@@ -120,6 +122,10 @@ const Customer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer
     
         return Array.from({ length: (end - start + 1) }, (_, i) => start + i);
     }
+
+    useEffect(() => {
+        console.log("Customers:", customers);
+      }, [customers]);
 
     const fileName = 'customer_data';
 
@@ -159,13 +165,13 @@ const Customer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer
                                                         placeholder="Search..."
                                                         type="text"
                                                         value={searchQuery}
-                                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                                        onChange={handleSearchQueryChange}
                                                     />
                                                 </div>
                                             </div>
 
                                             <div className="dataTable-container">
-                                                {filteredCustomers.length > 0 ? (
+                                                {customers.length > 0 ? (
                                                     <table className="table table-flush dataTable-table" id="datatable-search">
                                                         <thead className="thead-light">
                                                             <tr>
@@ -211,8 +217,7 @@ const Customer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer
                                                         </thead>
 
                                                         <tbody>
-                                                            {filteredCustomers.length > 0 ? (
-                                                                filteredCustomers.map((customer) => (
+                                                            {customers.map((customer) => (
                                                                     <tr key={customer.id}>
                                                                         <td>
                                                                             <div className="d-flex align-items-center">
@@ -281,12 +286,7 @@ const Customer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer
                                                                         </td>
                                                                         )}
                                                                     </tr>
-                                                                ))
-                                                            ) : ( 
-                                                                <tr>
-                                                                    <td colSpan="7">No records found.</td>
-                                                                </tr>
-                                                            )}
+                                                                ))}
                                                         </tbody>
                                                     </table>
                                                 ) : (
@@ -352,7 +352,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchAllCustomer: (pageNumber) => dispatch(fetchAllCustomer(pageNumber)),
+        fetchAllCustomer: (pageNumber, searchQuery = '') => dispatch(fetchAllCustomer(pageNumber, searchQuery)),
         deleteCustomer: (customer_id) => dispatch(deleteCustomer(customer_id)),
     };
 };

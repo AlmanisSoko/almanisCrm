@@ -992,35 +992,43 @@ export const fetchCustomerOnly = () => async (dispatch, getState) => {
     }
 };
   
-export const fetchAllCustomer = (pageNumber = 1) => async (dispatch, getState) => {
+export const fetchAllCustomer = (pageNumber = 1, searchQuery = '') => async (dispatch, getState) => {
   const { access } = getState().auth;
-  const url = `${import.meta.env.VITE_REACT_APP_API_URL}/api/customer/?page=${pageNumber}`;  // Ensure this is the correct endpoint
-  console.log("Fetching orders for page:", pageNumber, "URL:", url);  // This will log the URL used
+  let url = `${import.meta.env.VITE_REACT_APP_API_URL}/api/customer/`;
+  const params = new URLSearchParams();
 
-    try {
-      const response = await Axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      });
+  if (searchQuery) {
+    params.append('search', searchQuery);
+  }
+
+  params.append('page', pageNumber);
+  url += `?${params.toString()}`;
+
+  console.log("Fetching customers for page:", pageNumber, "URL:", url);
+
+  try {
+    const response = await Axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+    console.log(response)
 
     if (response.status === 200) {
       const { results, count, next, previous } = response.data.data;
       dispatch({
-        type: CUSTOMER_FETCH_ALL_SUCCESS,
-        payload: { results, count, next, previous }
+        type: CUSTOMER_FETCH_ALL_SUCCESS,  // Ensure this matches the reducer case
+        payload: { results, count, next, previous },
       });
     } else {
-        dispatch({
-        type: CUSTOMER_FETCH_ALL_FAIL,
-        });
+      dispatch({ type: CUSTOMER_FETCH_ALL_FAIL });  // Ensure this matches any defined error handling
     }
-    } catch (error) {
+    
+   
+  } catch (error) {
     console.error("Error fetching customer data:", error);
-    dispatch({
-        type: CUSTOMER_FETCH_ALL_FAIL,
-    });
-    }
+    dispatch({ type: CUSTOMER_FETCH_ALL_FAIL });
+  }
 };
 
 export const deleteCustomer = (id) => async (dispatch, getState) => {
@@ -1571,10 +1579,19 @@ export const editOrder = (name, phone, customer_id, town, kgs, packaging, discou
 
 // Api Handler for Payments
 
-export const fetchAllPayments = (pageNumber = 1) => async (dispatch, getState) => {
+export const fetchAllPayments = (pageNumber = 1, searchQuery = '') => async (dispatch, getState) => {
   const { access } = getState().auth;
-  const url = `${import.meta.env.VITE_REACT_APP_API_URL}/api/payments/?page=${pageNumber}`;  // Ensure this is the correct endpoint
-  console.log("Fetching orders for page:", pageNumber, "URL:", url);  // This will log the URL used
+  let url = `${import.meta.env.VITE_REACT_APP_API_URL}/api/payments/`;
+  const params = new URLSearchParams();
+
+  if (searchQuery) {
+    params.append('search', searchQuery);
+  }
+
+  params.append('page', pageNumber);
+  url += `?${params.toString()}`;
+
+  console.log("Fetching payments for page:", pageNumber, "URL:", url);
 
   try {
     const response = await Axios.get(url, {
@@ -1590,15 +1607,11 @@ export const fetchAllPayments = (pageNumber = 1) => async (dispatch, getState) =
         payload: { results, count, next, previous },
       });
     } else {
-      dispatch({
-        type: PAYMENTS_FETCH_ALL_FAIL,
-      });
+      dispatch({ type: PAYMENTS_FETCH_ALL_FAIL });
     }
   } catch (error) {
     console.error("Error fetching payment data:", error);
-    dispatch({
-      type: PAYMENTS_FETCH_ALL_FAIL,
-    });
+    dispatch({ type: PAYMENTS_FETCH_ALL_FAIL });
   }
 };
 
@@ -1694,41 +1707,41 @@ try {
 }   
 
 export const editPayment = (orders_id, paying_number, amount, payment_mode, payment, customer_id, id) => async (dispatch, getState) => {
-const { access } = getState().auth;
+  const { access } = getState().auth;
 
-const config = {
-  headers: {
-    'Content-type': 'application/json',
-    Authorization: `Bearer ${access}`,
-  },
-  method: 'PUT',
-  body: JSON.stringify({ orders_id, paying_number, amount, payment_mode, payment, customer_id }),
-};
+  const config = {
+    headers: {
+      'Content-type': 'application/json',
+      Authorization: `Bearer ${access}`,
+    },
+    method: 'PUT',
+    body: JSON.stringify({ orders_id, paying_number, amount, payment_mode, payment, customer_id }),
+  };
 
-try {
-  const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/payments/${id}/`, config);
+  try {
+    const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/payments/${id}/`, config);
 
-  if (res.ok) {
-    const data = await res.json();
+    if (res.ok) {
+      const data = await res.json();
+      dispatch({
+        type: EDIT_PAYMENTS_SUCCESS,
+        payload: data,
+      });
+      return data;
+    } else {
+      const error = await res.json();
+      dispatch({
+        type: EDIT_PAYMENTS_FAIL,
+        payload: error,
+      });
+      return { success: false, error };
+    }
+  } catch (error) {
     dispatch({
-      type: EDIT_PAYMENTS_SUCCESS,
-      payload: data,
+      type: EDIT_PAYMENTS_FAIL, // Change this to the correct action type
     });
-    return data;
-  } else {
-    const error = await res.json();
-    dispatch({
-      type: EDIT_PAYMENTS_FAIL,
-      payload: error,
-    });
-    return { success: false, error };
+    return { success: false, error: 'Network error' };
   }
-} catch (error) {
-  dispatch({
-    type: EDIT_PAYMENTS_FAIL, // Change this to the correct action type
-  });
-  return { success: false, error: 'Network error' };
-}
 };
 
 // Api Handler for Invoice

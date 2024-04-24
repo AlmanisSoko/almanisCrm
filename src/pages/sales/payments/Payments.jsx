@@ -86,28 +86,26 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, total, previous
 
     const [searchQuery, setSearchQuery] = useState('');
 
-    const filteredPayment = payments
-  ? payments.filter((payment) =>
-      payment.paying_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (payment.orders.id &&
-        payment.orders.id.toString().toLowerCase().includes(searchQuery.toLowerCase()))
-      
-    )
-  : [];
+    const handleSearchQueryChange = (e) => {
+      const searchValue = e.target.value;
+      setSearchQuery(searchValue);
+      setCurrentPage(1);  // Reset to first page when search changes
+      fetchAllPayments(1, searchValue);  // Fetch with new search query starting at page 1
+    };  
 
   const handlePageChange = pageNumber => {
-      if (!pageNumber) return;
-      console.log("Navigating to page:", pageNumber);
-      localStorage.setItem('currentPage', pageNumber);
-      setCurrentPage(parseInt(pageNumber, 10));
-      fetchAllPayments(pageNumber).then(() => setLoading(false));
+    if (!pageNumber) return;
+    console.log("Navigating to page:", pageNumber);
+    localStorage.setItem('currentPage', pageNumber);
+    setCurrentPage(pageNumber);
+    fetchAllPayments(pageNumber, searchQuery);  // Use the current search query with new page number
   };
 
   useEffect(() => {
-      const storedPage = localStorage.getItem('currentPage') || 1;
-      setCurrentPage(parseInt(storedPage, 10));
-      fetchAllPayments(storedPage).then(() => setLoading(false));
-  }, []);
+    const storedPage = localStorage.getItem('currentPage') || 1;
+    setCurrentPage(parseInt(storedPage, 10));
+    fetchAllPayments(storedPage, searchQuery);  // Initial fetch with potentially stored search
+  }, [isAuthenticated, navigate, fetchAllPayments, searchQuery]);
       
   function getPageRange(current, total) {
       const sidePages = Math.floor(maxPagesDisplayed / 2);
@@ -160,13 +158,13 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, total, previous
                             placeholder="Search..."
                             type="text"
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={handleSearchQueryChange}
                           />
                       </div>
                     </div>
 
                     <div className="dataTable-container">
-                    {filteredPayment.length > 0 ? (  
+                    {payments.length > 0 ? (  
                       <table className="table table-flush dataTable-table" id="datatable-search">
                         <thead className="thead-light">
                           <tr>
@@ -223,8 +221,7 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, total, previous
                         </thead>
 
                         <tbody>
-                          {filteredPayment.length > 0 ? (
-                            filteredPayment.map((payment) => (
+                          {payments.map((payment) => (
                               <tr key={payment.id}>
                                 <td>
                                   <div className="d-flex align-items-center">
@@ -295,12 +292,7 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, total, previous
                                   </div>
                                 </td>
                               </tr>
-                            ))
-                          ) : (
-                            <tr>
-                              <td colSpan="7">No records found.</td>
-                            </tr>
-                          )}
+                            ))}
                         </tbody>
                       </table>
                       ) : (
@@ -364,7 +356,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAllPayments: (pageNumber) => dispatch(fetchAllPayments(pageNumber)),
+    fetchAllPayments: (pageNumber, searchQuery = '') => dispatch(fetchAllPayments(pageNumber, searchQuery)),
     deletePayment: (payments_id) => dispatch(deletePayment(payments_id)),
   };
 };
