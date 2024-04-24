@@ -252,7 +252,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
       try {
         const farmers = await fetchFarmerOnly();
         console.log(farmers);
-        setFarmerOptions(farmers);
+        setFarmerOptions(farmers.results);
       } catch (error) {
         console.error('Error fetching farmer data:', error);
       }
@@ -281,7 +281,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
       try {
         const customers = await fetchCustomerOnly();
         console.log(customers);
-        setCustomerOptions(customers);
+        setCustomerOptions(customers.results);
       } catch (error) {
         console.error('Error fetching customer data:', error);
       }

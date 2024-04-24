@@ -87,10 +87,6 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
         orders = []; // Ensure orders is defined even if it's initially undefined
     }
 
-    const handleSearchQueryChange = (e) => {
-        setSearchQuery(e.target.value);
-    };
-
     const filteredOrders = orders
     ? orders.filter((order) => {
           const orderDate = new Date(order.added_on);
@@ -103,19 +99,43 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
       })
     : [];
 
+    // const handleSearchQueryChange = (e) => {
+    //   const searchValue = e.target.value;
+    //   setSearchQuery(searchValue);
+    //   setCurrentPage(1);  // Reset to first page when search changes
+    //   fetchAllOrders(1, searchValue);  // Fetch with search query
+    // };
+  
+    // const handlePageChange = pageNumber => {
+    //   if (!pageNumber) return;
+    //   console.log("Navigating to page:", pageNumber);
+    //   localStorage.setItem('currentPage', pageNumber);
+    //   setCurrentPage(pageNumber);
+    //   fetchAllOrders(pageNumber, searchQuery);  // Maintain the search query across pages
+    // };
+
     const handlePageChange = pageNumber => {
       if (!pageNumber) return;
       console.log("Navigating to page:", pageNumber);
       localStorage.setItem('currentPage', pageNumber);
-      setCurrentPage(parseInt(pageNumber, 10));
-      fetchAllOrders(pageNumber).then(() => setLoading(false));
+      setCurrentPage(pageNumber);
+      fetchAllOrders(pageNumber, searchQuery);  // Use the current search query with new page number
     };
     
+    const handleSearchQueryChange = (e) => {
+      const searchValue = e.target.value;
+      setSearchQuery(searchValue);
+      setCurrentPage(1);  // Reset to first page when search changes
+      fetchAllOrders(1, searchValue);  // Fetch with new search query starting at page 1
+    };
+    
+  
+    // useEffect to handle initial load or authentication changes
     useEffect(() => {
       const storedPage = localStorage.getItem('currentPage') || 1;
       setCurrentPage(parseInt(storedPage, 10));
-      fetchAllOrders(storedPage).then(() => setLoading(false));
-    }, []);
+      fetchAllOrders(storedPage, searchQuery);  // Initial fetch with potentially stored search
+    }, [isAuthenticated, navigate, fetchAllOrders, searchQuery]);
      
     function getPageRange(current, total) {
       const sidePages = Math.floor(maxPagesDisplayed / 2);
@@ -400,9 +420,10 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAllOrders: (pageNumber) => dispatch(fetchAllOrders(pageNumber)),
+    fetchAllOrders: (pageNumber, searchQuery = '') => dispatch(fetchAllOrders(pageNumber, searchQuery)),
     deleteOrder: (orders_id) => dispatch(deleteOrder(orders_id)),
   };
 };
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(Orders);

@@ -226,7 +226,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
             try {
                 const farmer = await fetchFarmerOnly();
                 console.log(farmer)
-                setFarmerOptions(farmer);
+                setFarmerOptions(farmer.results);
             } catch (error) {
                 console.error('Error fetching Farmer data:', error);
             }

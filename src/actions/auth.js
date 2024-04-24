@@ -1351,10 +1351,18 @@ try {
 
 // Api Handler for Orders
 
-export const fetchAllOrders = (pageNumber = 1) => async (dispatch, getState) => {
+export const fetchAllOrders = (pageNumber = 1, searchQuery = '') => async (dispatch, getState) => {
   const { access } = getState().auth;
-  const url = `${import.meta.env.VITE_REACT_APP_API_URL}/api/orders/?page=${pageNumber}`;  // Ensure this is the correct endpoint
-  console.log("Fetching orders for page:", pageNumber, "URL:", url);  // This will log the URL used
+  let url = `${import.meta.env.VITE_REACT_APP_API_URL}/api/orders/`;
+
+  const params = new URLSearchParams();
+  if (searchQuery) {
+    params.append('search', searchQuery);
+  }
+  params.append('page', pageNumber); // Always append page number, irrespective of search
+
+  url += `?${params.toString()}`;
+  console.log("Fetching data from URL:", url);
 
   try {
     const response = await Axios.get(url, {

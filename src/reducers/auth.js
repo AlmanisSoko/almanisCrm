@@ -201,6 +201,21 @@ export default function (state = initialState, action) {
                 ...state,
                 customer: [], // Handle the failure case
             }; 
+        
+        case CUSTOMER_SEARCH_SUCCESS:
+            return {
+                ...state,
+                customers: payload.results, // Store the fetched customer data 
+                count: payload.count,
+                next: payload.next,
+                previous: payload.previous,
+            }  
+            
+        case CUSTOMER_SEARCH_FAIL:
+            return {
+                ...state,
+                customers: [],
+            }    
                 
         case CUSTOMER_FETCH_ALL_SUCCESS:
             return {

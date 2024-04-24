@@ -144,7 +144,7 @@ const EditPayments = ({ isAuthenticated, fetchPaymentDetails, fetchCustomerOnly,
             try {
                 const customers = await fetchCustomerOnly();
                 console.log(customers)
-                setCustomerOptions(customers);
+                setCustomerOptions(customers.results);
             } catch (error) {
                 console.error('Error fetching batch data:', error);
             }

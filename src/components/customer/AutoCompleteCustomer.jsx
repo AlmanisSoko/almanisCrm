@@ -12,16 +12,17 @@ const AutoCompleteCustomer = (props) => {
         setOnFocus(true);
     };
 
-    const onBlurChange = () => {
+    const onBlurChange = () => { 
         setOnFocus(false);
     };
 
     const handleSearchCustomer = async (phone) => {
         try {
             const customerData = await dispatch(searchCustomer(phone));
+            console.log("New details", customerData)
 
-            if (Array.isArray(customerData)) {
-                setDatalist(customerData);
+            if (Array.isArray(customerData.results)) {
+                setDatalist(customerData.results);
             } else {
                 setDatalist([]);
             }

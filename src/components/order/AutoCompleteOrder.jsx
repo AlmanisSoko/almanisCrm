@@ -20,8 +20,8 @@ const AutoCompleteOrder = (props) => {
         try {
             const ordersData = await dispatch(searchOrder(id));
 
-            if (Array.isArray(ordersData)) {
-                setDatalist(ordersData);
+            if (Array.isArray(ordersData.results)) {
+                setDatalist(ordersData.results);
             } else {
                 setDatalist([]);
             }
