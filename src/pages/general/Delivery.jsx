@@ -205,7 +205,6 @@ const mapStateToProps = (state) => ({
   });
   
   const mapDispatchToProps = (dispatch) => ({
-    fetchCustomerOnly: (customer_id) => dispatch(fetchCustomerOnly(customer_id)),
     fetchCustomerOnly: () => dispatch(fetchCustomerOnly()),
   });
   

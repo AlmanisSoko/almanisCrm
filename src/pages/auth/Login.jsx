@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { login } from '../../actions/auth';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -7,10 +7,12 @@ import backgroundImage from '../../assets/images/login-bg.jpg'
 
 const Login = ({ login, isAuthenticated, user }) => {
     const navigate = useNavigate()
+    const location = useLocation();
     const [formData, setFormData] = useState({ 
       email: '',
       password: ''
     });
+    const [loading, setLoading] = useState(false);
     const { email, password } = formData;
 
     const onChange = (e) =>
@@ -21,12 +23,15 @@ const Login = ({ login, isAuthenticated, user }) => {
   
     const onSubmit = async (e) => {
       e.preventDefault();
+      setLoading(true);
       try {
-        await login(email, password);
-      } catch (err) {
-        alert('Confirm login credentials')
-        console.log(err);
-      }
+            await login(email, password);
+        } catch (err) {
+            alert('Confirm login credentials')
+            console.log(err);
+        } finally {
+            setLoading(false);
+        }
     };
   
     const continueWithGoogle = async () => {
@@ -145,7 +150,9 @@ const Login = ({ login, isAuthenticated, user }) => {
                                             <Link to="/reset-password" className="text-dark font-weight-bolder">Reset</Link>
                                         </div>
                                         <div className="text-center">
-                                            <button type="submit" className="btn bg-gradient-dark w-100 my-4 mb-2" onClick={handleLogin}>Login</button>
+                                            <button type="submit" className="btn bg-gradient-dark w-100 my-4 mb-2" onClick={handleLogin}>
+                                            {loading ? 'Signing In...' : 'Sign in'}
+                                            </button>
                                         </div>
                                         <div className="form-check-label mt-2">
                                             Don't have an account? 

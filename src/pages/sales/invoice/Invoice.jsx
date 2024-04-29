@@ -2,13 +2,13 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
-import { fetchAllInvoice, deleteInvoice, saveInvoice, fetchCustomerOnly } from '../../../actions/auth';
+import { fetchAllInvoice, deleteInvoice, saveInvoice, fetchCustomerInvoiceOnly } from '../../../actions/auth';
 import swal from 'sweetalert2';
 import { ExportCSV } from '../../../components/csv/ExportCSV';
 import { toast } from 'react-toastify'; // Import ToastContainer
 import Select from 'react-select';
 
-const Invoice = ({ isAuthenticated, fetchAllInvoice, customer, invoice, saveInvoice, deleteInvoice, fetchCustomerOnly, }) => {
+const Invoice = ({ isAuthenticated, fetchAllInvoice, customer, invoice, saveInvoice, deleteInvoice, fetchCustomerInvoiceOnly, }) => {
     const navigate = useNavigate();
     const { id } = useParams();
     const [currentPage, setCurrentPage] = useState(1);
@@ -69,16 +69,16 @@ const Invoice = ({ isAuthenticated, fetchAllInvoice, customer, invoice, saveInvo
     useEffect(() => {
         const fetchInvoiceData = async () => {
             try {
-                const invoices = await fetchCustomerOnly();
+                const invoices = await fetchCustomerInvoiceOnly();
                 console.log(invoices)
-                setInvoiceOptions(invoices);
+                setInvoiceOptions(invoices.data);
             } catch (error) {
                 console.error('Error fetching batch data:', error);
             }
         };
 
         fetchInvoiceData();
-    }, [fetchCustomerOnly]);
+    }, [fetchCustomerInvoiceOnly]);
 
     const handleBatchSelect = (selectedOption) => {
         setSelectedInvoiceOption(selectedOption);
@@ -548,7 +548,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchAllInvoice: () => dispatch(fetchAllInvoice()),
-        fetchCustomerOnly: () => dispatch(fetchCustomerOnly()),
+        fetchCustomerInvoiceOnly: () => dispatch(fetchCustomerInvoiceOnly()),
         deleteInvoice: (invoice_id) => dispatch(deleteInvoice(invoice_id)),
         saveInvoice: (customer_id, invoice_details) =>
             dispatch(saveInvoice(customer_id, invoice_details))

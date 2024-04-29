@@ -994,6 +994,37 @@ export const fetchCustomerOnly = () => async (dispatch, getState) => {
       });
     }
 };
+
+export const fetchCustomerInvoiceOnly = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    // Make an HTTP GET request to fetch batch data using the environment variable
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/onlycustomer/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const customerData = response.data;
+      dispatch({
+        type: CUSTOMER_ONLY_FETCH_SUCCESS,
+        payload: customerData,
+      });
+      return customerData;
+    } else {
+      dispatch({
+        type: CUSTOMER_ONLY_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error ONLY_fetching CUSTOMER data:", error);
+    dispatch({
+      type: CUSTOMER_ONLY_FETCH_FAIL,
+    });
+  }
+};
   
 export const fetchAllCustomer = (pageNumber = 1, searchQuery = '') => async (dispatch, getState) => {
   const { access } = getState().auth;
