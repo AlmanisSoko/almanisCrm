@@ -99,13 +99,13 @@ const Customer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer
     const handlePageChange = pageNumber => {
         if (!pageNumber) return;
         console.log("Navigating to page:", pageNumber);
-        localStorage.setItem('currentPage', pageNumber);
+        // localStorage.setItem('currentPage', pageNumber);
         setCurrentPage(pageNumber);
         fetchAllCustomer(pageNumber, searchQuery);
     };
     
     useEffect(() => {
-        const storedPage = localStorage.getItem('currentPage') || 1;
+        const storedPage =  1;
         setCurrentPage(parseInt(storedPage, 10));
         fetchAllCustomer(storedPage, searchQuery);  // Initial fetch with potentially stored search
       }, [isAuthenticated, navigate, fetchAllCustomer, searchQuery]);

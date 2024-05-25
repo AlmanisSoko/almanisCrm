@@ -9,7 +9,7 @@ const MonthlySalesChart = ({ fetchMonthlyData }) => {
 
   useEffect(() => {
     fetchMonthlyData().then((response) => {
-      setMonthChart(response.month_chart);
+      setMonthChart(response.month_chart); 
     });
   }, [fetchMonthlyData]);
 

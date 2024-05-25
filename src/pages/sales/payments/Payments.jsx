@@ -96,13 +96,13 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, total, previous
   const handlePageChange = pageNumber => {
     if (!pageNumber) return;
     console.log("Navigating to page:", pageNumber);
-    localStorage.setItem('currentPage', pageNumber);
+    // localStorage.setItem('currentPage', pageNumber);
     setCurrentPage(pageNumber);
     fetchAllPayments(pageNumber, searchQuery);  // Use the current search query with new page number
   };
 
   useEffect(() => {
-    const storedPage = localStorage.getItem('currentPage') || 1;
+    const storedPage =  1;
     setCurrentPage(parseInt(storedPage, 10));
     fetchAllPayments(storedPage, searchQuery);  // Initial fetch with potentially stored search
   }, [isAuthenticated, navigate, fetchAllPayments, searchQuery]);

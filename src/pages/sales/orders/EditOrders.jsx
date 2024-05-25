@@ -2,11 +2,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
-import { editOrder, fetchOrdersDetails, fetchFarmerOnly, fetchCustomerOnly } from '../../../actions/auth';
+import { editOrder, fetchOrdersDetails, fetchFarmerOnly, customerFetchOnly } from '../../../actions/auth';
 import { toast } from 'react-toastify';
 import Select from 'react-select';
 
-const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fetchFarmerOnly, editOrder }) => {
+const EditOrders = ({ isAuthenticated, fetchOrdersDetails, customerFetchOnly, fetchFarmerOnly, editOrder }) => {
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -279,16 +279,16 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, fetchCustomerOnly, fe
   useEffect(() => {
     const fetchCustomerData = async () => {
       try {
-        const customers = await fetchCustomerOnly();
+        const customers = await customerFetchOnly();
         console.log(customers);
-        setCustomerOptions(customers.results);
+        setCustomerOptions(customers.data);
       } catch (error) {
         console.error('Error fetching customer data:', error);
       }
     };
 
     fetchCustomerData();
-  }, [fetchCustomerOnly]);
+  }, [customerFetchOnly]);
 
   const handleCustomerSelect = (selectedOption) => {
     setSelectedCustomerOption(selectedOption);
@@ -632,7 +632,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchFarmerOnly: () => dispatch(fetchFarmerOnly()),
-  fetchCustomerOnly: () => dispatch(fetchCustomerOnly()),
+  customerFetchOnly: () => dispatch(customerFetchOnly()),
   fetchOrdersDetails: (orders_id) => dispatch(fetchOrdersDetails(orders_id)),
   editOrder: (orders_id, name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount) =>
     dispatch(editOrder(orders_id, name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount)),

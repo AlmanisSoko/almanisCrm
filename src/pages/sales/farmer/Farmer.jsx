@@ -97,13 +97,13 @@ const Farmer = ({ isAuthenticated, fetchAllFarmer, farmer, deleteFarmer, saveFar
     const handlePageChange = pageNumber => {
         if (!pageNumber) return;
         console.log("Navigating to page:", pageNumber);
-        localStorage.setItem('currentPage', pageNumber);
+        // localStorage.setItem('currentPage', pageNumber);
         setCurrentPage(parseInt(pageNumber, 10));
         fetchAllFarmer(pageNumber).then(() => setLoading(false));
     };
     
     useEffect(() => {
-        const storedPage = localStorage.getItem('currentPage') || 1;
+        const storedPage =  1;
         setCurrentPage(parseInt(storedPage, 10));
         fetchAllFarmer(storedPage).then(() => setLoading(false));
     }, []);

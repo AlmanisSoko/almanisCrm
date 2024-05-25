@@ -17,6 +17,8 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
 
+    console.log('current page', currentPage)
+
     useEffect(() => {
         if (!isAuthenticated) {
         //navigate('/');
@@ -102,7 +104,7 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
     const handlePageChange = pageNumber => {
       if (!pageNumber) return;
       console.log("Navigating to page:", pageNumber);
-      localStorage.setItem('currentPage', pageNumber);
+      // localStorage.setItem('currentPage', pageNumber);
       setCurrentPage(pageNumber);
       fetchAllOrders(pageNumber, searchQuery);  // Use the current search query with new page number
     };
@@ -110,13 +112,13 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
     const handleSearchQueryChange = (e) => {
       const searchValue = e.target.value;
       setSearchQuery(searchValue);
-      setCurrentPage(1);  // Reset to first page when search changes
+      // setCurrentPage(1);  // Reset to first page when search changes
       fetchAllOrders(1, searchValue);  // Fetch with new search query starting at page 1
     };  
   
     // useEffect to handle initial load or authentication changes
     useEffect(() => {
-      const storedPage = localStorage.getItem('currentPage') || 1;
+      const storedPage =  1;
       setCurrentPage(parseInt(storedPage, 10));
       fetchAllOrders(storedPage, searchQuery);  // Initial fetch with potentially stored search
     }, [isAuthenticated, navigate, fetchAllOrders, searchQuery]);

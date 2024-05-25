@@ -68,7 +68,7 @@ import {
      DEBTORS_FETCH_SUCCESS, DEBTORS_FETCH_FAIL
 
 } from './types';
-
+ 
 // Dashboard
 
 export const fetchDashboard = () => async (dispatch, getState) => {
@@ -651,47 +651,53 @@ export const googleAuthenticate = (code, state) => async (dispatch) => {
 };
 
 export const checkAuthenticated = () => async dispatch => {
-    if (localStorage.getItem('access')) {
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                'ACCEPT': 'application/json'
-            }
-        }
+  const accessToken = localStorage.getItem('access');
 
-        const body = JSON.stringify({ token: localStorage.getItem('access') })
-        console.log(body)
+  if (accessToken) {
+      const config = {
+          headers: {
+              'Content-type': 'application/json',
+              'ACCEPT': 'application/json'
+          }
+      }
 
-        try {
-            const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/jwt/verify/`, {
-                method: 'POST',
-                headers: config.headers,
-                body: body
-            });
+      const body = JSON.stringify({ token: accessToken });
+      console.log(body);
 
-            const data = await res.json();
+      try {
+          const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/jwt/verify/`, {
+              method: 'POST',
+              headers: config.headers,
+              body: body
+          });
 
-            if (data.code !== 'token not valid') {
-                dispatch({
-                    type: AUTHENTICATED_SUCCESS
-                })
-            } else {
-                dispatch({
-                    type: AUTHENTICATED_FAIL
-                })
-            }
-            
-        } catch (error) {
-            dispatch({
-                type: AUTHENTICATED_FAIL
-            })
-        }
+          if (!res.ok) {
+              throw new Error('Token verification failed');
+          }
 
-    } else {
-        dispatch({
-            type: AUTHENTICATED_FAIL
-        })
-    }
+          const data = await res.json();
+
+          if (data.code !== 'token_not_valid') {
+              dispatch({
+                  type: AUTHENTICATED_SUCCESS
+              });
+          } else {
+              dispatch({
+                  type: AUTHENTICATED_FAIL
+              });
+          }
+
+      } catch (error) {
+          dispatch({
+              type: AUTHENTICATED_FAIL
+          });
+      }
+
+  } else {
+      dispatch({
+          type: AUTHENTICATED_FAIL
+      });
+  }
 }
 
 export const login = (email, password) => async dispatch => {
@@ -993,6 +999,37 @@ export const fetchCustomerOnly = () => async (dispatch, getState) => {
         type: CUSTOMER_ONLY_FETCH_FAIL,
       });
     }
+};
+
+export const customerFetchOnly = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    // Make an HTTP GET request to fetch batch data using the environment variable
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/onlycustomer/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const customerData = response.data;
+      dispatch({
+        type: CUSTOMER_ONLY_FETCH_SUCCESS,
+        payload: customerData,
+      });
+      return customerData;
+    } else {
+      dispatch({
+        type: CUSTOMER_ONLY_FETCH_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error ONLY_fetching CUSTOMER data:", error);
+    dispatch({
+      type: CUSTOMER_ONLY_FETCH_FAIL,
+    });
+  }
 };
 
 export const fetchCustomerInvoiceOnly = () => async (dispatch, getState) => {
