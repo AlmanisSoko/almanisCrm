@@ -6,6 +6,7 @@ import AutoCompleteCustomer from '../../../components/customer/AutoCompleteCusto
 import { saveOrder, fetchFarmerOnly } from '../../../actions/auth';
 import { toast } from 'react-toastify'; // Import ToastContainer
 import Select from 'react-select';
+import RegionModal from '../../../components/modals/RegionModal';
 
 const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
     const navigate = useNavigate();
@@ -42,6 +43,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
     const formRef = useRef(null); // Create a ref for the form
     const [buttonText, setButtonText] = useState('Add Order'); // Initial button text
     const [isButtonDisabled, setButtonDisabled] = useState(false); // Button state
+    const [isModalOpen, setModalOpen] = useState(false);
 
     const onChange = (e) => {
         const { name, value } = e.target;
@@ -245,6 +247,14 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
             setSelectedFarmerOption(selectedOption);
         }
     };
+    
+    const openModal = () => {
+        setModalOpen(true);
+    };
+    
+    const closeModal = () => {
+        setModalOpen(false);
+    };
 
     return (
         <>
@@ -257,6 +267,19 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                             <Link to="/addcustomer" className="btn btn-outline-white">
                                 <i className="fa-solid fa-user"></i> New Customer
                             </Link>
+                        </div>
+                        
+                        <div className="d-flex dropdown d-inline">
+                            <button
+                                type="button"
+                                className="btn btn-outline-white"
+                                onClick={openModal}
+                            >
+                                <i className="fa-solid fa-receipt"></i> Create Region
+                            </button>
+                            {isModalOpen && (
+                                <RegionModal closeModal={() => setModalOpen(false)}/>
+                            )}
                         </div>
                     </div>
                     <div className="row"> 

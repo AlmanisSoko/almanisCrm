@@ -56,6 +56,12 @@ import {
     INVOICE_DELETE_SUCCESS, INVOICE_DELETE_FAIL, INVOICE_UPDATE_LIST,
     SAVE_INVOICE_SUCCESS, SAVE_INVOICE_FAIL,
 
+    // region
+    REGION_FETCH_ALL_SUCCESS, REGION_FETCH_ALL_FAIL,
+    REGION_FETCH_DETAILS_SUCCESS, REGION_FETCH_DETAILS_FAIL,
+    REGION_DELETE_SUCCESS, REGION_DELETE_FAIL, REGION_UPDATE_LIST,
+    SAVE_REGION_SUCCESS, SAVE_REGION_FAIL,
+
      // dashboard
      DASHBOARD_FETCH_SUCCESS, DASHBOARD_FETCH_FAIL,
      BALANCE_FETCH_SUCCESS, BALANCE_FETCH_FAIL,
@@ -1575,7 +1581,7 @@ export const searchOrder = (id) => async (dispatch) => {
     }
 };
 
-export const saveOrder = (name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount) => async (dispatch, getState) => {
+export const saveOrder = (name, phone, region, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount) => async (dispatch, getState) => {
   const { access } = getState().auth;
 
   const config = {
@@ -1584,7 +1590,7 @@ export const saveOrder = (name, phone, customer_id, town, kgs, packaging, discou
           Authorization: `Bearer ${access}`,
       },
       method: 'POST',
-      body: JSON.stringify({ name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount })
+      body: JSON.stringify({ name, phone, region, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount })
   };
 
   try {
@@ -1610,7 +1616,7 @@ export const saveOrder = (name, phone, customer_id, town, kgs, packaging, discou
   }
 }  
 
-export const editOrder = (name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount, id) => async (dispatch, getState) => {
+export const editOrder = (name, phone, region, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount, id) => async (dispatch, getState) => {
   const { access } = getState().auth;
 
   const config = {
@@ -1619,7 +1625,7 @@ export const editOrder = (name, phone, customer_id, town, kgs, packaging, discou
       Authorization: `Bearer ${access}`,
     },
     method: 'PUT',
-    body: JSON.stringify({ name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount}),
+    body: JSON.stringify({ name, phone, region, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount}),
   };
 
   try {
@@ -1967,5 +1973,163 @@ export const fetchAnalytics = () => async (dispatch, getState) => {
     dispatch({
       type: ANALYTICS_FETCH_ALL_FAIL,
     });
+  }
+};
+
+// Region api handler
+
+export const saveRegion = (region) => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  const config = {
+      headers: {
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${access}`,
+      },
+      method: 'POST',
+      body: JSON.stringify({ region })
+  };
+
+  try {
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/region/`, config);
+
+      if (res.ok) {
+          const data = await res.json();
+          dispatch({
+            type: SAVE_REGION_SUCCESS,
+            payload: data
+          });
+          return { success: true, data };
+      } else {
+          const error = await res.json();
+          dispatch({
+            type: SAVE_REGION_FAIL,
+            payload: error
+          });
+          return { success: false, error };
+      }
+  } catch (error) {
+      return { success: false, error: 'Network error' };
+  }
+}
+
+export const fetchAllRegion = () => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    // Make an HTTP GET request to fetch orders data using the environment variable
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/region/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const regionData = response.data;
+      dispatch({
+        type: REGION_FETCH_ALL_SUCCESS,
+        payload: regionData,
+      });
+    } else {
+      dispatch({
+        type: REGION_FETCH_ALL_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching Region data:", error);
+    dispatch({
+      type: REGION_FETCH_ALL_FAIL,
+    });
+  }
+};
+
+export const fetchRegionDetails = (id) => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/region/${id}/`, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const regionData = response.data.data; // Access data from the "data" key
+      dispatch({
+        type: REGION_FETCH_DETAILS_SUCCESS,
+        payload: regionData,
+      });
+      return regionData
+    } else {
+      dispatch({
+        type: REGION_FETCH_DETAILS_FAIL,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching REGION data:", error);
+    dispatch({
+      type: REGION_FETCH_DETAILS_FAIL,
+    });
+  }
+};
+
+export const editRegion = (region, id) => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  const config = {
+      headers: {
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${access}`,
+      },
+      method: 'POST',
+      body: JSON.stringify({ region })
+  };
+
+  try {
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/region/${id}/`, config);
+
+      if (res.ok) {
+          const data = await res.json();
+          dispatch({
+            type: SAVE_REGION_SUCCESS,
+            payload: data
+          });
+          return { success: true, data };
+      } else {
+          const error = await res.json();
+          dispatch({
+            type: SAVE_REGION_FAIL,
+            payload: error
+          });
+          return { success: false, error };
+      }
+  } catch (error) {
+      return { success: false, error: 'Network error' };
+  }
+}
+
+export const deleteRegion= (id) => async (dispatch, getState) => {
+  const { access } = getState().auth;
+
+  try {
+      const response = await Axios.delete(`${import.meta.env.VITE_REACT_APP_API_URL}/api/region/${id}/`, {
+          headers: {
+              Authorization: `Bearer ${access}`,
+          },
+      });
+
+      if (response.status === 200) {
+          // Dispatch a success action if the delete was successful
+          dispatch({ type: REGION_DELETE_SUCCESS });
+
+          // Dispatch an action to update the customer list
+          dispatch({ type: REGION_UPDATE_LIST, payload: id }); // Send the deleted REGION ID
+      } else {
+          // Dispatch a failure action if the delete failed
+          dispatch({ type: REGION_DELETE_FAIL });
+      }
+  } catch (error) {
+      console.log(error);
+      dispatch({ type: REGION_DELETE_FAIL });
   }
 };

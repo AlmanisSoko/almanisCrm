@@ -53,6 +53,12 @@ import {
      INVOICE_DELETE_SUCCESS, INVOICE_DELETE_FAIL, INVOICE_UPDATE_LIST,
      SAVE_INVOICE_SUCCESS, SAVE_INVOICE_FAIL,
 
+     // region
+     REGION_FETCH_ALL_SUCCESS, REGION_FETCH_ALL_FAIL,
+     REGION_FETCH_DETAILS_SUCCESS, REGION_FETCH_DETAILS_FAIL,
+     REGION_DELETE_SUCCESS, REGION_DELETE_FAIL, REGION_UPDATE_LIST,
+     SAVE_REGION_SUCCESS, SAVE_REGION_FAIL,
+
      // dashboard
     DASHBOARD_FETCH_SUCCESS, DASHBOARD_FETCH_FAIL,
     BALANCE_FETCH_SUCCESS, BALANCE_FETCH_FAIL,
@@ -82,6 +88,8 @@ const initialState = {
     debtors: [],
     overpaid: [],
     analytics: [],
+    region: [],
+    regionDetails: null,
 }
 
 export default function (state = initialState, action) {
@@ -585,12 +593,74 @@ export default function (state = initialState, action) {
             };
 
         case INVOICE_DELETE_FAIL:
-                return {
-                    ...state,
-                };    
+            return {
+                ...state,
+            };    
+           
+        // REGION MODULE REDUCERS
+        
+        case SAVE_REGION_SUCCESS:
+            return {
+                ...state,
+                region: payload.data,
+            };
 
-                
-            // DASHBOARD MODULE REDUCERS
+        case SAVE_REGION_FAIL:
+            return{
+                ...state,
+            } ;
+
+        case SAVE_REGION_FAIL:
+            return{
+                ...state,
+            };    
+
+        case REGION_FETCH_ALL_SUCCESS:
+            return {
+                ...state,
+                region: payload.data, // Store the fetched customer data
+            };
+
+        case REGION_FETCH_ALL_FAIL:
+            return {
+                ...state,
+                region: [], // Handle the failure case
+            };
+
+        case REGION_FETCH_DETAILS_SUCCESS:
+            return {
+                ...state,
+                region: payload.data, // Store the fetched region data
+            };
+
+        case REGION_FETCH_DETAILS_FAIL:
+            return {
+                ...state,
+                region: [], // Store the fetched region data
+            };   
+        
+        case REGION_UPDATE_LIST:
+            // Update the customer list by removing the deleted customer
+            const updatedRegion = state.region.filter((region) => region.id !== payload);
+            return {
+                ...state,
+                region: updatedRegion,
+            };
+
+        case REGION_DELETE_SUCCESS: 
+            const updatedRegions = state.invoice.filter(invoice => invoice.id !== payload.data);
+
+            return {
+                ...state,
+                region: updatedRegions,
+            };
+
+        case REGION_DELETE_FAIL:
+            return {
+                ...state,
+            };    
+            
+        // DASHBOARD MODULE REDUCERS
 
         case BALANCE_FETCH_SUCCESS:
             return {
