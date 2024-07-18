@@ -1743,38 +1743,38 @@ export const fetchPaymentDetails = (id) => async (dispatch, getState) => {
 };  
 
 export const savePayment = (orders_id, paying_number, amount, payment_mode, payment, customer_id) => async (dispatch, getState) => {
-const { access } = getState().auth;
+  const { access } = getState().auth;
 
-const config = {
-    headers: {
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${access}`,
-    },
-    method: 'POST',
-    body: JSON.stringify({ orders_id, paying_number, amount, payment_mode, payment, customer_id })
-};
+  const config = {
+      headers: {
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${access}`,
+      },
+      method: 'POST',
+      body: JSON.stringify({ orders_id, paying_number, amount, payment_mode, payment, customer_id })
+  };
 
-try {
-    const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/payments/`, config);
+  try {
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/payments/`, config);
 
-    if (res.ok) {
-        const data = await res.json();
-        dispatch({
-          type: SAVE_PAYMENTS_SUCCESS,
-          payload: data
-        });
-        return { success: true, data };
-    } else {
-        const error = await res.json();
-        dispatch({
-          type: SAVE_PAYMENTS_FAIL,
-          payload: error
-        });
-        return { success: false, error };
-    }
-} catch (error) {
-    return { success: false, error: 'Network error' };
-}
+      if (res.ok) {
+          const data = await res.json();
+          dispatch({
+            type: SAVE_PAYMENTS_SUCCESS,
+            payload: data
+          });
+          return { success: true, data };
+      } else {
+          const error = await res.json();
+          dispatch({
+            type: SAVE_PAYMENTS_FAIL,
+            payload: error
+          });
+          return { success: false, error };
+      }
+  } catch (error) {
+      return { success: false, error: 'Network error' };
+  }
 }   
 
 export const editPayment = (orders_id, paying_number, amount, payment_mode, payment, customer_id, id) => async (dispatch, getState) => {

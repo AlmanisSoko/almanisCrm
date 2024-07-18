@@ -145,19 +145,16 @@ const Login = ({ login, isAuthenticated, user }) => {
                                             />
                                         <label className="form-check-label" htmlFor="rememberMe">Remember me</label>
                                         </div>
-                                        <div className="form-check-label mt-2">
-                                            Forgot password? 
-                                            <Link to="/reset-password" className="text-dark font-weight-bolder">Reset</Link>
-                                        </div>
                                         <div className="text-center">
                                             <button type="submit" className="btn bg-gradient-dark w-100 my-4 mb-2" onClick={handleLogin}>
                                             {loading ? 'Signing In...' : 'Sign in'}
                                             </button>
                                         </div>
                                         <div className="form-check-label mt-2">
-                                            Don't have an account? 
-                                            <Link to="/signup" className="text-dark font-weight-bolder">Sign Up</Link>
+                                            Forgot password? 
+                                            <Link to="/reset-password" className="text-dark font-weight-bolder">Reset</Link>
                                         </div>
+                                        
                                     </form>
                                 </div>
 

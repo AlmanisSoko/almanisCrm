@@ -29,6 +29,7 @@ const EditFarmer = lazy(() => import('./pages/sales/farmer/EditFarmer'))
 const Payments = lazy(() => import('./pages/sales/payments/Payments'))
 const AddPayments = lazy(() => import('./pages/sales/payments/AddPayments'))
 const EditPayments = lazy(() => import('./pages/sales/payments/EditPayments'))
+const Privacy = lazy(() => import('./pages/general/Privacy'));
 const Invoice = lazy(() => import('./pages/sales/invoice/Invoice'))
 const DownloadInvoice = lazy(() => import('./pages/sales/invoice/DownloadInvoice'))
 const Analytics = lazy(() => import('./pages/dashboard/Analytics'))
@@ -70,6 +71,7 @@ function App() {
             <Layout>
               <Routes>
                 <Route exact path="/home" element={<Home />}/>
+                <Route exact path="/privacy" element={<Privacy />}/>
                 <Route exact path="/delivery" element={<Delivery />}/>
 
                 {/* / Orders */}
