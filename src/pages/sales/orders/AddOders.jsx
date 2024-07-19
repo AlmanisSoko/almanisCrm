@@ -3,19 +3,20 @@ import { Link, useNavigate } from 'react-router-dom';
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
 import AutoCompleteCustomer from '../../../components/customer/AutoCompleteCustomer';
-import { saveOrder, fetchFarmerOnly } from '../../../actions/auth';
+import { saveOrder, fetchFarmerOnly, fetchAllRegion } from '../../../actions/auth';
 import { toast } from 'react-toastify'; // Import ToastContainer
 import Select from 'react-select';
 import RegionModal from '../../../components/modals/RegionModal';
 
-const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
+const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly, fetchAllRegion, region }) => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
+        region: '',
         customer_id: '',
         town: '',
-        Kgs: '',
+        kgs: '',
         packaging: '',
         discount: '',
         transport: '',
@@ -61,28 +62,12 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
             setButtonDisabled(true);
             console.log("form data" ,formData);
             const response = await saveOrder(
-                formData.name,
-                formData.phone,
-                formData.customer_id,
-                formData.town,
-                formData.Kgs,
-                formData.packaging,
-                formData.discount,
-                formData.transport,
-                formData.transporters,
-                formData.rider,
-                formData.comment,
-                formData.farmer_id,
-                formData.rice_type,
-                formData.vat,
-                formData.farmer_price,
-                formData.price,
-                formData.amount
+                formData
             );
-            console.log(response);
+            console.log("response", response);
     
-            if (response.data.error) {
-                toast.error(response.data.message, { toastId: 'error' });
+            if (response) {
+                toast.error(response.error.message, { toastId: 'error' });
                 setButtonDisabled(false);
             } else {
                 toast.success('Order Added Successfully', { toastId: "success" });
@@ -93,9 +78,10 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                     setFormData({
                         name: '',
                         phone: '',
+                        region: '',
                         customer_id: '',
                         town: '',
-                        Kgs: '',
+                        kgs: '',
                         packaging: '',
                         discount: '',
                         transport: '',
@@ -125,7 +111,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
 
     // Update the amount when any of the input fields change
     const handleKgsChange = (e) => {
-        const newFormData = { ...formData, Kgs: e.target.value };
+        const newFormData = { ...formData, kgs: e.target.value };
         setFormData(newFormData);
     };
 
@@ -161,7 +147,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
 
     // Calculate total amount
     useEffect(() => {
-        const numberOfKilosFloat = parseFloat(formData.Kgs);
+        const numberOfKilosFloat = parseFloat(formData.kgs);
         const trayPriceFloat = parseFloat(formData.price);
         const discountFloat = parseFloat(formData.discount);
         const packagingFloat = parseFloat(formData.packaging);
@@ -179,7 +165,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
             const newFormData = { ...formData, amount: '' };
             setFormData(newFormData);
         }
-    }, [formData.Kgs, formData.price, formData.discount, formData.vat, formData.rider]);
+    }, [formData.kgs, formData.price, formData.discount, formData.vat, formData.rider]);
     
 
     const showDataInInputs = (index, item) => {
@@ -227,7 +213,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
         const fetchFamerData = async () => {
             try {
                 const farmer = await fetchFarmerOnly();
-                console.log(farmer)
+                console.log("farmer",farmer)
                 setFarmerOptions(farmer.results);
             } catch (error) {
                 console.error('Error fetching Farmer data:', error);
@@ -288,9 +274,11 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                 <div className="card-body">
                                     <h5 className="font-weight-bolder">Add New Order</h5>
                                     <form  ref={formRef} method="POST" onSubmit={onSubmit}>
-                                        {customersDetails.map((item, index) => (
-                                            <div className="row" key={index}>
-                                                <div className="col-md-5">
+                                        
+                                            <div className="row" >
+                                            {customersDetails.map((item, index) => (
+                                                <>
+                                                <div className="col-md-4">
                                                     <div className="form-group">
                                                         <AutoCompleteCustomer
                                                             itemPosition={index}
@@ -299,7 +287,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="col-md-5">
+                                                <div className="col-md-4">
                                                     <div className="form-group">
                                                     <label>Customer Name</label>
                                                         <input
@@ -311,21 +299,34 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="col-md-2">
+                                                </>
+                                            ))}
+                                                <div className="col-md-4">
                                                     <div className="form-group">
-                                                    <label>Customer No</label>
-                                                        <input
-                                                            type="text"
-                                                            name='customer_id'
-                                                            placeholder="Customer No"
-                                                            className="form-control"
-                                                            disabled
-                                                            value={item.customer_id}
-                                                        />
+                                                    <label>Region</label>
+                                                        <div className="input-group">
+                                                            <select
+                                                                className="form-control"
+                                                                name="region"
+                                                                value={formData.region}
+                                                                onChange={(e) => onChange(e)}
+                                                                required
+                                                            >
+                                                                <option value="">--- Please Select Region ---</option>
+                                                                <option value="1">NAIROBI</option>
+                                                                <option value="2">NYANZA</option>
+                                                                <option value="3">CENTRAL</option>
+                                                                <option value="4">COAST</option>
+                                                                <option value="5">EASTERN</option>
+                                                                <option value="6">NORTH EASTERN</option>
+                                                                <option value="7">WESTERN</option>
+                                                                <option value="8">RIFT VALLEY</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        ))}
+                                        
                                         <div className="row">
                                             <div className="col-md-6">
                                                 <div className="form-group">
@@ -348,9 +349,9 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
                                                     <input
                                                         type="number"
                                                         className="form-control"
-                                                        id="Kgs"
+                                                        id="kgs"
                                                         placeholder="Kgs"
-                                                        value={formData.Kgs}
+                                                        value={formData.kgs}
                                                         onChange={handleKgsChange}
                                                         required
                                                     />
@@ -573,11 +574,13 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly }) => {
 const mapStateToProps = (state) => ({
     isAuthenticated: state.auth.isAuthenticated,
     farmer: state.auth.farmer,
+    region: state.auth.region,
 });
 
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchFarmerOnly: () => dispatch(fetchFarmerOnly()),
+        fetchAllRegion: () => dispatch(fetchAllRegion()),
         saveOrder: (name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount) =>
             dispatch(saveOrder(name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount))
     };

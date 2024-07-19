@@ -1581,39 +1581,39 @@ export const searchOrder = (id) => async (dispatch) => {
     }
 };
 
-export const saveOrder = (name, phone, region, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount) => async (dispatch, getState) => {
+export const saveOrder = (formData) => async (dispatch, getState) => {
   const { access } = getState().auth;
 
-  const config = {
-      headers: {
-          'Content-type': 'application/json',
-          Authorization: `Bearer ${access}`,
-      },
-      method: 'POST',
-      body: JSON.stringify({ name, phone, region, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount })
-  };
-
   try {
-      const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/orders/`, config);
+    const response = await Axios.post(
+        `${import.meta.env.VITE_REACT_APP_API_URL}/api/orders/`,
+        formData,
+        {
+            headers: {
+                Authorization: `Bearer ${access}`,
+                'Content-Type': 'multipart/form-data',
+            }
+        }
+    );
 
-      if (res.ok) {
-          const data = await res.json();
-          dispatch({
+    if (response.status === 201) {
+        const postedPlayData = response.data;
+        dispatch({
             type: SAVE_ORDERS_SUCCESS,
-            payload: data
-          });
-          return { success: true, data };
-      } else {
-          const error = await res.json();
-          dispatch({
+            payload: postedPlayData,
+        });
+    } else {
+        dispatch({
             type: SAVE_ORDERS_FAIL,
-            payload: error
-          });
-          return { success: false, error };
-      }
-  } catch (error) {
-      return { success: false, error: 'Network error' };
-  }
+        });
+    }
+} catch (error) {
+    console.error('Error saving order:', error);
+    dispatch({
+        type: SAVE_ORDERS_FAIL,
+    });
+    throw error; // rethrow the error so that it can be caught in the handleFormSubmit function
+}
 }  
 
 export const editOrder = (name, phone, region, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount, id) => async (dispatch, getState) => {
@@ -2025,10 +2025,11 @@ export const fetchAllRegion = () => async (dispatch, getState) => {
     });
 
     if (response.status === 200) {
-      const regionData = response.data;
+      const regionData = response.data.data;
+      console.log("region data", regionData)
       dispatch({
         type: REGION_FETCH_ALL_SUCCESS,
-        payload: regionData,
+        payload: regionData.data,
       });
     } else {
       dispatch({
