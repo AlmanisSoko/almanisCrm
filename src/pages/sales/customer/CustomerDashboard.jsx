@@ -2,7 +2,7 @@ import React from 'react';
 import HeaderNav from '../../../components/HeaderNav';
 import YearlyOrdersChart from './charts/YearlyOrdersChart';
 import YearlyPaymentChart from './charts/YearlyPaymentChart';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 
 const CustomerDashboard = () => {
     const location = useLocation();
@@ -26,6 +26,15 @@ const CustomerDashboard = () => {
             <div className="min-height-300 bg-dark position-absolute w-100"></div>
             <HeaderNav />
             <div className="container-fluid py-4" style={mediaQuery.matches ? desktopStyle : mobileStyle}>
+                <div className="container-fluid mt-6">
+                    <div className="d-sm-flex justify-content-between">
+                        <div className="dropdown d-inline">
+                            <Link to={`/customerdetails/${id}`} className="btn btn-outline-white">
+                            <i className="ni ni-curved-next"></i> Back 
+                            </Link>
+                        </div>
+                    </div>
+                </div>
                 <div className="row mt-4">
                     <div className="col-12 col-lg-12 mb-4 mb-lg-0">
                         <div className="card z-index-2 h-100">
