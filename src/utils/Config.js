@@ -78,6 +78,13 @@ class Config{
             url: "/orders",
             icons: "fi fi-sr-bags-shopping text-lg text-dark"
         },
+
+        {
+            index: "3",
+            title: "Payments",
+            url: "/payments",
+            icons: "ni ni-money-coins text-lg text-dark"
+        },
        
         {
             index: "11",

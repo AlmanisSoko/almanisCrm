@@ -1163,7 +1163,7 @@ try {
 }
 };
     
-export const saveCustomer = (name, phone, secondary_phone, alternative_phone, town, region) => async (dispatch, getState) => {
+export const saveCustomer = (name, phone, secondary_phone, town, region) => async (dispatch, getState) => {
 const { access } = getState().auth;
 
 const config = {
@@ -1172,7 +1172,7 @@ const config = {
         Authorization: `Bearer ${access}`,
     },
     method: 'POST',
-    body: JSON.stringify({ name, phone, secondary_phone, alternative_phone, town, region })
+    body: JSON.stringify({ name, phone, secondary_phone, town, region })
 };
 
 try {
@@ -1201,7 +1201,7 @@ try {
 }
 }
 
-export const editCustomer = (name, phone, secondary_phone, alternative_phone, town, region, id) => async (dispatch, getState) => {
+export const editCustomer = (name, phone, secondary_phone, town, region, id) => async (dispatch, getState) => {
 const { access } = getState().auth;
 
 const config = {
@@ -1210,7 +1210,7 @@ const config = {
     Authorization: `Bearer ${access}`,
     },
     method: 'PUT',
-    body: JSON.stringify({ name, phone, secondary_phone, alternative_phone, town, region}),
+    body: JSON.stringify({ name, phone, secondary_phone, town, region}),
 };
 
 try {

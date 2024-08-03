@@ -321,6 +321,7 @@ const AddOrders = ({ isAuthenticated, saveOrder, fetchFarmerOnly, fetchAllRegion
                                                                 <option value="6">NORTH EASTERN</option>
                                                                 <option value="7">WESTERN</option>
                                                                 <option value="8">RIFT VALLEY</option>
+                                                                <option value="9">POS</option>
                                                             </select>
                                                         </div>
                                                     </div>

@@ -21,6 +21,7 @@ const AddOders = lazy(() => import('./pages/sales/orders/AddOders'));
 const EditOrders = lazy(() => import('./pages/sales/orders/EditOrders'));
 const Orders = lazy(() => import('./pages/sales/orders/Orders'));
 const Customer = lazy(() => import('./pages/sales/customer/Customer'))
+const CustomerDash = lazy(() => import('./pages/sales/customer/CustomerDashboard'))
 const AddCustomer = lazy(() => import('./pages/sales/customer/AddCustomer'))
 const EditCustomer = lazy(() => import('./pages/sales/customer/EditCustomer'))
 const Farmer = lazy(() => import('./pages/sales/farmer/Farmer'))
@@ -83,6 +84,7 @@ function App() {
                 <Route exact path="/customer" element={<Customer />}/>
                 <Route exact path="/addcustomer" element={<AddCustomer />}/>
                 <Route exact path="/customerdetails/:id" element={<EditCustomer />}/>
+                <Route exact path="/customerdetails/:id/dashboard" element={<CustomerDash />}/>
 
                 {/* farmers */}
                 <Route exact path="/farmer" element={<Farmer />}/>

@@ -12,7 +12,6 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
     name: '',
     phone: '',
     secondary_phone: '',
-    alternative_phone: '',
     region: '',
     town: '',
   });
@@ -22,7 +21,7 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
   const [buttonText, setButtonText] = useState('Add Customer'); // Initial button text
   const [isButtonDisabled, setButtonDisabled] = useState(false); // Button state
 
-  const { name, phone, secondary_phone, alternative_phone, region, town } = formData;
+  const { name, phone, secondary_phone, region, town } = formData;
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -38,7 +37,7 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
   
     try {
       setButtonDisabled(true); // Disable the button during submission
-      const response = await saveCustomer(name, phone, secondary_phone, alternative_phone, town, region);
+      const response = await saveCustomer(name, phone, secondary_phone, town, region);
       console.log(response);
   
       if (response.data) {
@@ -55,7 +54,6 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
             name: '',
             phone: '',
             secondary_phone: '',
-            alternative_phone: '',
             region: '',
             town: '',
           });
@@ -165,23 +163,6 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
                           />
                         </div>
                       </div>
-                      <div className="col-md-6">
-                        <div className="form-group">
-                          <label>Alternative Phone</label>
-                          <input
-                            required
-                            type="text"
-                            name="alternative_phone"
-                            placeholder="Alternative Phone"
-                            className="form-control"
-                            value={alternative_phone}
-                            onChange={(e) => onChange(e)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="row">
                       
                       <div className="col-md-6">
                         <div className="form-group">
@@ -198,6 +179,9 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
                           />
                         </div>
                       </div>
+                    </div>
+
+                    <div className="row">
                       <div className="col-md-6">
                           <div className="form-group">
                           <label>Region</label>
@@ -222,15 +206,18 @@ const AddCustomer = ({ isAuthenticated, saveCustomer }) => {
                               </div>
                           </div>
                       </div>
+                      <div className="col-md-6">
+                        <button
+                          type="submit"
+                          className="btn bg-gradient-dark mt-4 btn-lg w-100"
+                          disabled={isButtonDisabled} // Disable the button while processing
+                        >
+                          {buttonText}
+                        </button>
+                      </div>
                     </div>
 
-                    <button
-                      type="submit"
-                      className="btn bg-gradient-dark btn-lg w-100"
-                      disabled={isButtonDisabled} // Disable the button while processing
-                    >
-                      {buttonText}
-                    </button>
+                    
                   </form>
                 </div>
               </div>

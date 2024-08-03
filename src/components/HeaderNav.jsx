@@ -33,8 +33,10 @@ function HeaderNav({ user }) {
     };
 
     if (id) {
-      // If "id" exists, it's a dynamic route; return the appropriate page name
-      if (location.pathname.includes('customerdetails')) {
+      // Handle dynamic routes
+      if (location.pathname.includes('customerdetails') && location.pathname.includes('dashboard')) {
+        return 'Customer Dashboard';
+      } else if (location.pathname.includes('customerdetails')) {
         return 'Edit Customer';
       } else if (location.pathname.includes('ordersdetails')) {
         return 'Edit Order';
@@ -43,9 +45,9 @@ function HeaderNav({ user }) {
       } else if (location.pathname.includes('batchdetails')) {
         return 'View Batch';
       } else if (location.pathname.includes('download-invoice')) {
-        return 'Downlaod Invoice'; 
+        return 'Download Invoice';
       } else if (location.pathname.includes('employeedetails')) {
-        return 'Edit Employee'; 
+        return 'Edit Employee';
       }
     } else {
       // Otherwise, handle static routes with the routeToPageName object

@@ -54,7 +54,6 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
     name: '',
     phone: '',
     secondary_phone: '',
-    alternative_phone: '',
     town: '',
     region: '',
   });
@@ -82,7 +81,6 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
               name: customer?.name || '',
               phone: customer?.phone || '',
               secondary_phone: customer?.secondary_phone || '',
-              alternative_phone: customer?.alternative_phone || '',
               town: customer?.town || '',
               region: customer?.region || '',
             });
@@ -119,7 +117,6 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
         formData.name,
         formData.phone,
         formData.secondary_phone,
-        formData.alternative_phone,
         formData.town,
         formData.region,
         id
@@ -186,6 +183,10 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+
+  const viewCustomerDash = (id) => {
+    navigate('/customerdetails/' + id + '/dashboard');
+};
 
   return (
     <>
@@ -373,22 +374,6 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                       </div>
                       <div className="col-md-6">
                         <div className="form-group">
-                        <label>Alternative Phone</label>
-                          <input
-                            type="text"
-                            name="alternative_phone"
-                            value={formData.alternative_phone}
-                            onChange={handleInputChange}
-                            placeholder="Alternative Phone"
-                            className="form-control"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="form-group">
                         <label>Town</label>
                           <input
                             type="text"
@@ -401,6 +386,9 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                           />
                         </div>
                       </div>
+                    </div>
+
+                    <div className="row">
                       <div className="col-md-6">
                         <div className="form-group">
                         <label>Region</label>
@@ -423,14 +411,23 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                           </select>
                         </div>
                       </div>
+                      <div className="col-md-6">
+                        <button
+                          type="submit"
+                          className="btn bg-gradient-dark mt-4 btn-lg w-100"
+                          disabled={isButtonDisabled} // Disable the button while processing
+                        >
+                          {buttonText}
+                        </button>
+                      </div>
                     </div>
 
                     <button
                       type="submit"
                       className="btn bg-gradient-dark btn-lg w-100"
-                      disabled={isButtonDisabled} // Disable the button while processing
+                      onClick={() => viewCustomerDash(id)}
                     >
-                      {buttonText}
+                      View Dashboard <i className="fa-solid fa-chart-simple"></i>
                     </button>
                   </form>
                 </div>
@@ -753,15 +750,15 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
 };
 
 const mapStateToProps = (state) => ({
-    isAuthenticated: state.auth.isAuthenticated,
-    customerDetails: state.auth.customerDetails,
-    customers: state.auth.customers
-  });
-  
-  const mapDispatchToProps = (dispatch) => ({
-    fetchCustomerDetails: (customer_id) => dispatch(fetchCustomerDetails(customer_id)),
-    editCustomer: (customer_id, name, phone, secondary_phone, alternative_phone, town, region) =>
-      dispatch(editCustomer(customer_id, name, phone, secondary_phone, alternative_phone, town, region)),
-  });
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(EditCustomer);
+  isAuthenticated: state.auth.isAuthenticated,
+  customerDetails: state.auth.customerDetails,
+  customers: state.auth.customers
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchCustomerDetails: (customer_id) => dispatch(fetchCustomerDetails(customer_id)),
+  editCustomer: (customer_id, name, phone, secondary_phone, town, region) =>
+    dispatch(editCustomer(customer_id, name, phone, secondary_phone, town, region)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditCustomer);
