@@ -275,7 +275,11 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
                         <tbody>
                           {filteredOrders.length > 0 ? (
                             filteredOrders.map((orders) => (
-                              <tr key={orders.id}>
+                              <tr 
+                                className="cursor-pointer"
+                                key={orders.id}
+                                onClick={() => viewOrder(orders.id)}
+                              >
                                 <td>
                                   <div className="d-flex align-items-center">
                                     <p className="text-xs font-weight-bold ms-2 mb-0">#{orders.id}</p>

@@ -582,8 +582,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         fetchFarmerOnly: () => dispatch(fetchFarmerOnly()),
         fetchAllRegion: () => dispatch(fetchAllRegion()),
-        saveOrder: (name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount) =>
-            dispatch(saveOrder(name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount))
+        saveOrder: (name, phone, customer_id, region, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount) =>
+            dispatch(saveOrder(name, phone, customer_id, region, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount))
     };
 };
 

@@ -14,6 +14,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, customerFetchOnly, fe
     name: '',
     phone: '',
     customer_id: '',
+    region: '',
     town: '',
     kgs: '',
     packaging: '',
@@ -34,20 +35,6 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, customerFetchOnly, fe
   const [buttonText, setButtonText] = useState('Edit Order');
   const [isButtonDisabled, setButtonDisabled] = useState(false);
 
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      phone: '',
-      customer_id: '',
-      town: '',
-      kgs: '',
-      discount: '',
-      vat: 0,
-      price: '',
-      amount: '',
-    });
-  };
-
   const onChange = (e) => {
     const { name, value } = e.target;
     console.log(`Updating ${name} to ${value}`);
@@ -65,23 +52,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, customerFetchOnly, fe
       console.log('form data', formData);
 
       const response = await editOrder(
-        formData.name,
-        formData.phone,
-        formData.customer_id,
-        formData.town,
-        formData.kgs,
-        formData.packaging,
-        formData.discount,
-        formData.transport,
-        formData.transporters,
-        formData.rider,
-        formData.comment,
-        formData.farmer_id,
-        formData.rice_type,
-        formData.vat,
-        formData.farmer_price,
-        formData.price,
-        formData.amount,
+        formData,
         id
       );
       console.log('API Response:', response);
@@ -202,6 +173,7 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, customerFetchOnly, fe
               name: order ?.name || '',
               phone: order ?.phone || '',
               customer_id: order ?.customer_id || '',
+              region: order ?.region || '',
               town: order ?.town || '',
               kgs: order ?.kgs || '',
               packaging: order ?.packaging || '',
@@ -340,20 +312,6 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, customerFetchOnly, fe
                       </div>
                       <div className="col-md-4">
                         <div className="form-group">
-                        <label>Customer Name</label>
-                          <input
-                            type="text"
-                            name="name"
-                            placeholder="Customer Name"
-                            className="form-control"
-                            value={formData.name}
-                            onChange={onChange}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="form-group">
                           <label>Customer Name/Number</label>
                           <div className="input-group">
                             <Select
@@ -373,6 +331,32 @@ const EditOrders = ({ isAuthenticated, fetchOrdersDetails, customerFetchOnly, fe
                                 isClearable
                             />
                           </div>
+                        </div>
+                      </div>
+          
+                      <div className="col-md-4">
+                        <div className="form-group">
+                        <label>Region</label>
+                            <div className="input-group">
+                                <select
+                                    className="form-control"
+                                    name="region"
+                                    value={formData.region}
+                                    onChange={(e) => onChange(e)}
+                                    required
+                                >
+                                    <option value="">--- Please Select Region ---</option>
+                                    <option value="1">NAIROBI</option>
+                                    <option value="2">NYANZA</option>
+                                    <option value="3">CENTRAL</option>
+                                    <option value="4">COAST</option>
+                                    <option value="5">EASTERN</option>
+                                    <option value="6">NORTH EASTERN</option>
+                                    <option value="7">WESTERN</option>
+                                    <option value="8">RIFT VALLEY</option>
+                                    <option value="9">POS</option>
+                                </select>
+                            </div>
                         </div>
                       </div>
                     </div>
@@ -634,8 +618,8 @@ const mapDispatchToProps = (dispatch) => ({
   fetchFarmerOnly: () => dispatch(fetchFarmerOnly()),
   customerFetchOnly: () => dispatch(customerFetchOnly()),
   fetchOrdersDetails: (orders_id) => dispatch(fetchOrdersDetails(orders_id)),
-  editOrder: (orders_id, name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount) =>
-    dispatch(editOrder(orders_id, name, phone, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount)),
+  editOrder: (orders_id, name, phone, customer_id, region, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount) =>
+    dispatch(editOrder(orders_id, name, phone, customer_id, region, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditOrders);

@@ -1616,30 +1616,29 @@ export const saveOrder = (formData) => async (dispatch, getState) => {
 }
 }  
 
-export const editOrder = (name, phone, region, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount, id) => async (dispatch, getState) => {
+export const editOrder = (formData, id) => async (dispatch, getState) => {
   const { access } = getState().auth;
 
-  const config = {
-    headers: {
-      'Content-type': 'application/json',
-      Authorization: `Bearer ${access}`,
-    },
-    method: 'PUT',
-    body: JSON.stringify({ name, phone, region, customer_id, town, kgs, packaging, discount, transport, transporters, rider, comment, farmer_id, rice_type, vat, farmer_price, price, amount}),
-  };
-
   try {
-    const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/orders/${id}/`, config);
-
-    if (res.ok) {
-      const data = await res.json();
+    const response = await Axios.put(
+        `${import.meta.env.VITE_REACT_APP_API_URL}/api/orders/${id}/`,
+        formData,
+        {
+            headers: {
+                Authorization: `Bearer ${access}`,
+                'Content-Type': 'multipart/form-data',
+            }
+        }
+    );
+    if (response.status === 200) {
+      const data = await response.data;
       dispatch({
         type: EDIT_ORDERS_SUCCESS,
         payload: data,
       });
       return data;
     } else {
-      const error = await res.json();
+      const error = await response.data;
       dispatch({
         type: EDIT_ORDERS_FAIL,
         payload: error,
