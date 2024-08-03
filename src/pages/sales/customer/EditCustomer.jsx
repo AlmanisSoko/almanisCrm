@@ -185,7 +185,7 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
   };
 
   const viewCustomerDash = (id) => {
-    navigate('/customerdetails/' + id + '/dashboard');
+    navigate('/customerdetails/' + id + '/dashboard', { state: { id: id } });
 };
 
   return (

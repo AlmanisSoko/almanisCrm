@@ -2,8 +2,11 @@ import React from 'react';
 import HeaderNav from '../../../components/HeaderNav';
 import YearlyOrdersChart from './charts/YearlyOrdersChart';
 import YearlyPaymentChart from './charts/YearlyPaymentChart';
+import { useLocation } from 'react-router-dom';
 
 const CustomerDashboard = () => {
+    const location = useLocation();
+    const { id } = location.state;
 
     const desktopStyle = {
         width: 'calc(100% - 265px)',
@@ -30,12 +33,17 @@ const CustomerDashboard = () => {
                                 <h6 className="text-capitalize">Yearly Orders Overview</h6>
                                 <p className="text-sm mb-0">
                                     <i className="fa fa-arrow-up text-success" aria-hidden="true"></i>
-                                    <span className="font-weight-bold">Grahpical Analysis</span> 
+                                    <span className="font-weight-bold">Graphical Analysis</span> 
                                 </p>
                             </div>
                             <div className="card-body p-3">
                                 <div className="chart">
-                                    <YearlyOrdersChart className="chart-canvas" height="100" width="3992" style={{display: "block", boxSizing: "border-box", height: "300px", width: "1996.2px"}}/>
+                                    <YearlyOrdersChart 
+                                        className="chart-canvas" 
+                                        height="100" width="3992" 
+                                        id={id}
+                                        style={{display: "block", boxSizing: "border-box", height: "300px", width: "1996.2px"}}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -49,12 +57,17 @@ const CustomerDashboard = () => {
                                 <h6 className="text-capitalize">Yearly Payment Overview</h6>
                                 <p className="text-sm mb-0">
                                     <i className="fa fa-arrow-up text-success" aria-hidden="true"></i>
-                                    <span className="font-weight-bold">Grahpical Analysis</span> 
+                                    <span className="font-weight-bold">Graphical Analysis</span> 
                                 </p>
                             </div>
                             <div className="card-body p-3">
                                 <div className="chart">
-                                    <YearlyPaymentChart className="chart-canvas" height="100" width="3992" style={{display: "block", boxSizing: "border-box", height: "300px", width: "1996.2px"}}/>
+                                    <YearlyPaymentChart 
+                                        className="chart-canvas" 
+                                        height="100" width="3992" 
+                                        id={id}
+                                        style={{display: "block", boxSizing: "border-box", height: "300px", width: "1996.2px"}}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -66,4 +79,4 @@ const CustomerDashboard = () => {
     )
 }
 
-export default CustomerDashboard
+export default CustomerDashboard;
