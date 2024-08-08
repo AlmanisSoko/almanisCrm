@@ -246,17 +246,17 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, total, previous
                                       ? "Cash"
                                       : payment.payment_mode === 2
                                       ? "Mpesa"
-                                      : payments.payment_mode === 3
+                                      : payment.payment_mode === 3
                                       ? "Bank"
-                                      : payments.payment_mode === 4
-                                      ? "Trade in" 
-                                      : payments.payment_mode === 5
+                                      : payment.payment_mode === 4
+                                      ? "Barter Trade" 
+                                      : payment.payment_mode === 5
                                       ? "Promotion"
-                                      : payments.payment_mode === 6
+                                      : payment.payment_mode === 6
                                       ? "Compensation"
-                                      : payments.payment_mode === 7
+                                      : payment.payment_mode === 7
                                       ? "Top Up"
-                                      : payments.payment_mode
+                                      : payment.payment_mode
                                       }
                                   </span>
                                 </td>

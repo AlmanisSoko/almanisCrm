@@ -84,7 +84,7 @@ const AddPayments = ({ isAuthenticated, savePayment }) => {
                     setButtonText('Add Payment')
                     setButtonDisabled(false)
                     setSubmitSuccess(false)
-                    const redirectTo = location.state?.from || '/';
+                    const redirectTo = location.state?.from || '/payments';
                     navigate(redirectTo, { replace: true });
                 }, 500);
             }
