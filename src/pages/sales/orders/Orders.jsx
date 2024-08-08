@@ -223,6 +223,11 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
                             </th>
                             <th data-sortable="" style={{ width: '10' }}>
                               <a href="#" className="dataTable-sorter">
+                                Region
+                              </a>
+                            </th>
+                            <th data-sortable="" style={{ width: '10' }}>
+                              <a href="#" className="dataTable-sorter">
                                 Kgs
                               </a>
                             </th>
@@ -290,6 +295,29 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
                                 </td>
                                 <td className="text-xs font-weight-bold">
                                   <span className="my-2 text-xs">{orders.town}</span>
+                                </td>
+                                <td className="text-xs font-weight-bold">
+                                    <span className="my-2 text-xs">
+                                    {
+                                        orders.region === 1
+                                        ? "NAIROBI" 
+                                        : orders.region === 2
+                                        ? "NYANZA"
+                                        : orders.region === 3
+                                        ? "CENTRAL"
+                                        : orders.region === 4
+                                        ? "COAST"
+                                        : orders.region === 5
+                                        ? "EASTERN"
+                                        : orders.region === 6
+                                        ? "NORTH EASTERN"
+                                        : orders.region === 7
+                                        ? "WESTERN"
+                                        : orders.region === 8
+                                        ? "RIFT VALLEY"
+                                        : orders.region
+                                    }
+                                    </span>
                                 </td>
                                 <td className="text-xs font-weight-bold">
                                   <span className="my-2 text-xs">{orders.kgs}</span>
