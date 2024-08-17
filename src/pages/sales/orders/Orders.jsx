@@ -315,6 +315,8 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
                                         ? "WESTERN"
                                         : orders.region === 8
                                         ? "RIFT VALLEY"
+                                        : orders.region === 9
+                                        ? "POS"
                                         : orders.region
                                     }
                                     </span>
