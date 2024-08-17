@@ -283,7 +283,7 @@ const Orders = ({ isAuthenticated, fetchAllOrders, orders, deleteOrder, dailyKil
                               <tr 
                                 className="cursor-pointer"
                                 key={orders.id}
-                                onClick={() => viewOrder(orders.id)}
+                                onClick={() => viewOrder(orders.id)} 
                               >
                                 <td>
                                   <div className="d-flex align-items-center">

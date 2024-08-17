@@ -218,7 +218,11 @@ const Customer = ({ isAuthenticated, fetchAllCustomer, customers, deleteCustomer
 
                                                         <tbody>
                                                             {customers.map((customer) => (
-                                                                    <tr key={customer.id}>
+                                                                    <tr 
+                                                                        className='cursor-pointer'
+                                                                        key={customer.id}
+                                                                        onClick={() => viewCustomer(customer.id)}
+                                                                    >
                                                                         <td>
                                                                             <div className="d-flex align-items-center">
                                                                                 <p className="text-xs font-weight-bold ms-2 mb-0">#{customer.id}</p>

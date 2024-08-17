@@ -365,7 +365,11 @@ const Farmer = ({ isAuthenticated, fetchAllFarmer, farmer, deleteFarmer, saveFar
                                                         <tbody>
                                                             {filteredFarmers.length > 0 ? (
                                                                 filteredFarmers.map((farmer) => (
-                                                                    <tr key={farmer.id}>
+                                                                    <tr 
+                                                                        className='cursor-pointer'
+                                                                        key={farmer.id}
+                                                                        onClick={() => viewFarmer(farmer.id)}
+                                                                    >
                                                                         <td>
                                                                             <div className="d-flex align-items-center">
                                                                                 <p className="text-xs font-weight-bold ms-2 mb-0">#{farmer.id}</p>
