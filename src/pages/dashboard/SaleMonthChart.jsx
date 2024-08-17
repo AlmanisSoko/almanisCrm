@@ -7,10 +7,7 @@ import KilosRegionChart from '../../components/charts/KilosRegionChart';
 
 const SaleMonthChart = ({ }) => {
     const navigate = useNavigate();
-
     const [currentDate, setCurrentDate] = useState(new Date());
-
-    
 
     return (
         <div className="row mt-4">
