@@ -3,6 +3,8 @@ import HeaderNav from '../../../components/HeaderNav';
 import YearlyOrdersChart from './charts/YearlyOrdersChart';
 import YearlyPaymentChart from './charts/YearlyPaymentChart';
 import { useLocation, Link } from 'react-router-dom';
+import MonthlyOrdersChart from './charts/MonthlyOrdersChart';
+import MonthlyPaymentsChart from './charts/MonthlyPaymentsChart';
 
 const CustomerDashboard = () => {
     const location = useLocation();
@@ -35,8 +37,31 @@ const CustomerDashboard = () => {
                         </div>
                     </div>
                 </div>
+
                 <div className="row mt-4">
-                    <div className="col-12 col-lg-12 mb-4 mb-lg-0">
+                    <div className="col-12 col-lg-6 mb-4 mb-lg-0">
+                        <div className="card z-index-2 h-100">
+                            <div className="card-header pb-0 pt-3 bg-transparent">
+                                <h6 className="text-capitalize">Monthly Orders Overview</h6>
+                                <p className="text-sm mb-0">
+                                    <i className="fa fa-arrow-up text-success" aria-hidden="true"></i>
+                                    <span className="font-weight-bold">Graphical Analysis</span> 
+                                </p>
+                            </div>
+                            <div className="card-body p-3">
+                                <div className="chart">
+                                    <MonthlyOrdersChart 
+                                        className="chart-canvas" 
+                                        height="100" width="3992" 
+                                        id={id}
+                                        style={{display: "block", boxSizing: "border-box", height: "300px", width: "1996.2px"}}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-12 col-lg-6 mb-4 mb-lg-0">
                         <div className="card z-index-2 h-100">
                             <div className="card-header pb-0 pt-3 bg-transparent">
                                 <h6 className="text-capitalize">Yearly Orders Overview</h6>
@@ -58,9 +83,9 @@ const CustomerDashboard = () => {
                         </div>
                     </div>
                 </div>
-
+                
                 <div className="row mt-4">
-                    <div className="col-12 col-lg-12 mb-4 mb-lg-0">
+                    <div className="col-12 col-lg-6 mb-4 mb-lg-0">
                         <div className="card z-index-2 h-100">
                             <div className="card-header pb-0 pt-3 bg-transparent">
                                 <h6 className="text-capitalize">Yearly Payment Overview</h6>
@@ -72,6 +97,27 @@ const CustomerDashboard = () => {
                             <div className="card-body p-3">
                                 <div className="chart">
                                     <YearlyPaymentChart 
+                                        className="chart-canvas" 
+                                        height="100" width="3992" 
+                                        id={id}
+                                        style={{display: "block", boxSizing: "border-box", height: "300px", width: "1996.2px"}}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-12 col-lg-6 mb-4 mb-lg-0">
+                        <div className="card z-index-2 h-100">
+                            <div className="card-header pb-0 pt-3 bg-transparent">
+                                <h6 className="text-capitalize">Monthly payment Overview</h6>
+                                <p className="text-sm mb-0">
+                                    <i className="fa fa-arrow-up text-success" aria-hidden="true"></i>
+                                    <span className="font-weight-bold">Graphical Analysis</span> 
+                                </p>
+                            </div>
+                            <div className="card-body p-3">
+                                <div className="chart">
+                                    <MonthlyPaymentsChart 
                                         className="chart-canvas" 
                                         height="100" width="3992" 
                                         id={id}
