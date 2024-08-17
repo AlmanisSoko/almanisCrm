@@ -222,7 +222,11 @@ const Payments = ({ isAuthenticated, fetchAllPayments, payments, total, previous
 
                         <tbody>
                           {payments.map((payment) => (
-                              <tr key={payment.id}>
+                              <tr 
+                                className='cursor-pointer'
+                                key={payment.id} 
+                                onClick={() => viewPayment(payment.id)}
+                              >
                                 <td>
                                   <div className="d-flex align-items-center">
                                     <p className="text-xs font-weight-bold ms-2 mb-0">#{payment.id}</p>
