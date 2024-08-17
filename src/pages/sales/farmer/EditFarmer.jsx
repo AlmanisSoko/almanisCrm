@@ -21,7 +21,7 @@ const EditFarmer = ({ isAuthenticated, fetchFarmerDetails, farmerDetails, editFa
 
   const paginate = (pageNumber) => {
       setCurrentPage(pageNumber);
-  };
+  }; 
 
   const startPage = Math.max(1, currentPage - Math.floor(maxPagesDisplayed / 2));
   const endPage = Math.min(
@@ -89,7 +89,7 @@ const EditFarmer = ({ isAuthenticated, fetchFarmerDetails, farmerDetails, editFa
           // Additional logic to set other state variables if needed
           
         } catch (error) {
-          console.error('Error fetching customer data:', error);
+          console.error('Error fetching farmer data:', error);
           // Handle error, e.g., show an error message to the user
         }
       }
@@ -98,7 +98,7 @@ const EditFarmer = ({ isAuthenticated, fetchFarmerDetails, farmerDetails, editFa
   }, [isAuthenticated, navigate, id]);
 
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [buttonText, setButtonText] = useState('Edit Customer'); // Initial button text
+  const [buttonText, setButtonText] = useState('Edit Farmer'); // Initial button text
   const [isButtonDisabled, setButtonDisabled] = useState(false); // Button state
 
   const onSubmit = async (e) => {
@@ -174,6 +174,10 @@ const EditFarmer = ({ isAuthenticated, fetchFarmerDetails, farmerDetails, editFa
     setActiveTab(tab);
   };
 
+  const viewFarmerDash = (id) => {
+    navigate('/farmerdetails/' + id + '/dashboard', { state: { id: id } });
+  };
+
   return (
     <>
       <div className="min-height-300 bg-dark position-absolute w-100"></div>
@@ -202,9 +206,6 @@ const EditFarmer = ({ isAuthenticated, fetchFarmerDetails, farmerDetails, editFa
                   <h5 className="mb-1">
                               {farmerDetails ? farmerDetails.name: ''}
                   </h5>
-                  {/* <p className="mb-0 font-weight-bold text-sm">
-                              {farmerDetails ? farmerDetails.town: ''}
-                  </p> */}
                 </div>
               </div>
               <div className="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
@@ -248,13 +249,23 @@ const EditFarmer = ({ isAuthenticated, fetchFarmerDetails, farmerDetails, editFa
                         <i className="ni ni-spaceship me-2 text-dark opacity-6"></i>
                         Orders <span className="text-sm font-weight-bolder">: {farmers? farmers.orders_count: 0}</span>
                       </a>
-                    </li><li className="nav-item">
+                    </li>
+                    <li className="nav-item">
                       <a className="nav-link text-body d-flex align-items-center" data-scroll="" href="#profile">
                         <i className="ni ni-spaceship me-2 text-dark opacity-6"></i>
                         Processed Kilos <span className="text-sm font-weight-bolder">: {farmers? farmers.kgs: 0}</span>
                       </a>
                     </li>
-                    
+                    <li className="nav-item pt-2">
+                      <div className="text-body d-flex align-items-center" data-scroll="" href="#2fa">
+                        <button 
+                          className="btn bg-gradient-dark btn-lg w-100"
+                          onClick={() => viewFarmerDash(id)}
+                        >
+                          View Dashboard <i className="fa-solid fa-chart-simple"></i>
+                        </button>
+                      </div>
+                    </li>
                   </ul>
                 </div>
               </div>
