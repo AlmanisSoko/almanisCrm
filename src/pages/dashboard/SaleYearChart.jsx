@@ -52,11 +52,15 @@ const SaleMonthChart = ({ isAuthenticated }) => {
                                 </small>
                             </div>
                         </div>
-                    </div>
+                    </div> 
 
                     <div className="card-body p-3">
-                        <div className="chart mt-4">
-                            <CustomerRegionChart className="chart-canvas" style={{ width: '100%' }} />
+                        <div className="chart">
+                            <CustomerRegionChart 
+                                className="chart-canvas" 
+                                height="100" width="3992" 
+                                style={{display: "block", boxSizing: "border-box", height: "300px", width: "1996.2px"}}
+                             />
                         </div>
                     </div>
                 </div>
