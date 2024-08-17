@@ -36,6 +36,8 @@ function HeaderNav({ user }) {
       // Handle dynamic routes
       if (location.pathname.includes('customerdetails') && location.pathname.includes('dashboard')) {
         return 'Customer Dashboard';
+      } else if (location.pathname.includes('farmerdetails') && location.pathname.includes('dashboard')) {
+        return 'Farmer Dashboard';
       } else if (location.pathname.includes('customerdetails')) {
         return 'Edit Customer';
       } else if (location.pathname.includes('ordersdetails')) {

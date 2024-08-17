@@ -26,6 +26,7 @@ const AddCustomer = lazy(() => import('./pages/sales/customer/AddCustomer'))
 const EditCustomer = lazy(() => import('./pages/sales/customer/EditCustomer'))
 const Farmer = lazy(() => import('./pages/sales/farmer/Farmer'))
 const AddFarmer = lazy(() => import('./pages/sales/farmer/AddFarmer'))
+const FarmerDash = lazy(() => import('./pages/sales/farmer/FarmerDashboard'))
 const EditFarmer = lazy(() => import('./pages/sales/farmer/EditFarmer'))
 const Payments = lazy(() => import('./pages/sales/payments/Payments'))
 const AddPayments = lazy(() => import('./pages/sales/payments/AddPayments'))
@@ -90,6 +91,7 @@ function App() {
                 <Route exact path="/farmer" element={<Farmer />}/>
                 <Route exact path="/addfarmer" element={<AddFarmer />}/>
                 <Route exact path="/farmerdetails/:id" element={<EditFarmer />}/>
+                <Route exact path="/farmerdetails/:id/dashboard" element={<FarmerDash />}/>
 
                 {/* Payments */}
                 <Route exact path="/payments" element={<Payments />}/>
