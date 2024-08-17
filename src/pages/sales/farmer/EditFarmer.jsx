@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import HeaderNav from '../../../components/HeaderNav';
 import { connect } from 'react-redux';
 import { fetchFarmerDetails, editFarmer } from '../../../actions/auth';
-import { ToastContainer, toast } from 'react-toastify'; 
+import { toast } from 'react-toastify'; 
 import avatar from '../../../assets/svgs/undraw_male_avatar_g98d.svg'
 
 const EditFarmer = ({ isAuthenticated, fetchFarmerDetails, farmerDetails, editFarmer }) => {
@@ -28,26 +28,6 @@ const EditFarmer = ({ isAuthenticated, fetchFarmerDetails, farmerDetails, editFa
       Math.ceil(orders.length / ordersPerPage),
       startPage + maxPagesDisplayed - 1
   );
-
-  const [payments, setPayments] = useState([]);// Initialize orders as an empty array
-  const [currentPaymentPage, setCurrentPaymentPage] = useState(1);
-  const paymentPerPage = 5;
-  const maxPaymentPagesDisplayed = 5;
-
-  const indexOfLastPayment = currentPaymentPage * paymentPerPage;
-  const indexOfFirstPayment = indexOfLastPayment - paymentPerPage;
-  const currentPayment = Array.isArray(payments) ? payments.slice(indexOfFirstPayment, indexOfLastPayment) : [];
-
-  const paginatePayment = (pagePNumber) => {
-    setCurrentPaymentPage(pagePNumber);
-  };
-
-  const startPaymentPage = Math.max(1, currentPaymentPage - Math.floor(maxPaymentPagesDisplayed / 2));
-  const endPaymentPage = Math.min(
-      Math.ceil(orders.length / paymentPerPage),
-      startPage + maxPagesDisplayed - 1
-  );
-  
 
   const [formData, setFormData] = useState({
     name: '',
@@ -80,10 +60,6 @@ const EditFarmer = ({ isAuthenticated, fetchFarmerDetails, farmerDetails, editFa
 
             setOrders(
               farmer.orders
-            )
-
-            setPayments(
-              farmer.payments
             )
           }
           // Additional logic to set other state variables if needed
@@ -466,165 +442,6 @@ const EditFarmer = ({ isAuthenticated, fetchFarmerDetails, farmerDetails, editFa
             </div>
           </div>
           
-          <div className="row mt-0">
-            <div className='col-12'>
-            {activeTab === 'payments' && (
-              <div className='card mb-4' id='tab3'>
-                <div className='card-body p-3'>
-                <p className="font-weight-bolder">Payments</p>
-                <div className="table-responsive">
-                  <div className="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
-                    <div className="dataTable-top">
-                      <div className="dataTable-search">
-                        {/* <input className="dataTable-input" placeholder="Search..." type="text" /> */}
-                      </div>
-                    </div>
-
-                    <div className="dataTable-container">
-                      <table className="table table-flush dataTable-table" id="datatable-search">
-                        <thead className="thead-light">
-                          <tr>
-                            <th data-sortable="" style={{ width: '9%' }}>
-                              <a href="#" className="dataTable-sorter">
-                                Serial No
-                              </a>
-                            </th>
-                            <th data-sortable="" style={{ width: '9%' }}>
-                              <a href="#" className="dataTable-sorter">
-                                order No
-                              </a>
-                            </th>
-                            <th data-sortable="" style={{ width: '15%' }}>
-                              <a href="#" className="dataTable-sorter">
-                                payment
-                              </a>
-                            </th>
-                            <th data-sortable="" style={{ width: '17%' }}>
-                              <a href="#" className="dataTable-sorter">
-                                Payment mode
-                              </a>
-                            </th>
-                            <th data-sortable="" style={{ width: '17%' }}>
-                              <a href="#" className="dataTable-sorter">
-                                Payment source
-                              </a>
-                            </th>
-                            <th data-sortable="" style={{ width: '17%' }}>
-                              <a href="#" className="dataTable-sorter">
-                                order Amount
-                              </a>
-                            </th>
-                            <th data-sortable="" style={{ width: '20%' }}>
-                              <a href="#" className="dataTable-sorter">
-                                Added on
-                              </a>
-                            </th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {currentPayment.length > 0 ? (
-                            currentPayment.map((payments) => (
-                              <tr key={payments.id}>
-                                <td>
-                                  <div className="d-flex align-items-center">
-                                    <p className="text-xs font-weight-bold ms-2 mb-0">#{payments.id}</p>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="d-flex align-items-center">
-                                    <p className="text-xs font-weight-bold ms-2 mb-0">#{payments.orders_id}</p>
-                                  </div>
-                                </td>
-                                <td className="font-weight-bold">
-                                  <span className="my-2 text-xs">{payments.payment}</span>
-                                </td>
-                                <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">
-                                    {
-                                      payments.payment_mode === 1
-                                      ? "Cash"
-                                      : payments.payment_mode === 2
-                                      ? "Mpesa"
-                                      : payments.payment_mode === 3
-                                      ? " Bank"
-                                      : payments.payment_mode
-                                    }
-                                  </span>
-                                </td>
-                                <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{payments.paying_number}</span>
-                                </td>
-                                <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{payments.amount}</span>
-                                </td>
-                                <td className="text-xs font-weight-bold">
-                                  <span className="my-2 text-xs">{new Date(payments.added_on).toLocaleString()}</span>
-                                </td>
-                              </tr>
-                            ))
-                          ) : (
-                            <tr>
-                              <td colSpan="5">No payments found.</td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
-
-                    {/* Pagination controls */}
-                    <div className="dataTable-bottom">
-                      <div className="dataTable-info">
-                          Showing {payments.length} entries
-                      </div>
-                      <nav className="dataTable-pagination">
-                          <ul className="dataTable-pagination-list">
-                          <li className="pager">
-                              <a
-                              href="#"
-                              data-page="1"
-                              onClick={() => paginatePayment(1)}
-                              >
-                              ‹
-                              </a>
-                          </li>
-                          {Array.from({ length: endPaymentPage - startPaymentPage + 1 }).map((_, index) => (
-                              <li
-                              key={index}
-                              className={currentPaymentPage === startPaymentPage + index ? 'active' : ''}
-                              >
-                              <a
-                                  href="#"
-                                  data-page={startPaymentPage + index}
-                                  onClick={() => paginatePayment(startPaymentPage + index)}
-                              >
-                                  {startPaymentPage + index}
-                              </a>
-                              </li>
-                          ))}
-                          {currentPaymentPage + maxPaymentPagesDisplayed < Math.ceil(payments.length / paymentPerPage) && (
-                              <li className="pager">
-                              <a
-                                  href="#"
-                                  data-page={currentPaymentPage + 1}
-                                  onClick={() => paginatePayment(currentPaymentPage + 1)}
-                              >
-                                  ›
-                              </a>
-                              </li>
-                          )}
-                          </ul>
-                      </nav>
-                    </div>
-                   
-                  </div>
-                </div>
-                </div>
-              </div>
-            )}
-            </div>
-          </div>
-
         </div>
       </div>
     </>
