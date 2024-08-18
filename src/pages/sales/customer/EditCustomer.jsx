@@ -423,7 +423,6 @@ const EditCustomer = ({ isAuthenticated, fetchCustomerDetails, customerDetails, 
                     </div>
 
                     <button
-                      type="submit"
                       className="btn bg-gradient-dark btn-lg w-100"
                       onClick={() => viewCustomerDash(id)}
                     >

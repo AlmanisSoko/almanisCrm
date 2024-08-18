@@ -94,7 +94,7 @@ const CustomerRegionChart = ({ fetchCustomerRegion }) => {
   };
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%', marginTop: 160 }}>
+    <div style={{ position: 'relative', width: '100%', height: '100%', marginTop: 90 }}>
       <canvas ref={chartRef} />
     </div>
   );

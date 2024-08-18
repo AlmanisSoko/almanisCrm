@@ -51,7 +51,7 @@ const KilosRegionChart = ({ fetchHomePage }) => {
   };
 
   return (
-    <div style={{ width: '820px', height: '500px', marginTop: 50 }}>
+    <div style={{  position: 'relative', width: '720px', height: '500px', marginTop: 40 }}>
       {chartData && <Pie data={chartData} options={options} />}
     </div>
   );
